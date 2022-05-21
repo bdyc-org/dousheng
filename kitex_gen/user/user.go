@@ -1576,22 +1576,31 @@ func (p *CheckUserResponse) Field2DeepEqual(src int64) bool {
 }
 
 type MGetUserRequest struct {
-	UserIds []int64 `thrift:"user_ids,1" json:"user_ids"`
+	UserId  int64   `thrift:"user_id,1" json:"user_id"`
+	UserIds []int64 `thrift:"user_ids,2" json:"user_ids"`
 }
 
 func NewMGetUserRequest() *MGetUserRequest {
 	return &MGetUserRequest{}
 }
 
+func (p *MGetUserRequest) GetUserId() (v int64) {
+	return p.UserId
+}
+
 func (p *MGetUserRequest) GetUserIds() (v []int64) {
 	return p.UserIds
+}
+func (p *MGetUserRequest) SetUserId(val int64) {
+	p.UserId = val
 }
 func (p *MGetUserRequest) SetUserIds(val []int64) {
 	p.UserIds = val
 }
 
 var fieldIDToName_MGetUserRequest = map[int16]string{
-	1: "user_ids",
+	1: "user_id",
+	2: "user_ids",
 }
 
 func (p *MGetUserRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -1614,8 +1623,18 @@ func (p *MGetUserRequest) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.LIST {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.LIST {
+				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -1654,6 +1673,15 @@ ReadStructEndError:
 }
 
 func (p *MGetUserRequest) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.UserId = v
+	}
+	return nil
+}
+
+func (p *MGetUserRequest) ReadField2(iprot thrift.TProtocol) error {
 	_, size, err := iprot.ReadListBegin()
 	if err != nil {
 		return err
@@ -1685,6 +1713,10 @@ func (p *MGetUserRequest) Write(oprot thrift.TProtocol) (err error) {
 			fieldId = 1
 			goto WriteFieldError
 		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
 
 	}
 	if err = oprot.WriteFieldStop(); err != nil {
@@ -1705,7 +1737,24 @@ WriteStructEndError:
 }
 
 func (p *MGetUserRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("user_ids", thrift.LIST, 1); err != nil {
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.UserId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *MGetUserRequest) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("user_ids", thrift.LIST, 2); err != nil {
 		goto WriteFieldBeginError
 	}
 	if err := oprot.WriteListBegin(thrift.I64, len(p.UserIds)); err != nil {
@@ -1724,9 +1773,9 @@ func (p *MGetUserRequest) writeField1(oprot thrift.TProtocol) (err error) {
 	}
 	return nil
 WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
 WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
 func (p *MGetUserRequest) String() string {
@@ -1742,13 +1791,23 @@ func (p *MGetUserRequest) DeepEqual(ano *MGetUserRequest) bool {
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field1DeepEqual(ano.UserIds) {
+	if !p.Field1DeepEqual(ano.UserId) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.UserIds) {
 		return false
 	}
 	return true
 }
 
-func (p *MGetUserRequest) Field1DeepEqual(src []int64) bool {
+func (p *MGetUserRequest) Field1DeepEqual(src int64) bool {
+
+	if p.UserId != src {
+		return false
+	}
+	return true
+}
+func (p *MGetUserRequest) Field2DeepEqual(src []int64) bool {
 
 	if len(p.UserIds) != len(src) {
 		return false
@@ -2015,22 +2074,31 @@ func (p *MGetUserResponse) Field2DeepEqual(src []*User) bool {
 }
 
 type NewFollowRequest_ struct {
-	UserId int64 `thrift:"user_id,1" json:"user_id"`
+	FollowId   int64 `thrift:"follow_id,1" json:"follow_id"`
+	FollowerId int64 `thrift:"follower_id,2" json:"follower_id"`
 }
 
 func NewNewFollowRequest_() *NewFollowRequest_ {
 	return &NewFollowRequest_{}
 }
 
-func (p *NewFollowRequest_) GetUserId() (v int64) {
-	return p.UserId
+func (p *NewFollowRequest_) GetFollowId() (v int64) {
+	return p.FollowId
 }
-func (p *NewFollowRequest_) SetUserId(val int64) {
-	p.UserId = val
+
+func (p *NewFollowRequest_) GetFollowerId() (v int64) {
+	return p.FollowerId
+}
+func (p *NewFollowRequest_) SetFollowId(val int64) {
+	p.FollowId = val
+}
+func (p *NewFollowRequest_) SetFollowerId(val int64) {
+	p.FollowerId = val
 }
 
 var fieldIDToName_NewFollowRequest_ = map[int16]string{
-	1: "user_id",
+	1: "follow_id",
+	2: "follower_id",
 }
 
 func (p *NewFollowRequest_) Read(iprot thrift.TProtocol) (err error) {
@@ -2055,6 +2123,16 @@ func (p *NewFollowRequest_) Read(iprot thrift.TProtocol) (err error) {
 		case 1:
 			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -2096,7 +2174,16 @@ func (p *NewFollowRequest_) ReadField1(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.UserId = v
+		p.FollowId = v
+	}
+	return nil
+}
+
+func (p *NewFollowRequest_) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.FollowerId = v
 	}
 	return nil
 }
@@ -2109,6 +2196,10 @@ func (p *NewFollowRequest_) Write(oprot thrift.TProtocol) (err error) {
 	if p != nil {
 		if err = p.writeField1(oprot); err != nil {
 			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
 			goto WriteFieldError
 		}
 
@@ -2131,10 +2222,10 @@ WriteStructEndError:
 }
 
 func (p *NewFollowRequest_) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 1); err != nil {
+	if err = oprot.WriteFieldBegin("follow_id", thrift.I64, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.UserId); err != nil {
+	if err := oprot.WriteI64(p.FollowId); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -2145,6 +2236,23 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *NewFollowRequest_) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("follower_id", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.FollowerId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
 func (p *NewFollowRequest_) String() string {
@@ -2160,7 +2268,10 @@ func (p *NewFollowRequest_) DeepEqual(ano *NewFollowRequest_) bool {
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field1DeepEqual(ano.UserId) {
+	if !p.Field1DeepEqual(ano.FollowId) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.FollowerId) {
 		return false
 	}
 	return true
@@ -2168,7 +2279,14 @@ func (p *NewFollowRequest_) DeepEqual(ano *NewFollowRequest_) bool {
 
 func (p *NewFollowRequest_) Field1DeepEqual(src int64) bool {
 
-	if p.UserId != src {
+	if p.FollowId != src {
+		return false
+	}
+	return true
+}
+func (p *NewFollowRequest_) Field2DeepEqual(src int64) bool {
+
+	if p.FollowerId != src {
 		return false
 	}
 	return true
@@ -2342,334 +2460,6 @@ func (p *NewFollowResponse_) Field1DeepEqual(src *BaseResponse) bool {
 	return true
 }
 
-type NewFollowerRequest_ struct {
-	UserId int64 `thrift:"user_id,1" json:"user_id"`
-}
-
-func NewNewFollowerRequest_() *NewFollowerRequest_ {
-	return &NewFollowerRequest_{}
-}
-
-func (p *NewFollowerRequest_) GetUserId() (v int64) {
-	return p.UserId
-}
-func (p *NewFollowerRequest_) SetUserId(val int64) {
-	p.UserId = val
-}
-
-var fieldIDToName_NewFollowerRequest_ = map[int16]string{
-	1: "user_id",
-}
-
-func (p *NewFollowerRequest_) Read(iprot thrift.TProtocol) (err error) {
-
-	var fieldTypeId thrift.TType
-	var fieldId int16
-
-	if _, err = iprot.ReadStructBegin(); err != nil {
-		goto ReadStructBeginError
-	}
-
-	for {
-		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
-		if err != nil {
-			goto ReadFieldBeginError
-		}
-		if fieldTypeId == thrift.STOP {
-			break
-		}
-
-		switch fieldId {
-		case 1:
-			if fieldTypeId == thrift.I64 {
-				if err = p.ReadField1(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		default:
-			if err = iprot.Skip(fieldTypeId); err != nil {
-				goto SkipFieldError
-			}
-		}
-
-		if err = iprot.ReadFieldEnd(); err != nil {
-			goto ReadFieldEndError
-		}
-	}
-	if err = iprot.ReadStructEnd(); err != nil {
-		goto ReadStructEndError
-	}
-
-	return nil
-ReadStructBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
-ReadFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_NewFollowerRequest_[fieldId]), err)
-SkipFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-
-ReadFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
-ReadStructEndError:
-	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-}
-
-func (p *NewFollowerRequest_) ReadField1(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
-		return err
-	} else {
-		p.UserId = v
-	}
-	return nil
-}
-
-func (p *NewFollowerRequest_) Write(oprot thrift.TProtocol) (err error) {
-	var fieldId int16
-	if err = oprot.WriteStructBegin("NewFollowerRequest"); err != nil {
-		goto WriteStructBeginError
-	}
-	if p != nil {
-		if err = p.writeField1(oprot); err != nil {
-			fieldId = 1
-			goto WriteFieldError
-		}
-
-	}
-	if err = oprot.WriteFieldStop(); err != nil {
-		goto WriteFieldStopError
-	}
-	if err = oprot.WriteStructEnd(); err != nil {
-		goto WriteStructEndError
-	}
-	return nil
-WriteStructBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
-WriteFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
-WriteFieldStopError:
-	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
-WriteStructEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
-}
-
-func (p *NewFollowerRequest_) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 1); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteI64(p.UserId); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
-}
-
-func (p *NewFollowerRequest_) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("NewFollowerRequest_(%+v)", *p)
-}
-
-func (p *NewFollowerRequest_) DeepEqual(ano *NewFollowerRequest_) bool {
-	if p == ano {
-		return true
-	} else if p == nil || ano == nil {
-		return false
-	}
-	if !p.Field1DeepEqual(ano.UserId) {
-		return false
-	}
-	return true
-}
-
-func (p *NewFollowerRequest_) Field1DeepEqual(src int64) bool {
-
-	if p.UserId != src {
-		return false
-	}
-	return true
-}
-
-type NewFollowerResponse_ struct {
-	BaseResp *BaseResponse `thrift:"base_resp,1" json:"base_resp"`
-}
-
-func NewNewFollowerResponse_() *NewFollowerResponse_ {
-	return &NewFollowerResponse_{}
-}
-
-var NewFollowerResponse__BaseResp_DEFAULT *BaseResponse
-
-func (p *NewFollowerResponse_) GetBaseResp() (v *BaseResponse) {
-	if !p.IsSetBaseResp() {
-		return NewFollowerResponse__BaseResp_DEFAULT
-	}
-	return p.BaseResp
-}
-func (p *NewFollowerResponse_) SetBaseResp(val *BaseResponse) {
-	p.BaseResp = val
-}
-
-var fieldIDToName_NewFollowerResponse_ = map[int16]string{
-	1: "base_resp",
-}
-
-func (p *NewFollowerResponse_) IsSetBaseResp() bool {
-	return p.BaseResp != nil
-}
-
-func (p *NewFollowerResponse_) Read(iprot thrift.TProtocol) (err error) {
-
-	var fieldTypeId thrift.TType
-	var fieldId int16
-
-	if _, err = iprot.ReadStructBegin(); err != nil {
-		goto ReadStructBeginError
-	}
-
-	for {
-		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
-		if err != nil {
-			goto ReadFieldBeginError
-		}
-		if fieldTypeId == thrift.STOP {
-			break
-		}
-
-		switch fieldId {
-		case 1:
-			if fieldTypeId == thrift.STRUCT {
-				if err = p.ReadField1(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		default:
-			if err = iprot.Skip(fieldTypeId); err != nil {
-				goto SkipFieldError
-			}
-		}
-
-		if err = iprot.ReadFieldEnd(); err != nil {
-			goto ReadFieldEndError
-		}
-	}
-	if err = iprot.ReadStructEnd(); err != nil {
-		goto ReadStructEndError
-	}
-
-	return nil
-ReadStructBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
-ReadFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_NewFollowerResponse_[fieldId]), err)
-SkipFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-
-ReadFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
-ReadStructEndError:
-	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-}
-
-func (p *NewFollowerResponse_) ReadField1(iprot thrift.TProtocol) error {
-	p.BaseResp = NewBaseResponse()
-	if err := p.BaseResp.Read(iprot); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (p *NewFollowerResponse_) Write(oprot thrift.TProtocol) (err error) {
-	var fieldId int16
-	if err = oprot.WriteStructBegin("NewFollowerResponse"); err != nil {
-		goto WriteStructBeginError
-	}
-	if p != nil {
-		if err = p.writeField1(oprot); err != nil {
-			fieldId = 1
-			goto WriteFieldError
-		}
-
-	}
-	if err = oprot.WriteFieldStop(); err != nil {
-		goto WriteFieldStopError
-	}
-	if err = oprot.WriteStructEnd(); err != nil {
-		goto WriteStructEndError
-	}
-	return nil
-WriteStructBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
-WriteFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
-WriteFieldStopError:
-	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
-WriteStructEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
-}
-
-func (p *NewFollowerResponse_) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("base_resp", thrift.STRUCT, 1); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := p.BaseResp.Write(oprot); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
-}
-
-func (p *NewFollowerResponse_) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("NewFollowerResponse_(%+v)", *p)
-}
-
-func (p *NewFollowerResponse_) DeepEqual(ano *NewFollowerResponse_) bool {
-	if p == ano {
-		return true
-	} else if p == nil || ano == nil {
-		return false
-	}
-	if !p.Field1DeepEqual(ano.BaseResp) {
-		return false
-	}
-	return true
-}
-
-func (p *NewFollowerResponse_) Field1DeepEqual(src *BaseResponse) bool {
-
-	if !p.BaseResp.DeepEqual(src) {
-		return false
-	}
-	return true
-}
-
 type UserService interface {
 	CreateUser(ctx context.Context, req *CreateUserRequest) (r *CreateUserResponse, err error)
 
@@ -2677,9 +2467,7 @@ type UserService interface {
 
 	MGetUser(ctx context.Context, req *MGetUserRequest) (r *MGetUserResponse, err error)
 
-	NewFollow_(ctx context.Context, req *NewFollowerRequest_) (r *NewFollowResponse_, err error)
-
-	NewFollower_(ctx context.Context, req *NewFollowerRequest_) (r *NewFollowerRequest_, err error)
+	NewFollow_(ctx context.Context, req *NewFollowRequest_) (r *NewFollowResponse_, err error)
 }
 
 type UserServiceClient struct {
@@ -2738,21 +2526,11 @@ func (p *UserServiceClient) MGetUser(ctx context.Context, req *MGetUserRequest) 
 	return _result.GetSuccess(), nil
 }
 
-func (p *UserServiceClient) NewFollow_(ctx context.Context, req *NewFollowerRequest_) (r *NewFollowResponse_, err error) {
+func (p *UserServiceClient) NewFollow_(ctx context.Context, req *NewFollowRequest_) (r *NewFollowResponse_, err error) {
 	var _args UserServiceNewFollowArgs
 	_args.Req = req
 	var _result UserServiceNewFollowResult
 	if err = p.Client_().Call(ctx, "NewFollow", &_args, &_result); err != nil {
-		return
-	}
-	return _result.GetSuccess(), nil
-}
-
-func (p *UserServiceClient) NewFollower_(ctx context.Context, req *NewFollowerRequest_) (r *NewFollowerRequest_, err error) {
-	var _args UserServiceNewFollowerArgs
-	_args.Req = req
-	var _result UserServiceNewFollowerResult
-	if err = p.Client_().Call(ctx, "NewFollower", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -2782,7 +2560,6 @@ func NewUserServiceProcessor(handler UserService) *UserServiceProcessor {
 	self.AddToProcessorMap("CheckUser", &userServiceProcessorCheckUser{handler: handler})
 	self.AddToProcessorMap("MGetUser", &userServiceProcessorMGetUser{handler: handler})
 	self.AddToProcessorMap("NewFollow", &userServiceProcessorNewFollow_{handler: handler})
-	self.AddToProcessorMap("NewFollower", &userServiceProcessorNewFollower_{handler: handler})
 	return self
 }
 func (p *UserServiceProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -2978,54 +2755,6 @@ func (p *userServiceProcessorNewFollow_) Process(ctx context.Context, seqId int3
 		result.Success = retval
 	}
 	if err2 = oprot.WriteMessageBegin("NewFollow", thrift.REPLY, seqId); err2 != nil {
-		err = err2
-	}
-	if err2 = result.Write(oprot); err == nil && err2 != nil {
-		err = err2
-	}
-	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
-		err = err2
-	}
-	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
-		err = err2
-	}
-	if err != nil {
-		return
-	}
-	return true, err
-}
-
-type userServiceProcessorNewFollower_ struct {
-	handler UserService
-}
-
-func (p *userServiceProcessorNewFollower_) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-	args := UserServiceNewFollowerArgs{}
-	if err = args.Read(iprot); err != nil {
-		iprot.ReadMessageEnd()
-		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
-		oprot.WriteMessageBegin("NewFollower", thrift.EXCEPTION, seqId)
-		x.Write(oprot)
-		oprot.WriteMessageEnd()
-		oprot.Flush(ctx)
-		return false, err
-	}
-
-	iprot.ReadMessageEnd()
-	var err2 error
-	result := UserServiceNewFollowerResult{}
-	var retval *NewFollowerRequest_
-	if retval, err2 = p.handler.NewFollower_(ctx, args.Req); err2 != nil {
-		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing NewFollower: "+err2.Error())
-		oprot.WriteMessageBegin("NewFollower", thrift.EXCEPTION, seqId)
-		x.Write(oprot)
-		oprot.WriteMessageEnd()
-		oprot.Flush(ctx)
-		return true, err2
-	} else {
-		result.Success = retval
-	}
-	if err2 = oprot.WriteMessageBegin("NewFollower", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -4058,22 +3787,22 @@ func (p *UserServiceMGetUserResult) Field0DeepEqual(src *MGetUserResponse) bool 
 }
 
 type UserServiceNewFollowArgs struct {
-	Req *NewFollowerRequest_ `thrift:"req,1" json:"req"`
+	Req *NewFollowRequest_ `thrift:"req,1" json:"req"`
 }
 
 func NewUserServiceNewFollowArgs() *UserServiceNewFollowArgs {
 	return &UserServiceNewFollowArgs{}
 }
 
-var UserServiceNewFollowArgs_Req_DEFAULT *NewFollowerRequest_
+var UserServiceNewFollowArgs_Req_DEFAULT *NewFollowRequest_
 
-func (p *UserServiceNewFollowArgs) GetReq() (v *NewFollowerRequest_) {
+func (p *UserServiceNewFollowArgs) GetReq() (v *NewFollowRequest_) {
 	if !p.IsSetReq() {
 		return UserServiceNewFollowArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *UserServiceNewFollowArgs) SetReq(val *NewFollowerRequest_) {
+func (p *UserServiceNewFollowArgs) SetReq(val *NewFollowRequest_) {
 	p.Req = val
 }
 
@@ -4145,7 +3874,7 @@ ReadStructEndError:
 }
 
 func (p *UserServiceNewFollowArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Req = NewNewFollowerRequest_()
+	p.Req = NewNewFollowRequest_()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
 	}
@@ -4217,7 +3946,7 @@ func (p *UserServiceNewFollowArgs) DeepEqual(ano *UserServiceNewFollowArgs) bool
 	return true
 }
 
-func (p *UserServiceNewFollowArgs) Field1DeepEqual(src *NewFollowerRequest_) bool {
+func (p *UserServiceNewFollowArgs) Field1DeepEqual(src *NewFollowRequest_) bool {
 
 	if !p.Req.DeepEqual(src) {
 		return false
@@ -4388,344 +4117,6 @@ func (p *UserServiceNewFollowResult) DeepEqual(ano *UserServiceNewFollowResult) 
 }
 
 func (p *UserServiceNewFollowResult) Field0DeepEqual(src *NewFollowResponse_) bool {
-
-	if !p.Success.DeepEqual(src) {
-		return false
-	}
-	return true
-}
-
-type UserServiceNewFollowerArgs struct {
-	Req *NewFollowerRequest_ `thrift:"req,1" json:"req"`
-}
-
-func NewUserServiceNewFollowerArgs() *UserServiceNewFollowerArgs {
-	return &UserServiceNewFollowerArgs{}
-}
-
-var UserServiceNewFollowerArgs_Req_DEFAULT *NewFollowerRequest_
-
-func (p *UserServiceNewFollowerArgs) GetReq() (v *NewFollowerRequest_) {
-	if !p.IsSetReq() {
-		return UserServiceNewFollowerArgs_Req_DEFAULT
-	}
-	return p.Req
-}
-func (p *UserServiceNewFollowerArgs) SetReq(val *NewFollowerRequest_) {
-	p.Req = val
-}
-
-var fieldIDToName_UserServiceNewFollowerArgs = map[int16]string{
-	1: "req",
-}
-
-func (p *UserServiceNewFollowerArgs) IsSetReq() bool {
-	return p.Req != nil
-}
-
-func (p *UserServiceNewFollowerArgs) Read(iprot thrift.TProtocol) (err error) {
-
-	var fieldTypeId thrift.TType
-	var fieldId int16
-
-	if _, err = iprot.ReadStructBegin(); err != nil {
-		goto ReadStructBeginError
-	}
-
-	for {
-		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
-		if err != nil {
-			goto ReadFieldBeginError
-		}
-		if fieldTypeId == thrift.STOP {
-			break
-		}
-
-		switch fieldId {
-		case 1:
-			if fieldTypeId == thrift.STRUCT {
-				if err = p.ReadField1(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		default:
-			if err = iprot.Skip(fieldTypeId); err != nil {
-				goto SkipFieldError
-			}
-		}
-
-		if err = iprot.ReadFieldEnd(); err != nil {
-			goto ReadFieldEndError
-		}
-	}
-	if err = iprot.ReadStructEnd(); err != nil {
-		goto ReadStructEndError
-	}
-
-	return nil
-ReadStructBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
-ReadFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserServiceNewFollowerArgs[fieldId]), err)
-SkipFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-
-ReadFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
-ReadStructEndError:
-	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-}
-
-func (p *UserServiceNewFollowerArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Req = NewNewFollowerRequest_()
-	if err := p.Req.Read(iprot); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (p *UserServiceNewFollowerArgs) Write(oprot thrift.TProtocol) (err error) {
-	var fieldId int16
-	if err = oprot.WriteStructBegin("NewFollower_args"); err != nil {
-		goto WriteStructBeginError
-	}
-	if p != nil {
-		if err = p.writeField1(oprot); err != nil {
-			fieldId = 1
-			goto WriteFieldError
-		}
-
-	}
-	if err = oprot.WriteFieldStop(); err != nil {
-		goto WriteFieldStopError
-	}
-	if err = oprot.WriteStructEnd(); err != nil {
-		goto WriteStructEndError
-	}
-	return nil
-WriteStructBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
-WriteFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
-WriteFieldStopError:
-	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
-WriteStructEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
-}
-
-func (p *UserServiceNewFollowerArgs) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := p.Req.Write(oprot); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
-}
-
-func (p *UserServiceNewFollowerArgs) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("UserServiceNewFollowerArgs(%+v)", *p)
-}
-
-func (p *UserServiceNewFollowerArgs) DeepEqual(ano *UserServiceNewFollowerArgs) bool {
-	if p == ano {
-		return true
-	} else if p == nil || ano == nil {
-		return false
-	}
-	if !p.Field1DeepEqual(ano.Req) {
-		return false
-	}
-	return true
-}
-
-func (p *UserServiceNewFollowerArgs) Field1DeepEqual(src *NewFollowerRequest_) bool {
-
-	if !p.Req.DeepEqual(src) {
-		return false
-	}
-	return true
-}
-
-type UserServiceNewFollowerResult struct {
-	Success *NewFollowerRequest_ `thrift:"success,0" json:"success,omitempty"`
-}
-
-func NewUserServiceNewFollowerResult() *UserServiceNewFollowerResult {
-	return &UserServiceNewFollowerResult{}
-}
-
-var UserServiceNewFollowerResult_Success_DEFAULT *NewFollowerRequest_
-
-func (p *UserServiceNewFollowerResult) GetSuccess() (v *NewFollowerRequest_) {
-	if !p.IsSetSuccess() {
-		return UserServiceNewFollowerResult_Success_DEFAULT
-	}
-	return p.Success
-}
-func (p *UserServiceNewFollowerResult) SetSuccess(x interface{}) {
-	p.Success = x.(*NewFollowerRequest_)
-}
-
-var fieldIDToName_UserServiceNewFollowerResult = map[int16]string{
-	0: "success",
-}
-
-func (p *UserServiceNewFollowerResult) IsSetSuccess() bool {
-	return p.Success != nil
-}
-
-func (p *UserServiceNewFollowerResult) Read(iprot thrift.TProtocol) (err error) {
-
-	var fieldTypeId thrift.TType
-	var fieldId int16
-
-	if _, err = iprot.ReadStructBegin(); err != nil {
-		goto ReadStructBeginError
-	}
-
-	for {
-		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
-		if err != nil {
-			goto ReadFieldBeginError
-		}
-		if fieldTypeId == thrift.STOP {
-			break
-		}
-
-		switch fieldId {
-		case 0:
-			if fieldTypeId == thrift.STRUCT {
-				if err = p.ReadField0(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		default:
-			if err = iprot.Skip(fieldTypeId); err != nil {
-				goto SkipFieldError
-			}
-		}
-
-		if err = iprot.ReadFieldEnd(); err != nil {
-			goto ReadFieldEndError
-		}
-	}
-	if err = iprot.ReadStructEnd(); err != nil {
-		goto ReadStructEndError
-	}
-
-	return nil
-ReadStructBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
-ReadFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserServiceNewFollowerResult[fieldId]), err)
-SkipFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-
-ReadFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
-ReadStructEndError:
-	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-}
-
-func (p *UserServiceNewFollowerResult) ReadField0(iprot thrift.TProtocol) error {
-	p.Success = NewNewFollowerRequest_()
-	if err := p.Success.Read(iprot); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (p *UserServiceNewFollowerResult) Write(oprot thrift.TProtocol) (err error) {
-	var fieldId int16
-	if err = oprot.WriteStructBegin("NewFollower_result"); err != nil {
-		goto WriteStructBeginError
-	}
-	if p != nil {
-		if err = p.writeField0(oprot); err != nil {
-			fieldId = 0
-			goto WriteFieldError
-		}
-
-	}
-	if err = oprot.WriteFieldStop(); err != nil {
-		goto WriteFieldStopError
-	}
-	if err = oprot.WriteStructEnd(); err != nil {
-		goto WriteStructEndError
-	}
-	return nil
-WriteStructBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
-WriteFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
-WriteFieldStopError:
-	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
-WriteStructEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
-}
-
-func (p *UserServiceNewFollowerResult) writeField0(oprot thrift.TProtocol) (err error) {
-	if p.IsSetSuccess() {
-		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := p.Success.Write(oprot); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
-}
-
-func (p *UserServiceNewFollowerResult) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("UserServiceNewFollowerResult(%+v)", *p)
-}
-
-func (p *UserServiceNewFollowerResult) DeepEqual(ano *UserServiceNewFollowerResult) bool {
-	if p == ano {
-		return true
-	} else if p == nil || ano == nil {
-		return false
-	}
-	if !p.Field0DeepEqual(ano.Success) {
-		return false
-	}
-	return true
-}
-
-func (p *UserServiceNewFollowerResult) Field0DeepEqual(src *NewFollowerRequest_) bool {
 
 	if !p.Success.DeepEqual(src) {
 		return false

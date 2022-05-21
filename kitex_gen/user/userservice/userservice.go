@@ -19,11 +19,10 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "UserService"
 	handlerType := (*user.UserService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"CreateUser":  kitex.NewMethodInfo(createUserHandler, newUserServiceCreateUserArgs, newUserServiceCreateUserResult, false),
-		"CheckUser":   kitex.NewMethodInfo(checkUserHandler, newUserServiceCheckUserArgs, newUserServiceCheckUserResult, false),
-		"MGetUser":    kitex.NewMethodInfo(mGetUserHandler, newUserServiceMGetUserArgs, newUserServiceMGetUserResult, false),
-		"NewFollow":   kitex.NewMethodInfo(newFollow_Handler, newUserServiceNewFollowArgs, newUserServiceNewFollowResult, false),
-		"NewFollower": kitex.NewMethodInfo(newFollower_Handler, newUserServiceNewFollowerArgs, newUserServiceNewFollowerResult, false),
+		"CreateUser": kitex.NewMethodInfo(createUserHandler, newUserServiceCreateUserArgs, newUserServiceCreateUserResult, false),
+		"CheckUser":  kitex.NewMethodInfo(checkUserHandler, newUserServiceCheckUserArgs, newUserServiceCheckUserResult, false),
+		"MGetUser":   kitex.NewMethodInfo(mGetUserHandler, newUserServiceMGetUserArgs, newUserServiceMGetUserResult, false),
+		"NewFollow":  kitex.NewMethodInfo(newFollow_Handler, newUserServiceNewFollowArgs, newUserServiceNewFollowResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -111,24 +110,6 @@ func newUserServiceNewFollowResult() interface{} {
 	return user.NewUserServiceNewFollowResult()
 }
 
-func newFollower_Handler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*user.UserServiceNewFollowerArgs)
-	realResult := result.(*user.UserServiceNewFollowerResult)
-	success, err := handler.(user.UserService).NewFollower_(ctx, realArg.Req)
-	if err != nil {
-		return err
-	}
-	realResult.Success = success
-	return nil
-}
-func newUserServiceNewFollowerArgs() interface{} {
-	return user.NewUserServiceNewFollowerArgs()
-}
-
-func newUserServiceNewFollowerResult() interface{} {
-	return user.NewUserServiceNewFollowerResult()
-}
-
 type kClient struct {
 	c client.Client
 }
@@ -169,21 +150,11 @@ func (p *kClient) MGetUser(ctx context.Context, req *user.MGetUserRequest) (r *u
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) NewFollow_(ctx context.Context, req *user.NewFollowerRequest_) (r *user.NewFollowResponse_, err error) {
+func (p *kClient) NewFollow_(ctx context.Context, req *user.NewFollowRequest_) (r *user.NewFollowResponse_, err error) {
 	var _args user.UserServiceNewFollowArgs
 	_args.Req = req
 	var _result user.UserServiceNewFollowResult
 	if err = p.c.Call(ctx, "NewFollow", &_args, &_result); err != nil {
-		return
-	}
-	return _result.GetSuccess(), nil
-}
-
-func (p *kClient) NewFollower_(ctx context.Context, req *user.NewFollowerRequest_) (r *user.NewFollowerRequest_, err error) {
-	var _args user.UserServiceNewFollowerArgs
-	_args.Req = req
-	var _result user.UserServiceNewFollowerResult
-	if err = p.c.Call(ctx, "NewFollower", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

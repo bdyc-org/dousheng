@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-
 	"github.com/bdyc-org/dousheng/kitex_gen/user"
 )
 
@@ -28,13 +27,7 @@ func (s *UserServiceImpl) MGetUser(ctx context.Context, req *user.MGetUserReques
 }
 
 // NewFollow_ implements the UserServiceImpl interface.
-func (s *UserServiceImpl) NewFollow_(ctx context.Context, req *user.NewFollowerRequest_) (resp *user.NewFollowResponse_, err error) {
-	// TODO: Your code here...
-	return
-}
-
-// NewFollower_ implements the UserServiceImpl interface.
-func (s *UserServiceImpl) NewFollower_(ctx context.Context, req *user.NewFollowerRequest_) (resp *user.NewFollowerRequest_, err error) {
+func (s *UserServiceImpl) NewFollow_(ctx context.Context, req *user.NewFollowRequest_) (resp *user.NewFollowResponse_, err error) {
 	// TODO: Your code here...
 	return
 }
