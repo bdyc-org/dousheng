@@ -14,8 +14,7 @@ type Client interface {
 	CreateUser(ctx context.Context, req *user.CreateUserRequest, callOptions ...callopt.Option) (r *user.CreateUserResponse, err error)
 	CheckUser(ctx context.Context, req *user.CheckUserRequest, callOptions ...callopt.Option) (r *user.CheckUserResponse, err error)
 	MGetUser(ctx context.Context, req *user.MGetUserRequest, callOptions ...callopt.Option) (r *user.MGetUserResponse, err error)
-	NewFollow_(ctx context.Context, req *user.NewFollowerRequest_, callOptions ...callopt.Option) (r *user.NewFollowResponse_, err error)
-	NewFollower_(ctx context.Context, req *user.NewFollowerRequest_, callOptions ...callopt.Option) (r *user.NewFollowerRequest_, err error)
+	NewFollow_(ctx context.Context, req *user.NewFollowRequest_, callOptions ...callopt.Option) (r *user.NewFollowResponse_, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -62,12 +61,7 @@ func (p *kUserServiceClient) MGetUser(ctx context.Context, req *user.MGetUserReq
 	return p.kClient.MGetUser(ctx, req)
 }
 
-func (p *kUserServiceClient) NewFollow_(ctx context.Context, req *user.NewFollowerRequest_, callOptions ...callopt.Option) (r *user.NewFollowResponse_, err error) {
+func (p *kUserServiceClient) NewFollow_(ctx context.Context, req *user.NewFollowRequest_, callOptions ...callopt.Option) (r *user.NewFollowResponse_, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.NewFollow_(ctx, req)
-}
-
-func (p *kUserServiceClient) NewFollower_(ctx context.Context, req *user.NewFollowerRequest_, callOptions ...callopt.Option) (r *user.NewFollowerRequest_, err error) {
-	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.NewFollower_(ctx, req)
 }

@@ -35,7 +35,8 @@ struct CheckUserResponse {
 }
 
 struct MGetUserRequest {
-    1:list<i64> user_ids
+    1:i64 user_id
+    2:list<i64> user_ids
 }
 
 struct MGetUserResponse {
@@ -44,18 +45,11 @@ struct MGetUserResponse {
 }
 
 struct NewFollowRequest {
-    1:i64 user_id
+    1:i64 follow_id
+    2:i64 follower_id
 }
 
 struct NewFollowResponse {
-    1:BaseResponse base_resp
-}
-
-struct NewFollowerRequest {
-    1:i64 user_id
-}
-
-struct NewFollowerResponse {
     1:BaseResponse base_resp
 }
 
@@ -64,5 +58,4 @@ service UserService {
     CheckUserResponse CheckUser(1:CheckUserRequest req)
     MGetUserResponse MGetUser(1:MGetUserRequest req)
     NewFollowResponse NewFollow(1:NewFollowerRequest req)
-    NewFollowerRequest NewFollower(1:NewFollowerRequest req)
 }

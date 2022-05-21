@@ -1,9 +1,8 @@
 package main
 
 import (
-	"log"
-
 	user "github.com/bdyc-org/dousheng/kitex_gen/user/userservice"
+	"log"
 )
 
 func main() {
