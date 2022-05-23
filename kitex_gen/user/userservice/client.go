@@ -14,7 +14,9 @@ type Client interface {
 	CreateUser(ctx context.Context, req *user.CreateUserRequest, callOptions ...callopt.Option) (r *user.CreateUserResponse, err error)
 	CheckUser(ctx context.Context, req *user.CheckUserRequest, callOptions ...callopt.Option) (r *user.CheckUserResponse, err error)
 	MGetUser(ctx context.Context, req *user.MGetUserRequest, callOptions ...callopt.Option) (r *user.MGetUserResponse, err error)
-	NewFollow_(ctx context.Context, req *user.NewFollowRequest_, callOptions ...callopt.Option) (r *user.NewFollowResponse_, err error)
+	Follow(ctx context.Context, req *user.FollowRequest, callOptions ...callopt.Option) (r *user.FollowResponse, err error)
+	CancelFollow(ctx context.Context, req *user.CancelFollowRequest, callOptions ...callopt.Option) (r *user.CancelFollowResponse, err error)
+	Authentication(ctx context.Context, req *user.AuthenticationRequest, callOptions ...callopt.Option) (r *user.AuthenticationResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -61,7 +63,17 @@ func (p *kUserServiceClient) MGetUser(ctx context.Context, req *user.MGetUserReq
 	return p.kClient.MGetUser(ctx, req)
 }
 
-func (p *kUserServiceClient) NewFollow_(ctx context.Context, req *user.NewFollowRequest_, callOptions ...callopt.Option) (r *user.NewFollowResponse_, err error) {
+func (p *kUserServiceClient) Follow(ctx context.Context, req *user.FollowRequest, callOptions ...callopt.Option) (r *user.FollowResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.NewFollow_(ctx, req)
+	return p.kClient.Follow(ctx, req)
+}
+
+func (p *kUserServiceClient) CancelFollow(ctx context.Context, req *user.CancelFollowRequest, callOptions ...callopt.Option) (r *user.CancelFollowResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.CancelFollow(ctx, req)
+}
+
+func (p *kUserServiceClient) Authentication(ctx context.Context, req *user.AuthenticationRequest, callOptions ...callopt.Option) (r *user.AuthenticationResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Authentication(ctx, req)
 }

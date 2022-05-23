@@ -10,28 +10,27 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type RegisterParm struct {
+type LoginParm struct {
 	UserName string `json:"username"`
 	PassWord string `json:"password"`
 }
 
-func Register(c *gin.Context) {
-	var registerVar RegisterParm
-
+func Login(c *gin.Context) {
+	var loginVar LoginParm
 	//获取参数
-	registerVar.UserName = c.Query("username")
-	registerVar.PassWord = c.Query("password")
+	loginVar.UserName = c.Query("username")
+	loginVar.PassWord = c.Query("password")
 
 	//检查参数是否合法
-	if len(registerVar.UserName) == 0 || len(registerVar.PassWord) == 0 {
+	if len(loginVar.UserName) == 0 || len(loginVar.PassWord) == 0 {
 		SendErrResponse(c, errno.ParamErrCode, errno.Errparameter)
 		return
 	}
 
-	//将注册信息写入数据库
-	user_id, statusCode, err := rpc.CreateUser(context.Background(), &user.CreateUserRequest{
-		Username: registerVar.UserName,
-		Password: registerVar.PassWord,
+	//数据库查询用户名，密码，成功返回用户id
+	user_id, statusCode, err := rpc.CheckUser(context.Background(), &user.CheckUserRequest{
+		Username: loginVar.UserName,
+		Password: loginVar.PassWord,
 	})
 	if err != nil {
 		SendErrResponse(c, statusCode, err)
@@ -39,14 +38,14 @@ func Register(c *gin.Context) {
 	}
 
 	//生成Token
-	token, err := GenerateToken(registerVar.UserName)
+	token, err := GenerateToken(loginVar.UserName)
 	if err != nil {
 		SendErrResponse(c, errno.ServiceErrCode, err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"status_code": errno.SuccessCode,
-		"status_msg":  "注册成功",
+		"status_msg":  "登录成功",
 		"user_id":     user_id,
 		"token":       token,
 	})

@@ -44,18 +44,28 @@ struct MGetUserResponse {
     2:list<User> user_list
 }
 
-struct NewFollowRequest {
+struct FollowRequest {
     1:i64 follow_id
     2:i64 follower_id
 }
 
-struct NewFollowResponse {
+struct FollowResponse {
     1:BaseResponse base_resp
+}
+
+struct CancelFollowRequest {
+    1:i64 follow_id
+    2:i64 follower_id
+}
+
+struct CancelFollowResponse {
+    BaseResponse base_resp
 }
 
 service UserService {
     CreateUserResponse CreateUser(1:CreateUserRequest req)
     CheckUserResponse CheckUser(1:CheckUserRequest req)
     MGetUserResponse MGetUser(1:MGetUserRequest req)
-    NewFollowResponse NewFollow(1:NewFollowerRequest req)
+    FollowResponse Follow(1:FollowRequest req)
+    CancelFollowResponse CancelFollow(1:CancelFollowRequest req)
 }
