@@ -19,10 +19,12 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "UserService"
 	handlerType := (*user.UserService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"CreateUser": kitex.NewMethodInfo(createUserHandler, newUserServiceCreateUserArgs, newUserServiceCreateUserResult, false),
-		"CheckUser":  kitex.NewMethodInfo(checkUserHandler, newUserServiceCheckUserArgs, newUserServiceCheckUserResult, false),
-		"MGetUser":   kitex.NewMethodInfo(mGetUserHandler, newUserServiceMGetUserArgs, newUserServiceMGetUserResult, false),
-		"NewFollow":  kitex.NewMethodInfo(newFollow_Handler, newUserServiceNewFollowArgs, newUserServiceNewFollowResult, false),
+		"CreateUser":     kitex.NewMethodInfo(createUserHandler, newUserServiceCreateUserArgs, newUserServiceCreateUserResult, false),
+		"CheckUser":      kitex.NewMethodInfo(checkUserHandler, newUserServiceCheckUserArgs, newUserServiceCheckUserResult, false),
+		"MGetUser":       kitex.NewMethodInfo(mGetUserHandler, newUserServiceMGetUserArgs, newUserServiceMGetUserResult, false),
+		"Follow":         kitex.NewMethodInfo(followHandler, newUserServiceFollowArgs, newUserServiceFollowResult, false),
+		"CancelFollow":   kitex.NewMethodInfo(cancelFollowHandler, newUserServiceCancelFollowArgs, newUserServiceCancelFollowResult, false),
+		"Authentication": kitex.NewMethodInfo(authenticationHandler, newUserServiceAuthenticationArgs, newUserServiceAuthenticationResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -92,22 +94,58 @@ func newUserServiceMGetUserResult() interface{} {
 	return user.NewUserServiceMGetUserResult()
 }
 
-func newFollow_Handler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*user.UserServiceNewFollowArgs)
-	realResult := result.(*user.UserServiceNewFollowResult)
-	success, err := handler.(user.UserService).NewFollow_(ctx, realArg.Req)
+func followHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceFollowArgs)
+	realResult := result.(*user.UserServiceFollowResult)
+	success, err := handler.(user.UserService).Follow(ctx, realArg.Req)
 	if err != nil {
 		return err
 	}
 	realResult.Success = success
 	return nil
 }
-func newUserServiceNewFollowArgs() interface{} {
-	return user.NewUserServiceNewFollowArgs()
+func newUserServiceFollowArgs() interface{} {
+	return user.NewUserServiceFollowArgs()
 }
 
-func newUserServiceNewFollowResult() interface{} {
-	return user.NewUserServiceNewFollowResult()
+func newUserServiceFollowResult() interface{} {
+	return user.NewUserServiceFollowResult()
+}
+
+func cancelFollowHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceCancelFollowArgs)
+	realResult := result.(*user.UserServiceCancelFollowResult)
+	success, err := handler.(user.UserService).CancelFollow(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newUserServiceCancelFollowArgs() interface{} {
+	return user.NewUserServiceCancelFollowArgs()
+}
+
+func newUserServiceCancelFollowResult() interface{} {
+	return user.NewUserServiceCancelFollowResult()
+}
+
+func authenticationHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceAuthenticationArgs)
+	realResult := result.(*user.UserServiceAuthenticationResult)
+	success, err := handler.(user.UserService).Authentication(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newUserServiceAuthenticationArgs() interface{} {
+	return user.NewUserServiceAuthenticationArgs()
+}
+
+func newUserServiceAuthenticationResult() interface{} {
+	return user.NewUserServiceAuthenticationResult()
 }
 
 type kClient struct {
@@ -150,11 +188,31 @@ func (p *kClient) MGetUser(ctx context.Context, req *user.MGetUserRequest) (r *u
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) NewFollow_(ctx context.Context, req *user.NewFollowRequest_) (r *user.NewFollowResponse_, err error) {
-	var _args user.UserServiceNewFollowArgs
+func (p *kClient) Follow(ctx context.Context, req *user.FollowRequest) (r *user.FollowResponse, err error) {
+	var _args user.UserServiceFollowArgs
 	_args.Req = req
-	var _result user.UserServiceNewFollowResult
-	if err = p.c.Call(ctx, "NewFollow", &_args, &_result); err != nil {
+	var _result user.UserServiceFollowResult
+	if err = p.c.Call(ctx, "Follow", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) CancelFollow(ctx context.Context, req *user.CancelFollowRequest) (r *user.CancelFollowResponse, err error) {
+	var _args user.UserServiceCancelFollowArgs
+	_args.Req = req
+	var _result user.UserServiceCancelFollowResult
+	if err = p.c.Call(ctx, "CancelFollow", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Authentication(ctx context.Context, req *user.AuthenticationRequest) (r *user.AuthenticationResponse, err error) {
+	var _args user.UserServiceAuthenticationArgs
+	_args.Req = req
+	var _result user.UserServiceAuthenticationResult
+	if err = p.c.Call(ctx, "Authentication", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
