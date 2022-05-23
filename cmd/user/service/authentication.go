@@ -12,23 +12,22 @@ type AuthenticationService struct {
 	ctx context.Context
 }
 
-// NewCheckUserService new CheckUserService
 func NewAuthenticationService(ctx context.Context) *AuthenticationService {
 	return &AuthenticationService{
 		ctx: ctx,
 	}
 }
 
-// CheckUser check user info
-func (s *AuthenticationService) Authentication(req *user.AuthenticationRequest) (int64, error) {
+// Token鉴权,成功返回user_id,否则返回0
+func (s *AuthenticationService) Authentication(req *user.AuthenticationRequest) (user_id int64, statusCode int64, err error) {
 	userName := req.Username
 	users, err := db.QueryUser(s.ctx, userName)
 	if err != nil {
-		return 0, err
+		return 0, errno.ServiceErrCode, err
 	}
 	if len(users) == 0 {
-		return 0, errno.UserNotExistErr
+		return 0, errno.UserNotExistErrCode, errno.ErrUserNotExist
 	}
 	u := users[0]
-	return int64(u.ID), nil
+	return int64(u.ID), errno.SuccessCode, nil
 }

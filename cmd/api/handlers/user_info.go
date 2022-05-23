@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -20,6 +19,7 @@ type UserInfoParm struct {
 func UserInfo(c *gin.Context) {
 	var userInfoVar UserInfoParm
 
+	//获取参数
 	temp := c.Query("user_id")
 	temp_id, err := strconv.ParseInt(temp, 10, 64)
 	if err != nil {
@@ -28,34 +28,39 @@ func UserInfo(c *gin.Context) {
 	userInfoVar.UserID = temp_id
 	userInfoVar.Token = c.Query("token")
 
-	fmt.Println(userInfoVar)
-
+	//检查参数是否合法
 	if userInfoVar.UserID == 0 || len(userInfoVar.Token) == 0 {
-		// SendLoginResponse(c, errno.ParamErr)
+		SendErrResponse(c, errno.ParamErrCode, errno.Errparameter)
 		return
 	}
 
+	//Token鉴权
 	claims, err := ParserToken(userInfoVar.Token)
 	if err != nil {
+		SendErrResponse(c, errno.TokenInvalidErrCode, errno.ErrTokenInvalid)
 		return
 	}
 	username := claims.Username
-	user_id, err := rpc.Authentication(context.Background(), &user.AuthenticationRequest{
+	user_id, statusCode, err := rpc.Authentication(context.Background(), &user.AuthenticationRequest{
 		Username: username,
 	})
-	if err != nil {
+	if err != nil || user_id == 0 {
+		SendErrResponse(c, statusCode, err)
 		return
 	}
 
-	users, err := rpc.MGetUser(context.Background(), &user.MGetUserRequest{
+	//获取用户信息
+	users, statusCode, err := rpc.MGetUser(context.Background(), &user.MGetUserRequest{
 		UserId:  user_id,
 		UserIds: []int64{userInfoVar.UserID},
 	})
 	if err != nil {
+		SendErrResponse(c, statusCode, err)
 		return
 	}
 
 	if len(users) == 0 {
+		SendErrResponse(c, errno.ServiceErrCode, errno.ErrService)
 		return
 	}
 	user := users[0]

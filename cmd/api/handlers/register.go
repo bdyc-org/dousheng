@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
@@ -16,40 +15,33 @@ type RegisterParm struct {
 	PassWord string `json:"password"`
 }
 
-func SendRegisterResponse(c *gin.Context, err errno.ErrNo) {
-	c.JSON(http.StatusOK, gin.H{
-		"status_code": err.ErrCode,
-		"status_msg":  err.ErrMsg,
-		"user_id":     0,
-		"token":       "",
-	})
-}
-
 func Register(c *gin.Context) {
 	var registerVar RegisterParm
 
+	//获取参数
 	registerVar.UserName = c.Query("username")
 	registerVar.PassWord = c.Query("password")
 
-	fmt.Println(registerVar)
-
+	//检查参数是否合法
 	if len(registerVar.UserName) == 0 || len(registerVar.PassWord) == 0 {
-		SendRegisterResponse(c, errno.ParamErr)
+		SendErrResponse(c, errno.ParamErrCode, errno.Errparameter)
 		return
 	}
 
-	user_id, err := rpc.CreateUser(context.Background(), &user.CreateUserRequest{
+	//将注册信息写入数据库
+	user_id, statusCode, err := rpc.CreateUser(context.Background(), &user.CreateUserRequest{
 		Username: registerVar.UserName,
 		Password: registerVar.PassWord,
 	})
 	if err != nil {
-		fmt.Println("我来了4")
-		SendRegisterResponse(c, errno.ConvertErr(err))
+		SendErrResponse(c, statusCode, err)
 		return
 	}
+
+	//生成Token
 	token, err := GenerateToken(registerVar.UserName)
 	if err != nil {
-		SendRegisterResponse(c, errno.ConvertErr(err))
+		SendErrResponse(c, errno.ServiceErrCode, err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{

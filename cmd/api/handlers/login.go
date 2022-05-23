@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
@@ -16,39 +15,32 @@ type LoginParm struct {
 	PassWord string `json:"password"`
 }
 
-func SendLoginResponse(c *gin.Context, err errno.ErrNo) {
-	c.JSON(http.StatusOK, gin.H{
-		"status_code": err.ErrCode,
-		"status_msg":  err.ErrMsg,
-		"user_id":     0,
-		"token":       "",
-	})
-}
-
 func Login(c *gin.Context) {
 	var loginVar LoginParm
-
+	//获取参数
 	loginVar.UserName = c.Query("username")
 	loginVar.PassWord = c.Query("password")
 
-	fmt.Println(loginVar)
-
+	//检查参数是否合法
 	if len(loginVar.UserName) == 0 || len(loginVar.PassWord) == 0 {
-		SendLoginResponse(c, errno.ParamErr)
+		SendErrResponse(c, errno.ParamErrCode, errno.Errparameter)
 		return
 	}
 
-	user_id, err := rpc.CheckUser(context.Background(), &user.CheckUserRequest{
+	//数据库查询用户名，密码，成功返回用户id
+	user_id, statusCode, err := rpc.CheckUser(context.Background(), &user.CheckUserRequest{
 		Username: loginVar.UserName,
 		Password: loginVar.PassWord,
 	})
 	if err != nil {
-		SendLoginResponse(c, errno.ConvertErr(err))
+		SendErrResponse(c, statusCode, err)
 		return
 	}
+
+	//生成Token
 	token, err := GenerateToken(loginVar.UserName)
 	if err != nil {
-		SendLoginResponse(c, errno.ConvertErr(err))
+		SendErrResponse(c, errno.ServiceErrCode, err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{

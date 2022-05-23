@@ -19,22 +19,20 @@ func NewCreateUserService(ctx context.Context) *CreateUserService {
 	return &CreateUserService{ctx: ctx}
 }
 
-func (s *CreateUserService) CreateUser(req *user.CreateUserRequest) (int64, error) {
-	fmt.Println("我来了，user服务的service层")
+func (s *CreateUserService) CreateUser(req *user.CreateUserRequest) (user_id int64, statusCode int64, err error) {
 	//判断用户是否存在
 	users, err := db.QueryUser(s.ctx, req.Username)
 	if err != nil {
-		fmt.Println("我来了，db.QueryUser出错了")
-		return 0, err
+		return 0, errno.ServiceErrCode, err
 	}
 	if len(users) != 0 {
-		return 0, errno.UserAlreadyExistErr
+		return 0, errno.UserNameHasUsedErrCode, errno.ErrUserNameHasUsed
 	}
 
 	//对密码进行加密
 	h := md5.New()
 	if _, err = io.WriteString(h, req.Password); err != nil {
-		return 0, err
+		return 0, errno.ServiceErrCode, err
 	}
 	passWord := fmt.Sprintf("%x", h.Sum(nil))
 
@@ -46,14 +44,14 @@ func (s *CreateUserService) CreateUser(req *user.CreateUserRequest) (int64, erro
 		FollowerCount: 0,
 	}})
 	if err != nil {
-		return 0, err
+		return 0, errno.ServiceErrCode, err
 	}
 
 	//在数据库查询user_id并返回
 	users, err = db.QueryUser(s.ctx, req.Username)
 	if err != nil {
-		return 0, err
+		return 0, errno.ServiceErrCode, err
 	}
 
-	return int64(users[0].ID), nil
+	return int64(users[0].ID), errno.SuccessCode, nil
 }

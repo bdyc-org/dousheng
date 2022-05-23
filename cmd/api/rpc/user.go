@@ -2,7 +2,7 @@ package rpc
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/bdyc-org/dousheng/kitex_gen/user"
@@ -39,69 +39,68 @@ func initUserRpc() {
 	userClient = c
 }
 
-func CreateUser(ctx context.Context, req *user.CreateUserRequest) (user_id int64, err error) {
-	fmt.Println(req)
+func CreateUser(ctx context.Context, req *user.CreateUserRequest) (user_id int64, statusCode int64, err error) {
 	resp, err := userClient.CreateUser(ctx, req)
 	if err != nil {
-		return 0, err
+		return 0, errno.ServiceErrCode, err
 	}
 	if resp.BaseResp.StatusCode != 0 {
-		return 0, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
+		return 0, resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
 	}
-	return resp.UserId, nil
+	return resp.UserId, errno.SuccessCode, nil
 }
 
-func CheckUser(ctx context.Context, req *user.CheckUserRequest) (user_id int64, err error) {
+func CheckUser(ctx context.Context, req *user.CheckUserRequest) (user_id int64, statusCode int64, err error) {
 	resp, err := userClient.CheckUser(ctx, req)
 	if err != nil {
-		return 0, err
+		return 0, errno.ServiceErrCode, err
 	}
 	if resp.BaseResp.StatusCode != 0 {
-		return 0, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
+		return 0, resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
 	}
-	return resp.UserId, nil
+	return resp.UserId, errno.SuccessCode, nil
 }
 
-func MGetUser(ctx context.Context, req *user.MGetUserRequest) (user []*user.User, err error) {
+func MGetUser(ctx context.Context, req *user.MGetUserRequest) (user []*user.User, statusCode int64, err error) {
 	resp, err := userClient.MGetUser(ctx, req)
 	if err != nil {
-		return nil, err
+		return nil, errno.ServiceErrCode, err
 	}
 	if resp.BaseResp.StatusCode != 0 {
-		return nil, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
+		return nil, resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
 	}
-	return resp.UserList, nil
+	return resp.UserList, errno.SuccessCode, nil
 }
 
-func Follow(ctx context.Context, req *user.FollowRequest) (err error) {
+func Follow(ctx context.Context, req *user.FollowRequest) (statusCode int64, err error) {
 	resp, err := userClient.Follow(ctx, req)
 	if err != nil {
-		return err
+		return errno.ServiceErrCode, err
 	}
 	if resp.BaseResp.StatusCode != 0 {
-		return errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
+		return resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
 	}
-	return nil
+	return errno.SuccessCode, nil
 }
 
-func CancelFollow(ctx context.Context, req *user.CancelFollowRequest) (err error) {
+func CancelFollow(ctx context.Context, req *user.CancelFollowRequest) (statusCode int64, err error) {
 	resp, err := userClient.CancelFollow(ctx, req)
 	if err != nil {
-		return err
+		return errno.ServiceErrCode, err
 	}
 	if resp.BaseResp.StatusCode != 0 {
-		return errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
+		return resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
 	}
-	return nil
+	return errno.SuccessCode, nil
 }
 
-func Authentication(ctx context.Context, req *user.AuthenticationRequest) (user_id int64, err error) {
+func Authentication(ctx context.Context, req *user.AuthenticationRequest) (user_id int64, statusCode int64, err error) {
 	resp, err := userClient.Authentication(ctx, req)
 	if err != nil {
-		return 0, err
+		return 0, errno.ServiceErrCode, err
 	}
 	if resp.BaseResp.StatusCode != 0 {
-		return 0, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
+		return 0, resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
 	}
-	return resp.UserId, nil
+	return resp.UserId, errno.SuccessCode, nil
 }

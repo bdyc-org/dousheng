@@ -22,12 +22,12 @@ func (u *User) TableName() string {
 }
 
 func CreateUser(ctx context.Context, users []*User) error {
-	return DB.WithContext(ctx).Create(users).Error
+	return MyDB.WithContext(ctx).Create(users).Error
 }
 
 func QueryUser(ctx context.Context, name string) ([]*User, error) {
 	res := make([]*User, 0)
-	if err := DB.WithContext(ctx).Where("name = ?", name).Find(&res).Error; err != nil {
+	if err := MyDB.WithContext(ctx).Where("name = ?", name).Find(&res).Error; err != nil {
 		return nil, err
 	}
 	return res, nil
@@ -39,21 +39,21 @@ func MGetUsers(ctx context.Context, userIDs []int64) ([]*User, error) {
 		return res, nil
 	}
 
-	if err := DB.WithContext(ctx).Where("id in ?", userIDs).Find(&res).Error; err != nil {
+	if err := MyDB.WithContext(ctx).Where("id in ?", userIDs).Find(&res).Error; err != nil {
 		return nil, err
 	}
 	return res, nil
 }
 
 func Follow(ctx context.Context, followID int64, followerID int64) error {
-	DB.WithContext(ctx)
+	MyDB.WithContext(ctx)
 	//被关注用户的粉丝列表加1
-	err := DB.Model(&User{}).Where("ID = ?", followID).Update("follower_count", gorm.Expr("follower_count + ?", 1)).Error
+	err := MyDB.Model(&User{}).Where("ID = ?", followID).Update("follower_count", gorm.Expr("follower_count + ?", 1)).Error
 	if err != nil {
 		return err
 	}
 	//关注操作用户的关注列表加1
-	err = DB.Model(&User{}).Where("ID = ?", followerID).Update("follow_count", gorm.Expr("follow_count + ?", 1)).Error
+	err = MyDB.Model(&User{}).Where("ID = ?", followerID).Update("follow_count", gorm.Expr("follow_count + ?", 1)).Error
 	if err != nil {
 		return err
 	}
@@ -61,14 +61,14 @@ func Follow(ctx context.Context, followID int64, followerID int64) error {
 }
 
 func CancelFollow(ctx context.Context, followID int64, followerID int64) error {
-	DB.WithContext(ctx)
+	MyDB.WithContext(ctx)
 	//被取关用户的粉丝列表减1
-	err := DB.Model(&User{}).Where("ID = ?", followID).Update("follower_count", gorm.Expr("followr_count - ?", 1)).Error
+	err := MyDB.Model(&User{}).Where("ID = ?", followID).Update("follower_count", gorm.Expr("followr_count - ?", 1)).Error
 	if err != nil {
 		return err
 	}
 	//取关操作用户的关注列表减1
-	err = DB.Model(&User{}).Where("ID = ?", followerID).Update("follow_count", gorm.Expr("follow_count - ?", 1)).Error
+	err = MyDB.Model(&User{}).Where("ID = ?", followerID).Update("follow_count", gorm.Expr("follow_count - ?", 1)).Error
 	if err != nil {
 		return err
 	}
