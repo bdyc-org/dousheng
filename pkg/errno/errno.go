@@ -2,6 +2,7 @@ package errno
 
 import (
 	"errors"
+	"fmt"
 )
 
 const (
@@ -13,6 +14,24 @@ const (
 	UserNameHasUsedErrCode int64 = 10005
 	TokenInvalidErrCode    int64 = 10006
 )
+
+type ErrNo struct {
+	ErrCode int64
+	ErrMsg  string
+}
+
+func (e ErrNo) Error() string {
+	return fmt.Sprintf("err_code=%d, err_msg=%s", e.ErrCode, e.ErrMsg)
+}
+
+func NewErrNo(code int64, msg string) ErrNo {
+	return ErrNo{code, msg}
+}
+
+func (e ErrNo) WithMessage(msg string) ErrNo {
+	e.ErrMsg = msg
+	return e
+}
 
 var (
 	ErrService         error = errors.New("服务异常，请稍后再试")

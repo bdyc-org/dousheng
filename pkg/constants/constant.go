@@ -13,4 +13,5 @@ const (
 	// relation
 	RelationTableName  		= "relations"
 	RelationServiceName    	= "relation"
+	RelationResolveTCPAddr 	= "127.0.0.1:6661"
 )

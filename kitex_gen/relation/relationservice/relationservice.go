@@ -19,8 +19,10 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "relationService"
 	handlerType := (*relation.RelationService)(nil)
 	methods := map[string]kitex.MethodInfo{
+		"Follow":        kitex.NewMethodInfo(followHandler, newRelationServiceFollowArgs, newRelationServiceFollowResult, false),
 		"QueryFollow":   kitex.NewMethodInfo(queryFollowHandler, newRelationServiceQueryFollowArgs, newRelationServiceQueryFollowResult, false),
 		"QueryFollower": kitex.NewMethodInfo(queryFollowerHandler, newRelationServiceQueryFollowerArgs, newRelationServiceQueryFollowerResult, false),
+		"QueryUserList": kitex.NewMethodInfo(queryUserListHandler, newRelationServiceQueryUserListArgs, newRelationServiceQueryUserListResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "relation",
@@ -34,6 +36,24 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		Extra:           extra,
 	}
 	return svcInfo
+}
+
+func followHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*relation.RelationServiceFollowArgs)
+	realResult := result.(*relation.RelationServiceFollowResult)
+	success, err := handler.(relation.RelationService).Follow(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newRelationServiceFollowArgs() interface{} {
+	return relation.NewRelationServiceFollowArgs()
+}
+
+func newRelationServiceFollowResult() interface{} {
+	return relation.NewRelationServiceFollowResult()
 }
 
 func queryFollowHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -72,6 +92,24 @@ func newRelationServiceQueryFollowerResult() interface{} {
 	return relation.NewRelationServiceQueryFollowerResult()
 }
 
+func queryUserListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*relation.RelationServiceQueryUserListArgs)
+	realResult := result.(*relation.RelationServiceQueryUserListResult)
+	success, err := handler.(relation.RelationService).QueryUserList(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newRelationServiceQueryUserListArgs() interface{} {
+	return relation.NewRelationServiceQueryUserListArgs()
+}
+
+func newRelationServiceQueryUserListResult() interface{} {
+	return relation.NewRelationServiceQueryUserListResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -80,6 +118,16 @@ func newServiceClient(c client.Client) *kClient {
 	return &kClient{
 		c: c,
 	}
+}
+
+func (p *kClient) Follow(ctx context.Context, req *relation.FollowRequest) (r *relation.FollowResponse, err error) {
+	var _args relation.RelationServiceFollowArgs
+	_args.Req = req
+	var _result relation.RelationServiceFollowResult
+	if err = p.c.Call(ctx, "Follow", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
 }
 
 func (p *kClient) QueryFollow(ctx context.Context, req *relation.QueryFollowRequest) (r *relation.QueryFollowResponse, err error) {
@@ -97,6 +145,16 @@ func (p *kClient) QueryFollower(ctx context.Context, req *relation.QueryFollower
 	_args.Req = req
 	var _result relation.RelationServiceQueryFollowerResult
 	if err = p.c.Call(ctx, "QueryFollower", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) QueryUserList(ctx context.Context, req *relation.QueryUserListRequest) (r *relation.QueryUserListResponse, err error) {
+	var _args relation.RelationServiceQueryUserListArgs
+	_args.Req = req
+	var _result relation.RelationServiceQueryUserListResult
+	if err = p.c.Call(ctx, "QueryUserList", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

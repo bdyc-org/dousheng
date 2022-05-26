@@ -45,3 +45,13 @@ func TestCancelFollow(t *testing.T) {
 	}
 	db.CancelFollow(ctx, &r)
 }
+
+func TestQueryUserList(t *testing.T) {
+	s := make([]int64, 5)
+	s[0] = 1
+	s[1] = 2
+	s[2] = 3
+	s[3] = 4
+	r, _ := db.MGetUsers(ctx, s)
+	print(r)
+}

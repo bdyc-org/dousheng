@@ -11,8 +11,10 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
+	Follow(ctx context.Context, req *relation.FollowRequest, callOptions ...callopt.Option) (r *relation.FollowResponse, err error)
 	QueryFollow(ctx context.Context, req *relation.QueryFollowRequest, callOptions ...callopt.Option) (r *relation.QueryFollowResponse, err error)
 	QueryFollower(ctx context.Context, req *relation.QueryFollowerRequest, callOptions ...callopt.Option) (r *relation.QueryFollowerResponse, err error)
+	QueryUserList(ctx context.Context, req *relation.QueryUserListRequest, callOptions ...callopt.Option) (r *relation.QueryUserListResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -44,6 +46,11 @@ type kRelationServiceClient struct {
 	*kClient
 }
 
+func (p *kRelationServiceClient) Follow(ctx context.Context, req *relation.FollowRequest, callOptions ...callopt.Option) (r *relation.FollowResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Follow(ctx, req)
+}
+
 func (p *kRelationServiceClient) QueryFollow(ctx context.Context, req *relation.QueryFollowRequest, callOptions ...callopt.Option) (r *relation.QueryFollowResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.QueryFollow(ctx, req)
@@ -52,4 +59,9 @@ func (p *kRelationServiceClient) QueryFollow(ctx context.Context, req *relation.
 func (p *kRelationServiceClient) QueryFollower(ctx context.Context, req *relation.QueryFollowerRequest, callOptions ...callopt.Option) (r *relation.QueryFollowerResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.QueryFollower(ctx, req)
+}
+
+func (p *kRelationServiceClient) QueryUserList(ctx context.Context, req *relation.QueryUserListRequest, callOptions ...callopt.Option) (r *relation.QueryUserListResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.QueryUserList(ctx, req)
 }
