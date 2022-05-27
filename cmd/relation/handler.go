@@ -27,10 +27,6 @@ func (s *RelationServiceImpl) Follow(ctx context.Context, req *relation.FollowRe
 // 查关注
 func (s *RelationServiceImpl) QueryFollow(ctx context.Context, req *relation.QueryFollowRequest) (resp *relation.QueryFollowResponse, err error) {
 	resp = new(relation.QueryFollowResponse)
-
-	if req.UserId == 0 {
-		resp.BaseResp = pack.BuildBaseResponse(errno.ParamErrCode, errno.Errparameter.Error())
-	}
 	resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "获取用户id成功")
 
 	// 使用获取到的id查follow_ids
@@ -43,10 +39,6 @@ func (s *RelationServiceImpl) QueryFollow(ctx context.Context, req *relation.Que
 // 查粉丝
 func (s *RelationServiceImpl) QueryFollower(ctx context.Context, req *relation.QueryFollowerRequest) (resp *relation.QueryFollowerResponse, err error) {
 	resp = new(relation.QueryFollowerResponse)
-
-	if req.UserId == 0 {
-		resp.BaseResp = pack.BuildBaseResponse(errno.ParamErrCode, errno.Errparameter.Error())
-	}
 	resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "获取用户id成功")
 
 	// 使用获取到的id查follower_ids
