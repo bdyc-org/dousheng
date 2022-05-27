@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/bdyc-org/dousheng/pkg/constants"
 	"gorm.io/gorm"
+	"time"
 )
 
 type Video struct {
@@ -38,6 +39,16 @@ func QueryVideo(ctx context.Context, videoID uint) (*Video, error) {
 	}
 
 	return res, nil
+}
+
+//QueryVideoList By latest_time
+func VideoFeed(ctx context.Context, latest_time time.Time) (*[]Video, error) {
+	var videoList *[]Video
+	conn := DB.WithContext(ctx).Model(&Video{}).Where("created_at > ?", latest_time)
+	if err := conn.Limit(30).Find(&videoList).Error; err != nil {
+		return videoList, err
+	}
+	return videoList, nil
 }
 
 // DeleteVideo delete video by id
