@@ -6,7 +6,6 @@ import (
 	"github.com/bdyc-org/dousheng/cmd/relation/dal/db"
 	"github.com/bdyc-org/dousheng/cmd/relation/pack"
 	"github.com/bdyc-org/dousheng/kitex_gen/relation"
-	"github.com/bdyc-org/dousheng/pkg/errno"
 )
 
 type QueryUserListService struct {
@@ -19,23 +18,14 @@ func NewQueryUserListService(ctx context.Context) *QueryUserListService {
 	}
 }
 
-func (s *QueryUserListService) QueryUserList(req *relation.QueryUserListRequest) (*relation.QueryUserListResponse, error) {
-	resp := new(relation.QueryUserListResponse)
-	
-	// 检查ids是否为空
-	if len(req.UserIds) == 0 {
-		resp.BaseResp = pack.BuildBaseResponse(errno.ParamErrCode, errno.Errparameter.Error())
-		resp.UserList = nil
-		return resp, nil
-	}
-
+func (s *QueryUserListService) QueryUserList(req *relation.QueryUserListRequest) ([]*relation.User,error) {
 	// 调用db
-	userList, err := db.MGetUsers(s.ctx, req.UserIds)
+	userModels, err := db.MGetUsers(s.ctx, req.UserIds)
 	if err != nil {
 		return nil, err
 	}
-	resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "获取用户列表成功")
-	resp.UserList = userList
+
+	userList := pack.UserList(userModels)
 	
-	return resp, nil
+	return userList, nil
 }

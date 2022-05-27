@@ -34,6 +34,9 @@ func (e ErrNo) WithMessage(msg string) ErrNo {
 }
 
 var (
+	Success            	= NewErrNo(SuccessCode, "成功")
+	ServiceErr			= NewErrNo(ServiceErrCode, "服务启动失败")
+	ParamErr			= NewErrNo(ParamErrCode, "参数有误")
 	ErrService         error = errors.New("服务异常，请稍后再试")
 	Errparameter       error = errors.New("参数不正确")
 	ErrLogin           error = errors.New("用户名或密码错误")
@@ -41,3 +44,15 @@ var (
 	ErrUserNameHasUsed error = errors.New("用户名已经被使用")
 	ErrTokenInvalid    error = errors.New("token已过期或不可用，请重新登录")
 )
+
+// ConvertErr convert error to Errno
+func ConvertErr(err error) ErrNo {
+	Err := ErrNo{}
+	if errors.As(err, &Err) {
+		return Err
+	}
+
+	s := ServiceErr
+	s.ErrMsg = err.Error()
+	return s
+}

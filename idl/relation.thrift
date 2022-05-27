@@ -14,6 +14,11 @@ struct User {
     5:bool is_follow
 }
 
+struct Rela {
+    1:i64 Follow_id
+    2:i64 Follower_id
+}
+
 struct FollowRequest {
     1:i64 user_id
     2:i64 to_user_id

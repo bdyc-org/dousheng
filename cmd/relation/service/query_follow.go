@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/bdyc-org/dousheng/cmd/relation/dal/db"
+	"github.com/bdyc-org/dousheng/cmd/relation/pack"
 	"github.com/bdyc-org/dousheng/kitex_gen/relation"
 )
 
@@ -17,6 +18,18 @@ func NewQueryFollowService(ctx context.Context) *QueryFollowService {
 	}
 }
 
-func (s *QueryFollowService) QueryFollow(req *relation.QueryFollowRequest) []int64 {
-	return db.QueryFollow(s.ctx, req.UserId)
+func (s *QueryFollowService) QueryFollow(req *relation.QueryFollowRequest) ([]int64, error) {
+	res, err := db.QueryFollow(s.ctx, req.UserId)
+	userIds := make([]int64, len(res))
+
+	if err != nil {
+		return nil, err
+	}
+
+	rales := pack.Relas(res)
+	for i := 0; i < len(rales); i++ {
+		userIds[i] = rales[i].FollowId
+	}
+
+	return userIds, nil
 }

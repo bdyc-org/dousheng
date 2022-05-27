@@ -4,10 +4,13 @@ import (
 	"context"
 	"time"
 
+	"github.com/bdyc-org/dousheng/cmd/relation/pack"
 	"github.com/bdyc-org/dousheng/kitex_gen/relation"
 	"github.com/bdyc-org/dousheng/kitex_gen/relation/relationservice"
 	"github.com/bdyc-org/dousheng/kitex_gen/user"
 	"github.com/bdyc-org/dousheng/pkg/constants"
+	"github.com/bdyc-org/dousheng/pkg/errno"
+	"github.com/bdyc-org/dousheng/pkg/middleware"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
@@ -23,8 +26,8 @@ func initRelationRpc() {
 
 	c, err := relationservice.NewClient(
 		constants.RelationServiceName,
-		//client.WithMiddleware(middleware.CommonMiddleware),
-		//client.WithInstanceMW(middleware.ClientMiddleware),
+		client.WithMiddleware(middleware.CommonMiddleware),
+		client.WithInstanceMW(middleware.ClientMiddleware),
 		client.WithMuxConnection(1),                       // mux
 		client.WithRPCTimeout(3*time.Second),              // rpc timeout
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
@@ -39,43 +42,43 @@ func initRelationRpc() {
 }
 
 func RelaFollow(ctx context.Context, req *relation.FollowRequest) (resp *relation.FollowResponse, err error) {
-	// 调用userClient的Follow
-	_, err = userClient.Follow(ctx, &user.FollowRequest{
-		FollowId: req.UserId,
-		FollowerId: req.ToUserId,
-	})
-	if err != nil {
-		return nil, err
+	resp = new(relation.FollowResponse)
+
+	// 调用userClient
+	if req.ActionType == 1 {
+		res, err := userClient.Follow(ctx, &user.FollowRequest{
+			FollowId: req.UserId,
+			FollowerId: req.ToUserId,
+		})
+
+		if res.BaseResp.StatusCode != errno.SuccessCode {
+			resp.BaseResp = pack.BuildBaseResponse(errno.NewErrNo(res.BaseResp.StatusCode, res.BaseResp.StatusMsg))
+			return resp, err
+		}
+	} else if req.ActionType == 2 {
+		res, err := userClient.CancelFollow(ctx, &user.CancelFollowRequest{
+			FollowId: req.UserId,
+			FollowerId: req.ToUserId,
+		})
+
+		if res.BaseResp.StatusCode != errno.SuccessCode {
+			resp.BaseResp = pack.BuildBaseResponse(errno.NewErrNo(res.BaseResp.StatusCode, res.BaseResp.StatusMsg))
+			return resp, err
+		}
 	}
-	
+
 	// 调用relationClient的Follow
-	resp, err = relationClient.Follow(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+	return relationClient.Follow(ctx, req)
 }
 
 func QueryUserList(ctx context.Context, req *relation.QueryUserListRequest) (resp *relation.QueryUserListResponse, err error) {
-	resp, err = relationClient.QueryUserList(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+	return relationClient.QueryUserList(ctx, req)
 }
 
 func QueryFollow(ctx context.Context, userId int64) (resp *relation.QueryFollowResponse, err error) {
-	resp, err = relationClient.QueryFollow(ctx, &relation.QueryFollowRequest{UserId: userId})
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+	return relationClient.QueryFollow(ctx, &relation.QueryFollowRequest{UserId: userId})
 }
 
 func QueryFollower(ctx context.Context, userId int64) (resp *relation.QueryFollowerResponse, err error) {
-	resp, err = relationClient.QueryFollower(ctx, &relation.QueryFollowerRequest{UserId: userId})
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+	return relationClient.QueryFollower(ctx, &relation.QueryFollowerRequest{UserId: userId})
 }

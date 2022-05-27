@@ -10,12 +10,9 @@ import (
 //数据库对应结构体
 type Relation struct {
 	gorm.Model
-	Follow_id   	int64	// 关注者id/粉丝
-	Follower_id  	int64	// 被关注者id
+	Follow_id   	int64	`json:"follow_id"`
+	Follower_id  	int64	`json:"follower_id"`
 }
-
-// 关系容器
-var rela []Relation
 
 //relation表的表名
 func (r *Relation) TableName() string {
@@ -35,29 +32,25 @@ func CancelFollow(ctx context.Context, r *Relation) error {
 }
 
 // 查找关注
-func QueryFollower(ctx context.Context, userId int64) []int64 {
-	MyDB.Where("follow_id = ?", userId).Find(&rela)
+func QueryFollower(ctx context.Context, userId int64) ([]*Relation, error) {
+	var res []*Relation
 
-	// 已关注id切片
-	f := make([]int64, len(rela))
-
-	for i, v := range rela {
-		f[i] = v.Follower_id
+	if err := MyDB.WithContext(ctx).
+	Where("follow_id = ?", userId).Find(&res).Error; err != nil {
+		return res, err
 	}
 
-	return f
+	return res, nil
 }
 
 // 查找粉丝
-func QueryFollow(ctx context.Context, userId int64) []int64 {
-	MyDB.Where("follower_id = ?", userId).Find(&rela)
+func QueryFollow(ctx context.Context, userId int64) ([]*Relation, error) {
+	var res []*Relation
 
-	// 已关注id切片
-	f := make([]int64, len(rela))
-
-	for i, v := range rela {
-		f[i] = v.Follow_id
+	if err := MyDB.WithContext(ctx).
+	Where("follower_id = ?", userId).Find(&res).Error; err != nil {
+		return res, err
 	}
 
-	return f
+	return res, nil
 }

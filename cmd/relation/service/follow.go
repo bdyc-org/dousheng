@@ -5,6 +5,7 @@ import (
 
 	"github.com/bdyc-org/dousheng/cmd/relation/dal/db"
 	"github.com/bdyc-org/dousheng/kitex_gen/relation"
+	"github.com/bdyc-org/dousheng/pkg/errno"
 )
 
 type FollowService struct {
@@ -28,14 +29,12 @@ func (s *FollowService) Follow(req *relation.FollowRequest) error {
 	// 关注
 	if req.ActionType == 1 {
 		err = db.Follow(s.ctx, &r)
-	}
-	// 取关
-	if req.ActionType == 2 {
+	} else if req.ActionType == 2 {
+		// 取关
 		err = db.CancelFollow(s.ctx, &r)
+	} else {
+		err = errno.ParamErr
 	}
-
-	if err != nil {
-		return err
-	}
-	return nil
+	
+	return err
 }

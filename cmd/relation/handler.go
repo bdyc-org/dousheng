@@ -14,11 +14,14 @@ type RelationServiceImpl struct{}
 
 // Follow implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) Follow(ctx context.Context, req *relation.FollowRequest) (resp *relation.FollowResponse, err error) {
+	resp = new(relation.FollowResponse)
+
 	err = service.NewFollowService(ctx).Follow(req)
 	if err != nil {
-		return nil, err
+		resp.BaseResp = pack.BuildBaseResponse(err)
+		return resp, nil
 	}
-	resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "操作成功")
+	resp.BaseResp = pack.BuildBaseResponse(errno.Success.WithMessage("操作成功"))
 	
 	return resp, nil
 }
@@ -27,10 +30,20 @@ func (s *RelationServiceImpl) Follow(ctx context.Context, req *relation.FollowRe
 // 查关注
 func (s *RelationServiceImpl) QueryFollow(ctx context.Context, req *relation.QueryFollowRequest) (resp *relation.QueryFollowResponse, err error) {
 	resp = new(relation.QueryFollowResponse)
-	resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "获取用户id成功")
+	
+	if req.UserId <= 0 {
+		resp.BaseResp = pack.BuildBaseResponse(errno.ParamErr)
+		return resp, nil
+	}
 
 	// 使用获取到的id查follow_ids
-	resp.FollowIds = service.NewQueryFollowService(ctx).QueryFollow(req)
+	resp.FollowIds, err = service.NewQueryFollowService(ctx).QueryFollow(req)
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResponse(err)
+		return resp, nil
+	}
+
+	resp.BaseResp = pack.BuildBaseResponse(errno.Success.WithMessage("获取用户ids成功"))
 
 	return resp, nil
 }
@@ -39,20 +52,38 @@ func (s *RelationServiceImpl) QueryFollow(ctx context.Context, req *relation.Que
 // 查粉丝
 func (s *RelationServiceImpl) QueryFollower(ctx context.Context, req *relation.QueryFollowerRequest) (resp *relation.QueryFollowerResponse, err error) {
 	resp = new(relation.QueryFollowerResponse)
-	resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "获取用户id成功")
+
+	if req.UserId <= 0 {
+		resp.BaseResp = pack.BuildBaseResponse(errno.ParamErr)
+		return resp, nil
+	}
 
 	// 使用获取到的id查follower_ids
-	resp.FollowerIds = service.NewQueryFollowerService(ctx).QueryFollower(req)
+	resp.FollowerIds, err = service.NewQueryFollowerService(ctx).QueryFollower(req)
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResponse(err)
+		return resp, nil
+	}
+	resp.BaseResp = pack.BuildBaseResponse(errno.Success.WithMessage("获取用户ids成功"))
 
 	return resp, nil
 }
 
 // QueryUserList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) QueryUserList(ctx context.Context, req *relation.QueryUserListRequest) (resp *relation.QueryUserListResponse, err error) {
-	resp, err = service.NewQueryUserListService(ctx).QueryUserList(req)
-	if err != nil {
-		return nil, err
+	resp = new(relation.QueryUserListResponse)
+	
+	if len(req.UserIds) == 0 {
+		resp.BaseResp = pack.BuildBaseResponse(errno.ParamErr)
+		return resp, nil
 	}
+
+	userList, err := service.NewQueryUserListService(ctx).QueryUserList(req)
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResponse(err)
+		return resp, nil
+	}
+	resp.UserList = userList
 
 	return resp, nil
 }

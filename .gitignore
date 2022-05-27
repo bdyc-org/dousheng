@@ -24,3 +24,5 @@ go.work
 
 *output
 *_test.go
+
+.vscode

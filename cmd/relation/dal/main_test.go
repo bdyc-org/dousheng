@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/bdyc-org/dousheng/cmd/relation/dal/db"
+	"github.com/bdyc-org/dousheng/cmd/relation/pack"
 )
 
 var ctx context.Context
@@ -20,14 +21,22 @@ func TestMain(m *testing.M) {
 
 // 找up
 func TestQueryFollower(t *testing.T) {
-	aaa := db.QueryFollower(ctx, 111)
-	println(aaa)
+	aaa, _ := db.QueryFollow(ctx, 111)
+
+	b := aaa[0].Follow_id
+
+	println(b)
 }
 
 // 找粉丝
 func TestQueryFollow(t *testing.T) {
-	aaa := db.QueryFollow(ctx, 111)
-	println(aaa)
+	res, _ := db.QueryFollow(ctx, 111)
+	userIds := make([]int64, len(res))
+
+	rales := pack.Relas(res)
+	for i := 0; i < len(rales); i++ {
+		userIds[i] = rales[i].FollowId
+	}
 }
 
 func TestFollow(t *testing.T) {

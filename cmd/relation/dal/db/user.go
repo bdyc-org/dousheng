@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 
-	"github.com/bdyc-org/dousheng/kitex_gen/relation"
 	"github.com/bdyc-org/dousheng/pkg/constants"
 	"gorm.io/gorm"
 )
@@ -11,10 +10,11 @@ import (
 //数据库对应得结构体
 type User struct {
 	gorm.Model
-	Name          string
-	Password      string
-	FollowCount   int64
-	FollowerCount int64
+	Id          	int64	`json:"id"`
+	Name      		string	`json:"name"`
+	FollowCount   	int64	`json:"follow_count"`
+	FollowerCount 	int64	`json:"follower_count"`
+	IsFollow		bool	`json:"is_follow"`
 }
 
 //user表的表名
@@ -27,11 +27,11 @@ func CreateUser(ctx context.Context, users []*User) error {
 }
 
 // 获取userList
-func MGetUsers(ctx context.Context, userIDs []int64) ([]*relation.User, error) {
-	res := make([]*relation.User, 0)
+func MGetUsers(ctx context.Context, userIDs []int64) ([]*User, error) {
+	var res []*User
 
 	if err := MyDB.WithContext(ctx).Where("id in ?", userIDs).Find(&res).Error; err != nil {
-		return nil, err
+		return res, err
 	}
 	return res, nil
 }
