@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"github.com/bdyc-org/dousheng/pkg/constants"
 	"gorm.io/gorm"
 )
@@ -15,7 +16,31 @@ type Video struct {
 	Comment_count  int    `json:"comment_count"`
 }
 
-func (v *Video) TableName() string{
+func (v *Video) TableName() string {
 	return constants.VideoTableName
 }
 
+// PublishVideo create video info
+func PublishVideo(ctx context.Context, videos []*Video) error {
+	if err := DB.WithContext(ctx).Create(videos).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// QueryVideo query video by id, Limit 1
+func QueryVideo(ctx context.Context, videoID uint) (*Video, error) {
+	var res *Video
+	conn := DB.WithContext(ctx).Model(&Video{}).Where("id = ?", videoID)
+
+	if err := conn.Limit(1).Find(&res).Error; err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
+// DeleteVideo delete video by id
+func DeleteVideo(ctx context.Context, videoID uint) error {
+	return DB.WithContext(ctx).Where("id = ?", videoID).Delete(&Video{}).Error
+}
