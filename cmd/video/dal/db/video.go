@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/bdyc-org/dousheng/pkg/constants"
 	"gorm.io/gorm"
-	"time"
 )
 
 type Video struct {
@@ -42,10 +41,10 @@ func QueryVideo(ctx context.Context, videoID uint) (*Video, error) {
 }
 
 //QueryVideoList By latest_time
-func VideoFeed(ctx context.Context, latest_time time.Time) (*[]Video, error) {
-	var videoList *[]Video
-	conn := DB.WithContext(ctx).Model(&Video{}).Where("created_at > ?", latest_time)
-	if err := conn.Limit(30).Find(&videoList).Error; err != nil {
+func VideoFeed(ctx context.Context, LatestTime *int64) ([]*Video, error) {
+	var videoList []*Video //transfrom
+	conn := DB.WithContext(ctx).Model(&Video{}).Where("created_at > FROM_UNIXTIME(?)", *LatestTime)
+	if err := conn.Limit(30).Find(videoList).Error; err != nil {
 		return videoList, err
 	}
 	return videoList, nil
