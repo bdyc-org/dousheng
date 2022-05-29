@@ -3,7 +3,6 @@
 package video
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"github.com/apache/thrift/lib/go/thrift"
@@ -1633,17 +1632,17 @@ func (p *DouyinFeedResponse) Field4DeepEqual(src *int64) bool {
 }
 
 type DouyinPublishActionRequest struct {
-	Data  []byte `thrift:"data,1" json:"data"`
-	Token string `thrift:"token,2" json:"token"`
-	Title string `thrift:"title,3" json:"title"`
+	FileName string `thrift:"file_name,1" json:"file_name"`
+	Token    string `thrift:"token,2" json:"token"`
+	Title    string `thrift:"title,3" json:"title"`
 }
 
 func NewDouyinPublishActionRequest() *DouyinPublishActionRequest {
 	return &DouyinPublishActionRequest{}
 }
 
-func (p *DouyinPublishActionRequest) GetData() (v []byte) {
-	return p.Data
+func (p *DouyinPublishActionRequest) GetFileName() (v string) {
+	return p.FileName
 }
 
 func (p *DouyinPublishActionRequest) GetToken() (v string) {
@@ -1653,8 +1652,8 @@ func (p *DouyinPublishActionRequest) GetToken() (v string) {
 func (p *DouyinPublishActionRequest) GetTitle() (v string) {
 	return p.Title
 }
-func (p *DouyinPublishActionRequest) SetData(val []byte) {
-	p.Data = val
+func (p *DouyinPublishActionRequest) SetFileName(val string) {
+	p.FileName = val
 }
 func (p *DouyinPublishActionRequest) SetToken(val string) {
 	p.Token = val
@@ -1664,7 +1663,7 @@ func (p *DouyinPublishActionRequest) SetTitle(val string) {
 }
 
 var fieldIDToName_DouyinPublishActionRequest = map[int16]string{
-	1: "data",
+	1: "file_name",
 	2: "token",
 	3: "title",
 }
@@ -1749,10 +1748,10 @@ ReadStructEndError:
 }
 
 func (p *DouyinPublishActionRequest) ReadField1(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadBinary(); err != nil {
+	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.Data = []byte(v)
+		p.FileName = v
 	}
 	return nil
 }
@@ -1813,10 +1812,10 @@ WriteStructEndError:
 }
 
 func (p *DouyinPublishActionRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("data", thrift.STRING, 1); err != nil {
+	if err = oprot.WriteFieldBegin("file_name", thrift.STRING, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteBinary([]byte(p.Data)); err != nil {
+	if err := oprot.WriteString(p.FileName); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1876,7 +1875,7 @@ func (p *DouyinPublishActionRequest) DeepEqual(ano *DouyinPublishActionRequest) 
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field1DeepEqual(ano.Data) {
+	if !p.Field1DeepEqual(ano.FileName) {
 		return false
 	}
 	if !p.Field2DeepEqual(ano.Token) {
@@ -1888,9 +1887,9 @@ func (p *DouyinPublishActionRequest) DeepEqual(ano *DouyinPublishActionRequest) 
 	return true
 }
 
-func (p *DouyinPublishActionRequest) Field1DeepEqual(src []byte) bool {
+func (p *DouyinPublishActionRequest) Field1DeepEqual(src string) bool {
 
-	if bytes.Compare(p.Data, src) != 0 {
+	if strings.Compare(p.FileName, src) != 0 {
 		return false
 	}
 	return true

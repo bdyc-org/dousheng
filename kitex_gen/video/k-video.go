@@ -1395,12 +1395,12 @@ ReadStructEndError:
 func (p *DouyinPublishActionRequest) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
-	if v, l, err := bthrift.Binary.ReadBinary(buf[offset:]); err != nil {
+	if v, l, err := bthrift.Binary.ReadString(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
 
-		p.Data = []byte(v)
+		p.FileName = v
 
 	}
 	return offset, nil
@@ -1467,8 +1467,8 @@ func (p *DouyinPublishActionRequest) BLength() int {
 
 func (p *DouyinPublishActionRequest) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "data", thrift.STRING, 1)
-	offset += bthrift.Binary.WriteBinaryNocopy(buf[offset:], binaryWriter, []byte(p.Data))
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "file_name", thrift.STRING, 1)
+	offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, p.FileName)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
@@ -1494,8 +1494,8 @@ func (p *DouyinPublishActionRequest) fastWriteField3(buf []byte, binaryWriter bt
 
 func (p *DouyinPublishActionRequest) field1Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("data", thrift.STRING, 1)
-	l += bthrift.Binary.BinaryLengthNocopy([]byte(p.Data))
+	l += bthrift.Binary.FieldBeginLength("file_name", thrift.STRING, 1)
+	l += bthrift.Binary.StringLengthNocopy(p.FileName)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l

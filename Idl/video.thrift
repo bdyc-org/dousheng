@@ -32,7 +32,7 @@ struct douyin_feed_response {
 }
 
 struct douyin_publish_action_request {
-    1:binary data
+    1:string file_name
     2:string token
     3:string title
 }
