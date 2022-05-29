@@ -23,6 +23,10 @@ func (s *MGetUserService) MGetUser(req *user.MGetUserRequest) (users []*user.Use
 	if err != nil {
 		return nil, errno.ServiceErrCode, err
 	}
+	users = pack.Users(modelUsers)
 	//is_follow需要relation服务，暂未写
-	return pack.Users(modelUsers), errno.SuccessCode, nil
+	for _, u := range users {
+		u.IsFollow = false
+	}
+	return users, errno.SuccessCode, nil
 }

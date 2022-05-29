@@ -16,8 +16,8 @@ func NewFollowService(ctx context.Context) *FolloWService {
 	return &FolloWService{ctx: ctx}
 }
 
-func (s *FolloWService) Follow(req *user.FollowRequest) (statusCode int64, err error) {
-	err = db.Follow(s.ctx, req.FollowId, req.FollowerId)
+func (s *FolloWService) Follow(req *user.FollowOperationRequest) (statusCode int64, err error) {
+	err = db.Follow(s.ctx, req.FollowId, req.FollowerId, req.ActionType)
 	if err != nil {
 		return errno.ServiceErrCode, err
 	}

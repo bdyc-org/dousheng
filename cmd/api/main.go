@@ -13,7 +13,9 @@ func Init() {
 
 func main() {
 	Init()
-	r := gin.New()
+	r := gin.Default()
+
+	r.Static("/static", "./public")
 
 	apiRouter := r.Group("/douyin")
 	user1 := apiRouter.Group("/user")

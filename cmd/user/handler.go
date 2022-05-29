@@ -86,14 +86,15 @@ func (s *UserServiceImpl) MGetUser(ctx context.Context, req *user.MGetUserReques
 	return resp, nil
 }
 
-// NewFollow_ implements the UserServiceImpl interface.
-func (s *UserServiceImpl) Follow(ctx context.Context, req *user.FollowRequest) (resp *user.FollowResponse, err error) {
+// Follow implements the UserServiceImpl interface.
+func (s *UserServiceImpl) Follow(ctx context.Context, req *user.FollowOperationRequest) (resp *user.FollowOperationResponse, err error) {
 	// TODO: Your code here...
-	resp = new(user.FollowResponse)
+	resp = new(user.FollowOperationResponse)
 
 	//检查参数是否合法
-	if req.FollowId == 0 || req.FollowerId == 0 {
+	if req.FollowId == 0 || req.FollowerId == 0 || (req.ActionType != 1 && req.ActionType != 2) {
 		resp.BaseResp = pack.BuildBaseResponse(errno.ParamErrCode, errno.Errparameter.Error())
+		return resp, nil
 	}
 
 	statusCode, err := service.NewFollowService(ctx).Follow(req)
@@ -102,30 +103,18 @@ func (s *UserServiceImpl) Follow(ctx context.Context, req *user.FollowRequest) (
 		return resp, nil
 	}
 
-	resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "关注成功")
+	switch req.ActionType {
+	case 1:
+		resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "感谢您的关注")
+	case 2:
+		resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "取消关注成功")
+	default:
+		resp.BaseResp = pack.BuildBaseResponse(errno.ServiceErrCode, errno.ErrService.Error())
+	}
 	return resp, nil
 }
 
-// CancelFollow implements the UserServiceImpl interface.
-func (s *UserServiceImpl) CancelFollow(ctx context.Context, req *user.CancelFollowRequest) (resp *user.CancelFollowResponse, err error) {
-	// TODO: Your code here...
-	resp = new(user.CancelFollowResponse)
-
-	//检查参数是否合法
-	if req.FollowId == 0 || req.FollowerId == 0 {
-		resp.BaseResp = pack.BuildBaseResponse(errno.ParamErrCode, errno.Errparameter.Error())
-	}
-
-	statusCode, err := service.NewCancelFollowService(ctx).CancelFollow(req)
-	if err != nil {
-		resp.BaseResp = pack.BuildBaseResponse(statusCode, err.Error())
-		return resp, nil
-	}
-
-	resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "取消关注成功")
-	return resp, nil
-}
-
+// Authentication implements the UserServiceImpl interface.
 func (s *UserServiceImpl) Authentication(ctx context.Context, req *user.AuthenticationRequest) (resp *user.AuthenticationResponse, err error) {
 	// TODO: Your code here...
 	resp = new(user.AuthenticationResponse)
@@ -147,5 +136,33 @@ func (s *UserServiceImpl) Authentication(ctx context.Context, req *user.Authenti
 
 	resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "token鉴权成功")
 	resp.UserId = user_id
+	return resp, nil
+}
+
+// Favorite implements the UserServiceImpl interface.
+func (s *UserServiceImpl) Favorite(ctx context.Context, req *user.FavoriteOperationRequest) (resp *user.FavoriteOperationResponse, err error) {
+	// TODO: Your code here...
+	resp = new(user.FavoriteOperationResponse)
+
+	//检查参数是否合法
+	if req.UserId == 0 || req.VideoAuthor == 0 || (req.ActionType != 1 && req.ActionType != 2) {
+		resp.BaseResp = pack.BuildBaseResponse(errno.ParamErrCode, errno.Errparameter.Error())
+		return resp, nil
+	}
+
+	statusCode, err := service.NewFavoriteService(ctx).Favorite(req)
+	if err != nil {
+		resp.BaseResp = pack.BuildBaseResponse(statusCode, err.Error())
+		return resp, nil
+	}
+
+	switch req.ActionType {
+	case 1:
+		resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "感谢您的点赞")
+	case 2:
+		resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "取消点赞成功")
+	default:
+		resp.BaseResp = pack.BuildBaseResponse(errno.ServiceErrCode, errno.ErrService.Error())
+	}
 	return resp, nil
 }

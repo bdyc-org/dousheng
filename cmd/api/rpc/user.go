@@ -72,19 +72,8 @@ func MGetUser(ctx context.Context, req *user.MGetUserRequest) (user []*user.User
 	return resp.UserList, errno.SuccessCode, nil
 }
 
-func Follow(ctx context.Context, req *user.FollowRequest) (statusCode int64, err error) {
+func Follow(ctx context.Context, req *user.FollowOperationRequest) (statusCode int64, err error) {
 	resp, err := userClient.Follow(ctx, req)
-	if err != nil {
-		return errno.ServiceErrCode, err
-	}
-	if resp.BaseResp.StatusCode != 0 {
-		return resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
-	}
-	return errno.SuccessCode, nil
-}
-
-func CancelFollow(ctx context.Context, req *user.CancelFollowRequest) (statusCode int64, err error) {
-	resp, err := userClient.CancelFollow(ctx, req)
 	if err != nil {
 		return errno.ServiceErrCode, err
 	}

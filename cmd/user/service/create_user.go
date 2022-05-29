@@ -38,10 +38,15 @@ func (s *CreateUserService) CreateUser(req *user.CreateUserRequest) (user_id int
 
 	//将记录写入数据库
 	err = db.CreateUser(s.ctx, []*db.User{{
-		Name:          req.Username,
-		Password:      passWord,
-		FollowCount:   0,
-		FollowerCount: 0,
+		Name:            req.Username,
+		Password:        passWord,
+		FollowCount:     0,
+		FollowerCount:   0,
+		Avatar:          "/avatar/avatar.jpeg",
+		Signature:       "这个人很懒，什么都没留下~",
+		BackgroundImage: "/background/background.jpeg",
+		TotalFavorited:  0,
+		FavoriteCount:   0,
 	}})
 	if err != nil {
 		return 0, errno.ServiceErrCode, err

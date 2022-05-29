@@ -21,4 +21,5 @@ var (
 	ErrUserNotExist    error = errors.New("用户不存在")
 	ErrUserNameHasUsed error = errors.New("用户名已经被使用")
 	ErrTokenInvalid    error = errors.New("token已过期或不可用，请重新登录")
+	ErrWrongOperation  error = errors.New("系统错误或操作不合法")
 )
