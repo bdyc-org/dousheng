@@ -21,3 +21,8 @@
 go.work
 
 .idea
+
+*output
+*_test.go
+
+.vscode

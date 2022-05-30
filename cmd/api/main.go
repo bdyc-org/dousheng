@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/bdyc-org/dousheng/cmd/api/handlers"
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -18,10 +20,16 @@ func main() {
 	apiRouter := r.Group("/douyin")
 	user1 := apiRouter.Group("/user")
 	user1.GET("/", handlers.UserInfo)
-	user1.POST("/register/", handlers.Register)
 	user1.POST("/login/", handlers.Login)
+	user1.POST("/register/", handlers.Register)
 
-	if err := r.Run(); err != nil {
+	// relation
+	rela := apiRouter.Group("/relation")
+	rela.POST("/action/", handlers.Follow)
+	rela.GET("/follow/list/", handlers.QueryFollow)
+	rela.GET("/follower/list/", handlers.QueryFollower)
+
+	if err := http.ListenAndServe(":8080", r); err != nil {
 		klog.Fatal(err)
 	}
 }
