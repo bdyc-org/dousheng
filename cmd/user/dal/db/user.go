@@ -63,7 +63,7 @@ func Follow(ctx context.Context, followID int64, followerID int64) error {
 func CancelFollow(ctx context.Context, followID int64, followerID int64) error {
 	MyDB.WithContext(ctx)
 	//被取关用户的粉丝列表减1
-	err := MyDB.Model(&User{}).Where("ID = ?", followID).Update("follower_count", gorm.Expr("followr_count - ?", 1)).Error
+	err := MyDB.Model(&User{}).Where("ID = ?", followID).Update("follower_count", gorm.Expr("follower_count - ?", 1)).Error
 	if err != nil {
 		return err
 	}

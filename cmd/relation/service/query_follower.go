@@ -28,7 +28,7 @@ func (s *QueryFollowerService) QueryFollower(req *relation.QueryFollowerRequest)
 
 	rales := pack.Relas(res)
 	for i := 0; i < len(rales); i++ {
-		userIds[i] = rales[i].FollowId
+		userIds[i] = rales[i].FollowerId
 	}
 
 	return userIds, nil
