@@ -12,6 +12,7 @@ const (
 	UserNotExistErrCode    int64 = 10004
 	UserNameHasUsedErrCode int64 = 10005
 	TokenInvalidErrCode    int64 = 10006
+	FavoriteErrCode        int64 = 10007
 )
 
 var (
@@ -22,4 +23,5 @@ var (
 	ErrUserNameHasUsed error = errors.New("用户名已经被使用")
 	ErrTokenInvalid    error = errors.New("token已过期或不可用，请重新登录")
 	ErrWrongOperation  error = errors.New("系统错误或操作不合法")
+	ErrFavorite        error = errors.New("该视频已经被您点赞了")
 )

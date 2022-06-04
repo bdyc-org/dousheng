@@ -23,6 +23,10 @@ func main() {
 	user1.POST("/register/", handlers.Register)
 	user1.POST("/login/", handlers.Login)
 
+	favorite1 := apiRouter.Group("/favorite")
+	favorite1.POST("/action/", handlers.Favorite)
+	favorite1.GET("/list/", handlers.FacoriteList)
+
 	if err := r.Run(); err != nil {
 		klog.Fatal(err)
 	}

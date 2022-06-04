@@ -72,7 +72,7 @@ func MGetUser(ctx context.Context, req *user.MGetUserRequest) (user []*user.User
 	return resp.UserList, errno.SuccessCode, nil
 }
 
-func Follow(ctx context.Context, req *user.FollowOperationRequest) (statusCode int64, err error) {
+func UserFollow(ctx context.Context, req *user.FollowOperationRequest) (statusCode int64, err error) {
 	resp, err := userClient.Follow(ctx, req)
 	if err != nil {
 		return errno.ServiceErrCode, err

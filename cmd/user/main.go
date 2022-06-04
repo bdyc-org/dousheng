@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"github.com/bdyc-org/dousheng/cmd/user/dal"
+	"github.com/bdyc-org/dousheng/cmd/user/pack"
 	user "github.com/bdyc-org/dousheng/kitex_gen/user/userservice"
 	"github.com/bdyc-org/dousheng/pkg/constants"
 	"github.com/cloudwego/kitex/pkg/limit"
@@ -15,6 +16,7 @@ import (
 
 func Init() {
 	dal.Init()
+	pack.GetLocalIPv4Address()
 }
 
 func main() {

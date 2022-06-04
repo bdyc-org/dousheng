@@ -10,13 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type RegisterParm struct {
+type RegisterParam struct {
 	UserName string `json:"username"`
 	PassWord string `json:"password"`
 }
 
 func Register(c *gin.Context) {
-	var registerVar RegisterParm
+	var registerVar RegisterParam
 
 	//获取参数
 	registerVar.UserName = c.Query("username")

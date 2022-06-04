@@ -67,7 +67,7 @@ func Follow(ctx context.Context, followID int64, followerID int64, actionType in
 		}
 	case 2:
 		//被取关用户的粉丝列表减1
-		err := tx.Model(&User{}).Where("ID = ?", followID).Update("follower_count", gorm.Expr("followr_count - ?", 1)).Error
+		err := tx.Model(&User{}).Where("ID = ?", followID).Update("follower_count", gorm.Expr("follower_count - ?", 1)).Error
 		if err != nil {
 			return err
 		}
