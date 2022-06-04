@@ -26,7 +26,7 @@ func (s *AuthenticationService) Authentication(req *user.AuthenticationRequest) 
 		return 0, errno.ServiceErrCode, err
 	}
 	if len(users) == 0 {
-		return 0, errno.UserNotExistErrCode, errno.ErrUserNotExist
+		return 0, errno.TokenInvalidErrCode, errno.ErrTokenInvalid
 	}
 	u := users[0]
 	return int64(u.ID), errno.SuccessCode, nil

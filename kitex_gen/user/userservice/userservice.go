@@ -23,8 +23,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"CheckUser":      kitex.NewMethodInfo(checkUserHandler, newUserServiceCheckUserArgs, newUserServiceCheckUserResult, false),
 		"MGetUser":       kitex.NewMethodInfo(mGetUserHandler, newUserServiceMGetUserArgs, newUserServiceMGetUserResult, false),
 		"Follow":         kitex.NewMethodInfo(followHandler, newUserServiceFollowArgs, newUserServiceFollowResult, false),
-		"CancelFollow":   kitex.NewMethodInfo(cancelFollowHandler, newUserServiceCancelFollowArgs, newUserServiceCancelFollowResult, false),
 		"Authentication": kitex.NewMethodInfo(authenticationHandler, newUserServiceAuthenticationArgs, newUserServiceAuthenticationResult, false),
+		"Favorite":       kitex.NewMethodInfo(favoriteHandler, newUserServiceFavoriteArgs, newUserServiceFavoriteResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "user",
@@ -112,24 +112,6 @@ func newUserServiceFollowResult() interface{} {
 	return user.NewUserServiceFollowResult()
 }
 
-func cancelFollowHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*user.UserServiceCancelFollowArgs)
-	realResult := result.(*user.UserServiceCancelFollowResult)
-	success, err := handler.(user.UserService).CancelFollow(ctx, realArg.Req)
-	if err != nil {
-		return err
-	}
-	realResult.Success = success
-	return nil
-}
-func newUserServiceCancelFollowArgs() interface{} {
-	return user.NewUserServiceCancelFollowArgs()
-}
-
-func newUserServiceCancelFollowResult() interface{} {
-	return user.NewUserServiceCancelFollowResult()
-}
-
 func authenticationHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*user.UserServiceAuthenticationArgs)
 	realResult := result.(*user.UserServiceAuthenticationResult)
@@ -146,6 +128,24 @@ func newUserServiceAuthenticationArgs() interface{} {
 
 func newUserServiceAuthenticationResult() interface{} {
 	return user.NewUserServiceAuthenticationResult()
+}
+
+func favoriteHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*user.UserServiceFavoriteArgs)
+	realResult := result.(*user.UserServiceFavoriteResult)
+	success, err := handler.(user.UserService).Favorite(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newUserServiceFavoriteArgs() interface{} {
+	return user.NewUserServiceFavoriteArgs()
+}
+
+func newUserServiceFavoriteResult() interface{} {
+	return user.NewUserServiceFavoriteResult()
 }
 
 type kClient struct {
@@ -188,21 +188,11 @@ func (p *kClient) MGetUser(ctx context.Context, req *user.MGetUserRequest) (r *u
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) Follow(ctx context.Context, req *user.FollowRequest) (r *user.FollowResponse, err error) {
+func (p *kClient) Follow(ctx context.Context, req *user.FollowOperationRequest) (r *user.FollowOperationResponse, err error) {
 	var _args user.UserServiceFollowArgs
 	_args.Req = req
 	var _result user.UserServiceFollowResult
 	if err = p.c.Call(ctx, "Follow", &_args, &_result); err != nil {
-		return
-	}
-	return _result.GetSuccess(), nil
-}
-
-func (p *kClient) CancelFollow(ctx context.Context, req *user.CancelFollowRequest) (r *user.CancelFollowResponse, err error) {
-	var _args user.UserServiceCancelFollowArgs
-	_args.Req = req
-	var _result user.UserServiceCancelFollowResult
-	if err = p.c.Call(ctx, "CancelFollow", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -213,6 +203,16 @@ func (p *kClient) Authentication(ctx context.Context, req *user.AuthenticationRe
 	_args.Req = req
 	var _result user.UserServiceAuthenticationResult
 	if err = p.c.Call(ctx, "Authentication", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Favorite(ctx context.Context, req *user.FavoriteOperationRequest) (r *user.FavoriteOperationResponse, err error) {
+	var _args user.UserServiceFavoriteArgs
+	_args.Req = req
+	var _result user.UserServiceFavoriteResult
+	if err = p.c.Call(ctx, "Favorite", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

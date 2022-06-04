@@ -12,6 +12,11 @@ struct User {
     3:i64 follow_count
     4:i64 follower_count
     5:bool is_follow
+    6:string avatar
+    7:string signature
+    8:string background_image
+    9:i64 total_favorited
+    10:i64 favorite_count
 }
 
 struct CreateUserRequest {
@@ -44,28 +49,40 @@ struct MGetUserResponse {
     2:list<User> user_list
 }
 
-struct FollowRequest {
+struct FollowOperationRequest {
     1:i64 follow_id
     2:i64 follower_id
+    3:i64 action_type
 }
 
-struct FollowResponse {
+struct FollowOperationResponse {
     1:BaseResponse base_resp
 }
 
-struct CancelFollowRequest {
-    1:i64 follow_id
-    2:i64 follower_id
+struct AuthenticationRequest {
+    1:string username
 }
 
-struct CancelFollowResponse {
-    BaseResponse base_resp
+struct AuthenticationResponse {
+    1:BaseResponse base_resp
+    2:i64 user_id
+}
+
+struct FavoriteOperationRequest {
+    1:i64 user_id
+    2:i64 video_auther
+    3:i64 action_type
+}
+
+struct FavoriteOperationResponse {
+    1:BaseResponse base_resp
 }
 
 service UserService {
     CreateUserResponse CreateUser(1:CreateUserRequest req)
     CheckUserResponse CheckUser(1:CheckUserRequest req)
     MGetUserResponse MGetUser(1:MGetUserRequest req)
-    FollowResponse Follow(1:FollowRequest req)
-    CancelFollowResponse CancelFollow(1:CancelFollowRequest req)
+    FollowOperationResponse Follow(1:FollowOperationRequest req)
+    AuthenticationResponse Authentication(1:AuthenticationRequest req)
+    FavoriteOperationResponse Favorite(1:FavoriteOperationRequest req)
 }

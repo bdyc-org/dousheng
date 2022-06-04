@@ -15,9 +15,13 @@ func Init() {
 
 func main() {
 	Init()
-	r := gin.New()
+	r := gin.Default()
+
+	r.Static("/static", "./public")
 
 	apiRouter := r.Group("/douyin")
+
+	//user
 	user1 := apiRouter.Group("/user")
 	user1.GET("/", handlers.UserInfo)
 	user1.POST("/login/", handlers.Login)
@@ -28,6 +32,11 @@ func main() {
 	rela.POST("/action/", handlers.Follow)
 	rela.GET("/follow/list/", handlers.QueryFollow)
 	rela.GET("/follower/list/", handlers.QueryFollower)
+
+	//favorite
+	favorite1 := apiRouter.Group("/favorite")
+	favorite1.POST("/action/", handlers.Favorite)
+	favorite1.GET("/list/", handlers.FacoriteList)
 
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		klog.Fatal(err)

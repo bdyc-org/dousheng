@@ -10,13 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type LoginParm struct {
+type LoginParam struct {
 	UserName string `json:"username"`
 	PassWord string `json:"password"`
 }
 
 func Login(c *gin.Context) {
-	var loginVar LoginParm
+	var loginVar LoginParam
 	//获取参数
 	loginVar.UserName = c.Query("username")
 	loginVar.PassWord = c.Query("password")

@@ -11,13 +11,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserInfoParm struct {
+type UserInfoParam struct {
 	UserID int64  `json:"user_id"`
 	Token  string `json:"token"`
 }
 
 func UserInfo(c *gin.Context) {
-	var userInfoVar UserInfoParm
+	var userInfoVar UserInfoParam
 
 	//获取参数
 	temp := c.Query("user_id")
