@@ -3,37 +3,37 @@ package pack
 import (
 	"github.com/bdyc-org/dousheng/cmd/relation/dal/db"
 	"github.com/bdyc-org/dousheng/kitex_gen/relation"
+	"github.com/bdyc-org/dousheng/kitex_gen/user"
 )
 
-func User(m *db.User) *relation.User {
-	if m == nil {
-		return nil
-	}
-
-	return &relation.User{
-		Id:				int64(m.Id),
-		Name: 			m.Name,
-		FollowCount: 	m.FollowCount,
-		FollowerCount: 	m.FollowerCount,
-		IsFollow: 		m.IsFollow,
+func MGetUserReq(userId int64, userIds []int64) *user.MGetUserRequest {
+	return &user.MGetUserRequest{
+		UserId: userId,
+		UserIds: userIds,
 	}
 }
 
-func UserList(ms []*db.User) []*relation.User {
-	users := make([]*relation.User, 0)
-	for _, m := range ms {
-		if n := User(m); n != nil {
-			users = append(users, n)
+func User(v *user.User) *relation.User {
+	return &relation.User{
+		Id: v.Id,
+		Name: v.Name,
+		FollowCount: v.FollowCount,
+		FollowerCount: v.FollowCount,
+		IsFollow: v.IsFollow,
+	}
+}
+
+func UserList(us []*user.User) []*relation.User {
+	userList := make([]*relation.User, len(us))
+	for _, v := range us {
+		if n := User(v); n != nil {
+			userList = append(userList, n)
 		}
 	}
-	return users
+	return userList
 }
 
 func Rela(m *db.Relation) *relation.Rela {
-	if m == nil {
-		return nil
-	}
-
 	return &relation.Rela{
 		FollowId: 	m.Follow_id,
 		FollowerId: m.Follower_id,

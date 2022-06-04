@@ -31,16 +31,11 @@ func Init() {
 
 	//检查relations表是否存在，若不存在，先建表
 	m := MyDB.Migrator()
-	if m.HasTable(&Relation{}) && m.HasTable(&User{}) {
+	if m.HasTable(&Relation{}) {
 		return
 	}
 
 	if err = m.CreateTable(&Relation{}); err != nil {
-		panic(err)
-	}
-
-	//检查users表是否存在，若不存在，先建表
-	if err = m.CreateTable(&User{}); err != nil {
 		panic(err)
 	}
 }

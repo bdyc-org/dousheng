@@ -3,8 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/bdyc-org/dousheng/cmd/relation/dal/db"
-	"github.com/bdyc-org/dousheng/cmd/relation/pack"
+	"github.com/bdyc-org/dousheng/cmd/relation/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/relation"
 )
 
@@ -19,13 +18,11 @@ func NewQueryUserListService(ctx context.Context) *QueryUserListService {
 }
 
 func (s *QueryUserListService) QueryUserList(req *relation.QueryUserListRequest) ([]*relation.User,error) {
-	// 调用db
-	userModels, err := db.MGetUsers(s.ctx, req.UserIds)
+	// 调用rpc
+	userList, err := rpc.MGetUser(s.ctx, req)
 	if err != nil {
 		return nil, err
 	}
-
-	userList := pack.UserList(userModels)
 	
 	return userList, nil
 }

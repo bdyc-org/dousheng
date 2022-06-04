@@ -45,26 +45,15 @@ func RelaFollow(ctx context.Context, req *relation.FollowRequest) (resp *relatio
 	resp = new(relation.FollowResponse)
 
 	// 调用userClient
-	if req.ActionType == 1 {
-		res, err := userClient.Follow(ctx, &user.FollowRequest{
-			FollowId: req.UserId,
-			FollowerId: req.ToUserId,
-		})
+	res, err := UserFollow(ctx, &user.FollowOperationRequest{
+		FollowId: req.UserId,
+		FollowerId: req.ToUserId,
+		ActionType: req.ActionType,
+	})
 
-		if res.BaseResp.StatusCode != errno.SuccessCode {
-			resp.BaseResp = pack.BuildBaseResponse(errno.NewErrNo(res.BaseResp.StatusCode, res.BaseResp.StatusMsg))
-			return resp, err
-		}
-	} else if req.ActionType == 2 {
-		res, err := userClient.CancelFollow(ctx, &user.CancelFollowRequest{
-			FollowId: req.UserId,
-			FollowerId: req.ToUserId,
-		})
-
-		if res.BaseResp.StatusCode != errno.SuccessCode {
-			resp.BaseResp = pack.BuildBaseResponse(errno.NewErrNo(res.BaseResp.StatusCode, res.BaseResp.StatusMsg))
-			return resp, err
-		}
+	if res != errno.SuccessCode {
+		resp.BaseResp = pack.BuildBaseResponse(errno.NewErrNo(res, err.Error()))
+		return resp, err
 	}
 
 	// 调用relationClient的Follow
