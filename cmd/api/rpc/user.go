@@ -73,15 +73,8 @@ func MGetUser(ctx context.Context, req *user.MGetUserRequest) (user []*user.User
 	return resp.UserList, errno.SuccessCode, nil
 }
 
-func UserFollow(ctx context.Context, req *user.FollowOperationRequest) (statusCode int64, err error) {
-	resp, err := userClient.Follow(ctx, req)
-	if err != nil {
-		return errno.ServiceErrCode, err
-	}
-	if resp.BaseResp.StatusCode != 0 {
-		return resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
-	}
-	return errno.SuccessCode, nil
+func UserFollow(ctx context.Context, req *user.FollowOperationRequest) (resp *user.FollowOperationResponse, err error) {
+	return userClient.Follow(ctx, req)
 }
 
 func Authentication(ctx context.Context, req *user.AuthenticationRequest) (user_id int64, statusCode int64, err error) {

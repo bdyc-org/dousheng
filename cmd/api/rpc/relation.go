@@ -4,12 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/bdyc-org/dousheng/cmd/relation/pack"
 	"github.com/bdyc-org/dousheng/kitex_gen/relation"
 	"github.com/bdyc-org/dousheng/kitex_gen/relation/relationservice"
-	"github.com/bdyc-org/dousheng/kitex_gen/user"
 	"github.com/bdyc-org/dousheng/pkg/constants"
-	"github.com/bdyc-org/dousheng/pkg/errno"
 	"github.com/bdyc-org/dousheng/pkg/middleware"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
@@ -42,21 +39,6 @@ func initRelationRpc() {
 }
 
 func RelaFollow(ctx context.Context, req *relation.FollowRequest) (resp *relation.FollowResponse, err error) {
-	resp = new(relation.FollowResponse)
-
-	// 调用userClient
-	res, err := UserFollow(ctx, &user.FollowOperationRequest{
-		FollowId: req.UserId,
-		FollowerId: req.ToUserId,
-		ActionType: req.ActionType,
-	})
-
-	if res != errno.SuccessCode {
-		resp.BaseResp = pack.BuildBaseResponse(errno.NewErrNo(res, err.Error()))
-		return resp, err
-	}
-
-	// 调用relationClient的Follow
 	return relationClient.Follow(ctx, req)
 }
 

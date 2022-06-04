@@ -52,5 +52,20 @@ func Follow(c *gin.Context) {
 		return
 	}
 
-	SendRelaResponse(c, errno.Success, resp)
+	// 调用userClient
+	res, err := rpc.UserFollow(context.Background(), &user.FollowOperationRequest{
+		FollowId: relaParam.UserId,
+		FollowerId: relaParam.ToUserId,
+		ActionType: relaParam.ActionType,
+	})
+	if err != nil {
+		SendRelaResponse(c, err, resp)
+		return
+	}
+	if resp.BaseResp.StatusCode != errno.SuccessCode {
+		SendRelaResponse(c, errno.ParamErr, nil)
+		return
+	}
+
+	SendRelaResponse(c, errno.Success, res)
 }
