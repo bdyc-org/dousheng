@@ -4,7 +4,7 @@ const (
 	VideoTableName           = "videos"
 	SecretKey                = "secret key"
 	IdentityKey              = "id"
-	Total                    = "total"
+	Title                    = "title"
 	Videos                   = "videos"
 	VideoID                  = "video_id"
 	ApiServiceName           = "demoapi"

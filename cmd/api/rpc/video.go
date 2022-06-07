@@ -1,8 +1,11 @@
 package rpc
 
 import (
+	"context"
+	"github.com/bdyc-org/dousheng/kitex_gen/video"
 	"github.com/bdyc-org/dousheng/kitex_gen/video/videoservice"
 	"github.com/bdyc-org/dousheng/pkg/constants"
+	error2 "github.com/bdyc-org/dousheng/pkg/error"
 	"github.com/bdyc-org/dousheng/pkg/middleware"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
@@ -35,4 +38,16 @@ func initVideoRpc() {
 		panic(err)
 	}
 	videoClient = c
+}
+
+func PublicVideo(ctx context.Context, req *video.DouyinPublishActionRequest) error {
+	resp, err := videoClient.PublishAction(ctx, req)
+	if err != nil {
+		return err
+	}
+	// TODO StatusCode need  change
+	if resp.StatusCode != 0 {
+		return error2.NewErrNo(resp.StatusCode, *(resp.StatusMsg))
+	}
+	return nil
 }
