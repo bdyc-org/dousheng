@@ -13,7 +13,6 @@ require (
 )
 
 require (
-	github.com/appleboy/gin-jwt/v2 v2.8.0
 	github.com/bytedance/gopkg v0.0.0-20220413063733-65bf48ffb3a7 // indirect
 	github.com/choleraehyq/pid v0.0.13 // indirect
 	github.com/cloudwego/netpoll v0.2.2 // indirect

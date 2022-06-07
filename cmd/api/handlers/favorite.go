@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/favorite"
@@ -14,35 +13,19 @@ import (
 )
 
 type FavoriteParam struct {
-	UserID     int64  `json:"user_id"`
-	Token      string `json:"token"`
-	VideoID    int64  `json:"video_id"`
-	ActionType int64  `json:"action_type"`
+	Token      string `json:"token" form:"token"`
+	VideoID    int64  `json:"video_id" form:"video_id"`
+	ActionType int64  `json:"action_type" form:"action_type"`
 }
 
 func Favorite(c *gin.Context) {
 	var favoriteVar FavoriteParam
 
 	//获取参数
-	// temp_string := c.Query("user_id")
-	// temp_int64, err := strconv.ParseInt(temp_string, 10, 64)
-	// if err != nil {
-	// 	favoriteVar.UserID = 0
-	// }
-	// favoriteVar.UserID = temp_int64
-	favoriteVar.Token = c.Query("token")
-	temp_string := c.Query("video_id")
-	temp_int64, err := strconv.ParseInt(temp_string, 10, 64)
-	if err != nil {
-		favoriteVar.VideoID = 0
+	if err := c.ShouldBindQuery(&favoriteVar); err != nil {
+		SendErrResponse(c, errno.ParamErrCode, errno.Errparameter)
+		return
 	}
-	favoriteVar.VideoID = temp_int64
-	temp_string = c.Query("action_type")
-	temp_int64, err = strconv.ParseInt(temp_string, 10, 64)
-	if err != nil {
-		favoriteVar.ActionType = 0
-	}
-	favoriteVar.ActionType = temp_int64
 
 	//检查参数是否合法
 	if favoriteVar.VideoID == 0 || (favoriteVar.ActionType != 1 && favoriteVar.ActionType != 2) {
@@ -74,6 +57,16 @@ func Favorite(c *gin.Context) {
 		SendErrResponse(c, statusCode, err)
 		return
 	}
+
+	// statusCode, err = rpc.UserFavorite(context.Background(), &user.FavoriteOperationRequest{
+	// 	UserId:      user_id,
+	// 	VideoAuthor: 0,
+	// 	ActionType:  favoriteVar.ActionType,
+	// })
+	// if err != nil {
+	// 	SendErrResponse(c, statusCode, err)
+	// 	return
+	// }
 
 	switch favoriteVar.ActionType {
 	case 1:

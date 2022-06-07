@@ -5,6 +5,8 @@ import (
 
 	"github.com/bdyc-org/dousheng/cmd/user/dal/db"
 	"github.com/bdyc-org/dousheng/cmd/user/pack"
+	"github.com/bdyc-org/dousheng/cmd/user/rpc"
+	"github.com/bdyc-org/dousheng/kitex_gen/relation"
 	"github.com/bdyc-org/dousheng/kitex_gen/user"
 	"github.com/bdyc-org/dousheng/pkg/errno"
 )
@@ -25,8 +27,16 @@ func (s *MGetUserService) MGetUser(req *user.MGetUserRequest) (users []*user.Use
 	}
 	users = pack.Users(modelUsers)
 	//is_follow需要relation服务，暂未写
+	followIds, statusCode, err := rpc.QueryFollow(context.Background(), &relation.QueryFollowRequest{
+		UserId: req.UserId,
+	})
+	if err != nil {
+		return nil, statusCode, err
+	}
 	for _, u := range users {
-		u.IsFollow = false
+		if _, ok := followIds[u.Id]; ok {
+			u.IsFollow = true
+		}
 	}
 	return users, errno.SuccessCode, nil
 }

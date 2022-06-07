@@ -11,8 +11,8 @@ import (
 )
 
 type RegisterParam struct {
-	UserName string `json:"username"`
-	PassWord string `json:"password"`
+	UserName string `json:"username" form:"username"`
+	PassWord string `json:"password" form:"password"`
 }
 
 func Register(c *gin.Context) {

@@ -10,7 +10,7 @@ import (
 )
 
 func Init() {
-	rpc.InitRpc()
+	rpc.InitRPC()
 }
 
 func main() {

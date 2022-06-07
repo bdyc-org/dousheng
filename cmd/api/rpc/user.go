@@ -87,3 +87,14 @@ func Authentication(ctx context.Context, req *user.AuthenticationRequest) (user_
 	}
 	return resp.UserId, errno.SuccessCode, nil
 }
+
+func UserFavorite(ctx context.Context, req *user.FavoriteOperationRequest) (statusCode int64, err error) {
+	resp, err := userClient.Favorite(ctx, req)
+	if err != nil {
+		return errno.ServiceErrCode, err
+	}
+	if resp.BaseResp.StatusCode != 0 {
+		return resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
+	}
+	return errno.SuccessCode, nil
+}

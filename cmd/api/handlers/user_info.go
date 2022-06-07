@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"net/http"
-	"strconv"
 
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/user"
@@ -12,21 +11,18 @@ import (
 )
 
 type UserInfoParam struct {
-	UserID int64  `json:"user_id"`
-	Token  string `json:"token"`
+	UserID int64  `json:"user_id" form:"user_id"`
+	Token  string `json:"token" form:"token"`
 }
 
 func UserInfo(c *gin.Context) {
 	var userInfoVar UserInfoParam
 
 	//获取参数
-	temp := c.Query("user_id")
-	temp_id, err := strconv.ParseInt(temp, 10, 64)
-	if err != nil {
-		userInfoVar.UserID = 0
+	if err := c.ShouldBindQuery(&userInfoVar); err != nil {
+		SendErrResponse(c, errno.ParamErrCode, errno.Errparameter)
+		return
 	}
-	userInfoVar.UserID = temp_id
-	userInfoVar.Token = c.Query("token")
 
 	//检查参数是否合法
 	if userInfoVar.UserID == 0 || len(userInfoVar.Token) == 0 {

@@ -1,6 +1,6 @@
 package rpc
 
-func InitRpc() {
+func InitRPC() {
 	initUserRpc()
 	initRelationRpc()
 	initFavoriteRpc()

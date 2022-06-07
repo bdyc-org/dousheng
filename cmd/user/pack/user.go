@@ -20,6 +20,7 @@ func User(u *db.User) *user.User {
 		Name:            u.Name,
 		FollowCount:     u.FollowCount,
 		FollowerCount:   u.FollowerCount,
+		IsFollow:        false,
 		Avatar:          "http://" + IPAddr + ":8080/static" + u.Avatar,
 		Signature:       u.Signature,
 		BackgroundImage: "http://" + IPAddr + ":8080/static" + u.BackgroundImage,

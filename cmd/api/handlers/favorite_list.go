@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/favorite"
@@ -14,21 +13,24 @@ import (
 )
 
 type FavoriteListParam struct {
-	UserID int64  `json:"user_id"`
-	Token  string `json:"token"`
+	UserID int64  `json:"user_id" form:"user_id"`
+	Token  string `json:"token" form:"token"`
 }
 
 func FacoriteList(c *gin.Context) {
 	var favoriteListVar FavoriteListParam
 
 	//获取参数
-	temp_string := c.Query("user_id")
-	temp_int64, err := strconv.ParseInt(temp_string, 10, 64)
-	if err != nil {
-		favoriteListVar.UserID = 0
+	if err := c.ShouldBindQuery(&favoriteListVar); err != nil {
+		SendErrResponse(c, errno.ParamErrCode, errno.Errparameter)
+		return
 	}
-	favoriteListVar.UserID = temp_int64
-	favoriteListVar.Token = c.Query("token")
+
+	//检查参数是否合法
+	if favoriteListVar.UserID == 0 || len(favoriteListVar.Token) == 0 {
+		SendErrResponse(c, errno.ParamErrCode, errno.Errparameter)
+		return
+	}
 
 	//Token鉴权
 	claims, err := ParserToken(favoriteListVar.Token)

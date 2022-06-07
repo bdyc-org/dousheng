@@ -7,6 +7,7 @@ import (
 	"github.com/bdyc-org/dousheng/cmd/favorite/dal"
 	favorite "github.com/bdyc-org/dousheng/kitex_gen/favorite/favoriteservice"
 	"github.com/bdyc-org/dousheng/pkg/constants"
+	"github.com/bdyc-org/dousheng/pkg/middleware"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
@@ -31,13 +32,12 @@ func main() {
 
 	svr := favorite.NewServer(new(FavoriteServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: constants.FavoriteServiceName}), // server name
-		//server.WithMiddleware(middleware.CommonMiddleware),                                             // middleware
-		//server.WithMiddleware(middleware.ServerMiddleware),
+		server.WithMiddleware(middleware.CommonMiddleware),                                                 // middleware
+		server.WithMiddleware(middleware.ServerMiddleware),
 		server.WithServiceAddr(addr),                                       // address
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
 		server.WithMuxTransport(),                                          // Multiplex
 		//server.WithSuite(trace.NewDefaultServerSuite()),                    // tracer
-		//server.WithBoundHandler(bound.NewCpuLimitHandler()),                // BoundHandler
 		server.WithRegistry(r),
 	)
 
