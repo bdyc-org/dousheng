@@ -13,6 +13,9 @@ type Response struct {
 }
 
 type VideoParam struct {
+	Filename string `json:"filename"`
+	Token    string `json:"token"`
+	Title    string `json:"title"`
 }
 
 func SendResponse(c *gin.Context, err error, data interface{}) {
