@@ -23,7 +23,7 @@ func Register(c *gin.Context) {
 	registerVar.PassWord = c.Query("password")
 
 	//检查参数是否合法
-	if len(registerVar.UserName) == 0 || len(registerVar.PassWord) == 0 {
+	if len(registerVar.UserName) == 0 || len(registerVar.PassWord) < 6 {
 		SendErrResponse(c, errno.ParamErrCode, errno.Errparameter)
 		return
 	}

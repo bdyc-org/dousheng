@@ -38,14 +38,14 @@ func QueryFollow(c *gin.Context) {
 
 	var userList []*relation.User
 	// 取ids
-	FollowResp , err := rpc.QueryFollow(context.Background(), followParam.UserId)
+	FollowResp, err := rpc.QueryFollow(context.Background(), followParam.UserId)
 	if err != nil {
 		SendRelaResponse(c, errno.ServiceErr, nil)
 		return
 	}
 	// 取userList
 	resp, err := rpc.QueryUserList(context.Background(), &relation.QueryUserListRequest{
-		UserId: followParam.UserId,
+		UserId:  user_id,
 		UserIds: FollowResp.FollowIds,
 	})
 	if err != nil {
@@ -84,14 +84,14 @@ func QueryFollower(c *gin.Context) {
 
 	var userList []*relation.User
 	// 取ids
-	FollowerResp , err := rpc.QueryFollower(context.Background(), followParam.UserId)
+	FollowerResp, err := rpc.QueryFollower(context.Background(), followParam.UserId)
 	if err != nil {
 		SendRelaResponse(c, errno.ServiceErr, nil)
 		return
 	}
 	// 取userList
 	resp, err := rpc.QueryUserList(context.Background(), &relation.QueryUserListRequest{
-		UserId: followParam.UserId,
+		UserId:  user_id,
 		UserIds: FollowerResp.FollowerIds,
 	})
 	if err != nil {

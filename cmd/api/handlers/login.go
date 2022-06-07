@@ -22,7 +22,7 @@ func Login(c *gin.Context) {
 	loginVar.PassWord = c.Query("password")
 
 	//检查参数是否合法
-	if len(loginVar.UserName) == 0 || len(loginVar.PassWord) == 0 {
+	if len(loginVar.UserName) == 0 || len(loginVar.PassWord) < 6 {
 		SendErrResponse(c, errno.ParamErrCode, errno.Errparameter)
 		return
 	}
