@@ -15,7 +15,6 @@ func NewFeedVideoService(ctx context.Context) *FeedVideoService {
 	return &FeedVideoService{ctx: ctx}
 }
 
-func (v *FeedVideoService) FeedVideoService(req *video.DouyinFeedRequest) ([]*db.Video, error) {
-
+func (v *FeedVideoService) FeedVideoService(req *video.DouyinFeedRequest) ([]*db.Video, *int64, error) {
 	return db.VideoFeed(v.ctx, req.LatestTime)
 }

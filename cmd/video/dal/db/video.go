@@ -41,13 +41,19 @@ func QueryVideo(ctx context.Context, videoID uint) (*Video, error) {
 }
 
 //QueryVideoList By latest_time
-func VideoFeed(ctx context.Context, LatestTime *int64) ([]*Video, error) {
+func VideoFeed(ctx context.Context, LatestTime *int64) ([]*Video, *int64, error) {
 	var videoList []*Video //transfrom
-	conn := DB.WithContext(ctx).Model(&Video{}).Where("created_at > FROM_UNIXTIME(?)", *LatestTime)
-	if err := conn.Limit(30).Find(videoList).Error; err != nil {
-		return videoList, err
+	conn := DB.WithContext(ctx).Model(&Video{}).Where("created_at < FROM_UNIXTIME(?)", *LatestTime)
+
+	err := conn.Limit(30).Find(videoList).Error
+
+	var nextTime = videoList[0].Model.CreatedAt.Unix()
+
+	if err != nil {
+		return videoList, &nextTime, err
 	}
-	return videoList, nil
+
+	return videoList, &nextTime, nil
 }
 
 // DeleteVideo delete video by id

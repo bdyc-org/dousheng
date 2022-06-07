@@ -51,3 +51,14 @@ func PublicVideo(ctx context.Context, req *video.DouyinPublishActionRequest) err
 	}
 	return nil
 }
+func FeedVideo(ctx context.Context, req *video.DouyinFeedRequest) ([]*video.Video, *int64, error) {
+	resp, err := videoClient.FeedVideo(ctx, req)
+	if err != nil {
+		return nil, nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, nil, error2.NewErrNo(resp.StatusCode, *(resp.StatusMsg))
+	}
+
+	return resp.VideoList, resp.NextTime, err
+}
