@@ -31,7 +31,6 @@ func SendRelaResponse(c *gin.Context, err error, data interface{}) {
 	})
 }
 type RelaParam struct {
-	UserId int64 `json:"user_id" form:"user_id"`
 	ToUserId int64 `json:"to_user_id" form:"to_user_id"`
 	ActionType int64 `json:"action_type" form:"action_type"`
 	Token string `json:"token" form:"token"`

@@ -16,7 +16,7 @@ func Follow(c *gin.Context) {
 		SendRelaResponse(c, errno.ParamErr.WithMessage("参数获取失败"), nil)
 		return
 	}
-	if relaParam.UserId == 0 || relaParam.ToUserId == 0 || len(relaParam.Token) == 0 {
+	if relaParam.ToUserId == 0 || len(relaParam.Token) == 0 {
 		SendRelaResponse(c, errno.ParamErr.WithMessage("参数不正确"), nil)
 		return
 	}
@@ -39,7 +39,7 @@ func Follow(c *gin.Context) {
 
 	// 关注或取关
 	resp, err := rpc.RelaFollow(context.Background(), &relation.FollowRequest{
-		UserId: relaParam.UserId,
+		UserId: user_id,
 		ToUserId: relaParam.ToUserId,
 		ActionType: relaParam.ActionType,
 	})
@@ -54,7 +54,7 @@ func Follow(c *gin.Context) {
 
 	// 调用userClient
 	res, err := rpc.UserFollow(context.Background(), &user.FollowOperationRequest{
-		FollowId: relaParam.UserId,
+		FollowId: user_id,
 		FollowerId: relaParam.ToUserId,
 		ActionType: relaParam.ActionType,
 	})
