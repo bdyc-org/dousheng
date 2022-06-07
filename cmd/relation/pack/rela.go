@@ -18,13 +18,13 @@ func User(v *user.User) *relation.User {
 		Id: v.Id,
 		Name: v.Name,
 		FollowCount: v.FollowCount,
-		FollowerCount: v.FollowCount,
+		FollowerCount: v.FollowerCount,
 		IsFollow: v.IsFollow,
 	}
 }
 
 func UserList(us []*user.User) []*relation.User {
-	userList := make([]*relation.User, len(us))
+	userList := make([]*relation.User, 0)
 	for _, v := range us {
 		if n := User(v); n != nil {
 			userList = append(userList, n)

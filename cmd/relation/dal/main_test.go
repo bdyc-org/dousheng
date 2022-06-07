@@ -21,22 +21,26 @@ func TestMain(m *testing.M) {
 
 // 找up
 func TestQueryFollower(t *testing.T) {
-	aaa, _ := db.QueryFollow(ctx, 111)
+	res, _ := db.QueryFollower(ctx, 2)
+	userIds := make([]int64, len(res))
 
-	b := aaa[0].Follow_id
-
-	println(b)
+	rales := pack.Relas(res)
+	for i := 0; i < len(rales); i++ {
+		userIds[i] = rales[i].FollowerId
+	}
+	println()
 }
 
 // 找粉丝
 func TestQueryFollow(t *testing.T) {
-	res, _ := db.QueryFollow(ctx, 111)
+	res, _ := db.QueryFollow(ctx, 2)
 	userIds := make([]int64, len(res))
 
 	rales := pack.Relas(res)
 	for i := 0; i < len(rales); i++ {
 		userIds[i] = rales[i].FollowId
 	}
+	println()
 }
 
 func TestFollow(t *testing.T) {
