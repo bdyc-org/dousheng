@@ -13,6 +13,13 @@ type VideoServiceImpl struct{}
 // FeedVideo implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) FeedVideo(ctx context.Context, req *video.DouyinFeedRequest) (resp *video.DouyinFeedResponse, err error) {
 	// TODO: Your code here...
+	resp = new(video.DouyinFeedResponse)
+	if req.LatestTime == nil {
+		resp.StatusCode = error2.ParamErr.ErrCode
+		resp.StatusMsg = &error2.ParamErr.ErrMsg
+	}
+
+	resp.VideoList, resp.NextTime, err = service.NewFeedVideoService(ctx).FeedVideo(req)
 	return
 }
 
