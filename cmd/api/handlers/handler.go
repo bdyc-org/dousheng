@@ -55,6 +55,20 @@ type VideoParam struct {
 	Title    string `json:"title"`
 }
 
+type CommentResponse struct {
+	Code        int64       `json:"status_code"`
+	Message     string      `json:"status_msg"`
+	CommentList interface{} `json:"comment_list"`
+}
+
+type CommentParam struct {
+	UserID      int64  `json:"user_id"`
+	Token       string `json:"token"`
+	VideoID     int64  `json:"video_id"`
+	ActionType  int32  `json:"action_type"`
+	CommentText string `json:"comment_text"`
+}
+
 //videos
 func SendResponse(c *gin.Context, err error, data interface{}) {
 	Err := error2.ConvertErr(err)
