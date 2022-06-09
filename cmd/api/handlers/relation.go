@@ -39,8 +39,8 @@ func Follow(c *gin.Context) {
 
 	// 关注或取关
 	resp, err := rpc.RelaFollow(context.Background(), &relation.FollowRequest{
-		UserId: user_id,
-		ToUserId: relaParam.ToUserId,
+		UserId:     user_id,
+		ToUserId:   relaParam.ToUserId,
 		ActionType: relaParam.ActionType,
 	})
 	if err != nil {
@@ -54,8 +54,8 @@ func Follow(c *gin.Context) {
 
 	// 调用userClient
 	res, err := rpc.UserFollow(context.Background(), &user.FollowOperationRequest{
-		FollowId: user_id,
-		FollowerId: relaParam.ToUserId,
+		FollowId:   relaParam.ToUserId,
+		FollowerId: user_id,
 		ActionType: relaParam.ActionType,
 	})
 	if err != nil {
