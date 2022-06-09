@@ -12,7 +12,6 @@ type VideoServiceImpl struct{}
 
 // FeedVideo implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) FeedVideo(ctx context.Context, req *video.DouyinFeedRequest) (resp *video.DouyinFeedResponse, err error) {
-	// TODO: Your code here...
 	resp = new(video.DouyinFeedResponse)
 	if req.LatestTime == nil {
 		resp.StatusCode = error2.ParamErr.ErrCode
@@ -20,12 +19,13 @@ func (s *VideoServiceImpl) FeedVideo(ctx context.Context, req *video.DouyinFeedR
 	}
 
 	resp.VideoList, resp.NextTime, err = service.NewFeedVideoService(ctx).FeedVideo(req)
-	return
+	resp.StatusCode = error2.Success.ErrCode
+	resp.StatusMsg = &error2.Success.ErrMsg
+	return resp, err
 }
 
 // PublishAction implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.DouyinPublishActionRequest) (resp *video.DouyinPublishActionResponse, err error) {
-	// TODO: Your code here...
 	resp = new(video.DouyinPublishActionResponse)
 	if len(req.Title) == 0 || len(req.FileName) == 0 {
 		resp.StatusCode = error2.ParamErr.ErrCode
@@ -43,6 +43,18 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.DouyinP
 
 // PublishList implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishList(ctx context.Context, req *video.DouyinPublishListRequest) (resp *video.DouyinPublishListResponse, err error) {
-	// TODO: Your code here...
-	return
+	resp = new(video.DouyinPublishListResponse)
+	if req.UserId == 0 || len(req.Token) == 0 {
+		resp.StatusCode = error2.ParamErr.ErrCode
+		resp.StatusMsg = &error2.ParamErr.ErrMsg
+	}
+
+	videos, err := service.NewPublishListService(ctx).PublishList(req)
+	if err != nil {
+		resp.StatusCode = error2.ConvertErr(err).ErrCode
+	}
+	resp.StatusCode = error2.Success.ErrCode
+	resp.StatusMsg = &error2.Success.ErrMsg
+	resp.VideoList = videos
+	return resp, err
 }

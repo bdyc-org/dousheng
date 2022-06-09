@@ -9,21 +9,21 @@ import (
 	"strconv"
 )
 
-func FeedVideo(c *gin.Context) {
-	latest_time, err := strconv.ParseInt(c.PostForm("latest_time"), 10, 64)
-
+func PublishList(c *gin.Context) {
+	user_id, err := strconv.ParseInt(c.PostForm("user_id"), 10, 64)
 	if err != nil {
 		SendResponse(c, error2.ConvertErr(err), nil)
 	}
 
 	token := c.PostForm("token")
 	//TODO token judge
-	req := &video.DouyinFeedRequest{
-		LatestTime: &latest_time,
-		Token:      &token,
-	}
-	_, _, err = rpc.FeedVideo(context.Background(), req)
 
+	req := &video.DouyinPublishListRequest{
+		UserId: user_id,
+		Token:  token,
+	}
+
+	_, err = rpc.PublishList(context.Background(), req)
 	if err != nil {
 		SendResponse(c, error2.ConvertErr(err), nil)
 	}

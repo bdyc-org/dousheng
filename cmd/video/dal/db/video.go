@@ -60,3 +60,14 @@ func VideoFeed(ctx context.Context, LatestTime *int64) ([]*Video, *int64, error)
 func DeleteVideo(ctx context.Context, videoID uint) error {
 	return DB.WithContext(ctx).Where("id = ?", videoID).Delete(&Video{}).Error
 }
+
+// QueryVideo query video by user_id
+func QueryVideos(ctx context.Context, user_id uint) ([]*Video, error) {
+	var res []*Video
+	conn := DB.WithContext(ctx).Model(&Video{}).Where("user_id = ?", user_id)
+
+	if err := conn.Find(&res).Error; err != nil {
+		return res, err
+	}
+	return res, nil
+}

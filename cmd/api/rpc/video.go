@@ -62,3 +62,15 @@ func FeedVideo(ctx context.Context, req *video.DouyinFeedRequest) ([]*video.Vide
 
 	return resp.VideoList, resp.NextTime, err
 }
+
+func PublishList(ctx context.Context, req *video.DouyinPublishListRequest) ([]*video.Video, error) {
+	resp, err := videoClient.PublishList(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 0 {
+		return nil, error2.NewErrNo(resp.StatusCode, *(resp.StatusMsg))
+	}
+
+	return resp.VideoList, nil
+}
