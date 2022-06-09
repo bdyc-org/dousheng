@@ -39,3 +39,17 @@ type FollowParam struct {
 	UserId int64 `json:"user_id" form:"user_id"`
 	Token string `json:"token" form:"token"`
 }
+
+type CommentResponse struct {
+	Code        int64       `json:"status_code"`
+	Message     string      `json:"status_msg"`
+	CommentList interface{} `json:"comment_list"`
+}
+
+type CommentParam struct {
+	UserID      int64  `json:"user_id"`
+	Token       string `json:"token"`
+	VideoID     int64  `json:"video_id"`
+	ActionType  int32  `json:"action_type"`
+	CommentText string `json:"comment_text"`
+}
