@@ -40,7 +40,7 @@ func initUserRpc() {
 	userClient = c
 }
 
-func MGetUser(ctx context.Context, req *user.MGetUserRequest) (*user.User, error) {
+func MGetUser(ctx context.Context, req *user.MGetUserRequest) ([]*user.User, error) {
 	resp, err := userClient.MGetUser(ctx, req)
 	if err != nil {
 		return nil, err
@@ -48,6 +48,6 @@ func MGetUser(ctx context.Context, req *user.MGetUserRequest) (*user.User, error
 	if resp.BaseResp.StatusCode != 0 {
 		return nil, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
 	}
-	res := resp.UserList[0]
-	return res, nil
+
+	return resp.UserList, nil
 }
