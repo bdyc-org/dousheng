@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
+	"github.com/bdyc-org/dousheng/kitex_gen/user"
 	"github.com/bdyc-org/dousheng/kitex_gen/video"
 	error2 "github.com/bdyc-org/dousheng/pkg/error"
 	"github.com/gin-gonic/gin"
@@ -17,10 +18,19 @@ func FeedVideo(c *gin.Context) {
 	}
 
 	token := c.PostForm("token")
-	//TODO token judge
+	claims, err := ParserToken(token)
+	username := claims.Username
+	user_id, statusCode, err := rpc.Authentication(context.Background(), &user.AuthenticationRequest{
+		Username: username,
+	})
+	if err != nil || user_id == 0 {
+		SendErrResponse(c, statusCode, err)
+		return
+	}
+
 	req := &video.DouyinFeedRequest{
 		LatestTime: &latest_time,
-		Token:      &token,
+		UserId:     &user_id,
 	}
 	_, _, err = rpc.FeedVideo(context.Background(), req)
 

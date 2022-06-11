@@ -21,7 +21,7 @@ struct Video {
 
 struct douyin_feed_request {
     1:optional i64 latest_time
-    2:optional string token
+    2:optional i64 user_id
 }
 
 struct douyin_feed_response {
@@ -33,7 +33,7 @@ struct douyin_feed_response {
 
 struct douyin_publish_action_request {
     1:string file_name
-    2:string token
+    2:i64 user_id
     3:string title
 }
 
@@ -44,7 +44,6 @@ struct douyin_publish_action_response {
 
 struct douyin_publish_list_request {
     1:i64 user_id
-    2:string token
 }
 
 struct douyin_publish_list_response {
@@ -53,8 +52,30 @@ struct douyin_publish_list_response {
     3:list<Video> video_list
 }
 
+struct douyin_video_favorite_request{
+    1:i64 video_id
+    2:i32 action
+}
+
+struct douyin_video_favorite_response {
+    1:i32 status_code
+    2:optional string status_msg
+}
+
+struct douyin_video_comment_request{
+    1:i64 video_id
+    2:i32 action
+}
+
+struct douyin_video_comment_response {
+    1:i32 status_code
+    2:optional string status_msg
+}
+
 service VideoService {
     douyin_feed_response FeedVideo(1:douyin_feed_request req)
     douyin_publish_action_response PublishAction(1:douyin_publish_action_request req)
     douyin_publish_list_response PublishList(1:douyin_publish_list_request req)
+    douyin_video_favorite_response VideoFavorite(1:douyin_video_favorite_request req)
+    douyin_video_comment_response VideoComment(1:douyin_video_comment_request req)
 }

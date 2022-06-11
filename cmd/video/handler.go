@@ -16,12 +16,13 @@ func (s *VideoServiceImpl) FeedVideo(ctx context.Context, req *video.DouyinFeedR
 	if req.LatestTime == nil {
 		resp.StatusCode = error2.ParamErr.ErrCode
 		resp.StatusMsg = &error2.ParamErr.ErrMsg
+		return resp, err
 	}
 
 	resp.VideoList, resp.NextTime, err = service.NewFeedVideoService(ctx).FeedVideo(req)
 	resp.StatusCode = error2.Success.ErrCode
 	resp.StatusMsg = &error2.Success.ErrMsg
-	return resp, err
+	return resp, nil
 }
 
 // PublishAction implements the VideoServiceImpl interface.
@@ -30,11 +31,12 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.DouyinP
 	if len(req.Title) == 0 || len(req.FileName) == 0 {
 		resp.StatusCode = error2.ParamErr.ErrCode
 		resp.StatusMsg = &error2.ParamErr.ErrMsg
+		return resp, err
 	}
 	err = service.NewPublishVideoService(ctx).PublishVideo(req)
 	if err != nil {
 		resp.StatusCode = error2.ConvertErr(err).ErrCode
-		return resp, nil
+		return resp, err
 	}
 	resp.StatusCode = error2.Success.ErrCode
 	resp.StatusMsg = &error2.Success.ErrMsg
@@ -44,17 +46,59 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.DouyinP
 // PublishList implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishList(ctx context.Context, req *video.DouyinPublishListRequest) (resp *video.DouyinPublishListResponse, err error) {
 	resp = new(video.DouyinPublishListResponse)
-	if req.UserId == 0 || len(req.Token) == 0 {
+	if req.UserId == 0 {
 		resp.StatusCode = error2.ParamErr.ErrCode
 		resp.StatusMsg = &error2.ParamErr.ErrMsg
+		return resp, err
 	}
 
 	videos, err := service.NewPublishListService(ctx).PublishList(req)
 	if err != nil {
 		resp.StatusCode = error2.ConvertErr(err).ErrCode
+		return resp, err
 	}
 	resp.StatusCode = error2.Success.ErrCode
 	resp.StatusMsg = &error2.Success.ErrMsg
 	resp.VideoList = videos
-	return resp, err
+	return resp, nil
+}
+
+// VideoFavorite implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) VideoFavorite(ctx context.Context, req *video.DouyinVideoFavoriteRequest) (resp *video.DouyinVideoFavoriteResponse, err error) {
+	resp = new(video.DouyinVideoFavoriteResponse)
+	if req.VideoId == 0 || (req.Action != 1 && req.Action != 2) {
+		resp.StatusCode = error2.ParamErr.ErrCode
+		resp.StatusMsg = &error2.ParamErr.ErrMsg
+		return resp, err
+	}
+
+	err = service.NewVideoFavoriteService(ctx).VideoFavorite(req)
+
+	if err != nil {
+		resp.StatusCode = error2.ConvertErr(err).ErrCode
+		return resp, err
+	}
+	resp.StatusCode = error2.Success.ErrCode
+	resp.StatusMsg = &error2.Success.ErrMsg
+	return resp, nil
+}
+
+// VideoComment implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) VideoComment(ctx context.Context, req *video.DouyinVideoCommentRequest) (resp *video.DouyinVideoCommentResponse, err error) {
+	resp = new(video.DouyinVideoCommentResponse)
+	if req.VideoId == 0 || (req.Action != 1 && req.Action != 2) {
+		resp.StatusCode = error2.ParamErr.ErrCode
+		resp.StatusMsg = &error2.ParamErr.ErrMsg
+		return resp, err
+	}
+
+	err = service.NewVideoCommentService(ctx).VideoComment(req)
+
+	if err != nil {
+		resp.StatusCode = error2.ConvertErr(err).ErrCode
+		return resp, err
+	}
+	resp.StatusCode = error2.Success.ErrCode
+	resp.StatusMsg = &error2.Success.ErrMsg
+	return resp, nil
 }
