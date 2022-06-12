@@ -39,8 +39,11 @@ func main() {
 	favorite1.GET("/list/", handlers.FacoriteList)
 
 	//video
-	//video := apiRouter
-	//video.GET("/feed", handlers.FeedVideo)
+	apiRouter.GET("/feed", handlers.FeedVideo)
+
+	video := apiRouter.Group("/publish")
+	video.POST("/action/", handlers.PublishVideo)
+	video.GET("/list/", handlers.PublishList)
 
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		klog.Fatal(err)
