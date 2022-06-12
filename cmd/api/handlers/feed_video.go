@@ -11,13 +11,13 @@ import (
 )
 
 func FeedVideo(c *gin.Context) {
-	latest_time, err := strconv.ParseInt(c.PostForm("latest_time"), 10, 64)
+	latest_time, err := strconv.ParseInt(c.Query("latest_time"), 10, 64)
 
 	if err != nil {
 		SendResponse(c, error2.ConvertErr(err), nil)
 	}
 
-	token := c.PostForm("token")
+	token := c.Query("token")
 	claims, err := ParserToken(token)
 	username := claims.Username
 	user_id, statusCode, err := rpc.Authentication(context.Background(), &user.AuthenticationRequest{

@@ -11,12 +11,12 @@ import (
 )
 
 func PublishList(c *gin.Context) {
-	user_id, err := strconv.ParseInt(c.PostForm("user_id"), 10, 64)
+	user_id, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if err != nil {
 		SendResponse(c, error2.ConvertErr(err), nil)
 	}
 
-	token := c.PostForm("token")
+	token := c.Query("token")
 
 	claims, err := ParserToken(token)
 	username := claims.Username
