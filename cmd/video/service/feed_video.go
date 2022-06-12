@@ -66,9 +66,9 @@ func (v *FeedVideoService) FeedVideo(req *video.DouyinFeedRequest) ([]*video.Vid
 
 		ipvf, _ := pack.GetLocalIPv4Address()
 
-		video.PlayUrl = "http://" + ipvf + ":8080/static/videos" + video.PlayUrl
+		video.PlayUrl = "http://" + ipvf + ":8080/static/videos/" + video.PlayUrl
 
-		video.CoverUrl = "http://" + ipvf + ":8080/static/cover" + video.CoverUrl
+		video.CoverUrl = "http://" + ipvf + ":8080/static/cover/" + video.CoverUrl
 	}
 
 	if err != nil {

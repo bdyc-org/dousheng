@@ -21,10 +21,11 @@ func NewPublishVideoService(ctx context.Context) *PublishVideoService {
 
 func (v *PublishVideoService) PublishVideo(req *video.DouyinPublishActionRequest) error {
 	covername, err := GetFrame(req.FileName)
+
 	if err != nil {
 		panic(err)
 	}
-
+	fmt.Println(req.FileName)
 	video := &db.Video{
 		Title:          req.Title,
 		Play_url:       req.FileName,
@@ -52,7 +53,7 @@ func GetFrame(filename string) (covername string, err error) {
 		panic("could not generate frame")
 	}
 	//cover name == c + filename
-	err = ioutil.WriteFile("../../../public/cover/"+"c"+filename, buf.Bytes(), 0666)
+	err = ioutil.WriteFile("./public/cover/"+"c"+filename, buf.Bytes(), 0666)
 	covername = "c" + filename
 	return covername, err
 }

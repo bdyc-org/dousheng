@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"github.com/bdyc-org/dousheng/pkg/constants"
 	"gorm.io/gorm"
 )
@@ -42,10 +43,13 @@ func QueryVideo(ctx context.Context, videoID uint) (*Video, error) {
 
 //QueryVideoList By latest_time
 func VideoFeed(ctx context.Context, LatestTime *int64) ([]*Video, *int64, error) {
+
 	var videoList []*Video //transfrom
 	conn := DB.WithContext(ctx).Model(&Video{}).Where("created_at < FROM_UNIXTIME(?)", *LatestTime)
 
 	err := conn.Limit(20).Find(videoList).Error
+
+	fmt.Println(videoList[0].Title)
 
 	var nextTime = videoList[0].Model.CreatedAt.Unix()
 

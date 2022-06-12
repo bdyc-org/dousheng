@@ -33,7 +33,7 @@ func PublishVideo(c *gin.Context) {
 	}
 	filename := filepath.Base(data.Filename)
 	finalName := fmt.Sprintf("%d_%s", claims.Username, filename)
-	saveFile := filepath.Join("../../../public/videos/", finalName)
+	saveFile := filepath.Join("./public/videos/", finalName)
 	if err := c.SaveUploadedFile(data, saveFile); err != nil {
 		SendResponse(c, error2.ConvertErr(err), nil)
 		return
