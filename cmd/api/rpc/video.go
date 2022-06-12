@@ -2,6 +2,8 @@ package rpc
 
 import (
 	"context"
+	"time"
+
 	"github.com/bdyc-org/dousheng/kitex_gen/video"
 	"github.com/bdyc-org/dousheng/kitex_gen/video/videoservice"
 	"github.com/bdyc-org/dousheng/pkg/constants"
@@ -10,8 +12,6 @@ import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	trace "github.com/kitex-contrib/tracer-opentracing"
-	"time"
 )
 
 var videoClient videoservice.Client
@@ -30,7 +30,7 @@ func initVideoRpc() {
 		client.WithRPCTimeout(3*time.Second), //rpc timeout
 		//client.WithConnectTimeout()
 		client.WithFailureRetry(retry.NewFailurePolicy()),
-		client.WithSuite(trace.NewDefaultClientSuite()),
+		// client.WithSuite(trace.NewDefaultClientSuite()),
 		client.WithResolver(r),
 	)
 

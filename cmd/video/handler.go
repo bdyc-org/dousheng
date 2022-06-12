@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
+
 	"github.com/bdyc-org/dousheng/cmd/video/service"
 	"github.com/bdyc-org/dousheng/kitex_gen/video"
 	error2 "github.com/bdyc-org/dousheng/pkg/error"
@@ -12,13 +14,15 @@ type VideoServiceImpl struct{}
 
 // FeedVideo implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) FeedVideo(ctx context.Context, req *video.DouyinFeedRequest) (resp *video.DouyinFeedResponse, err error) {
+	fmt.Println("我来了5")
 	resp = new(video.DouyinFeedResponse)
+	fmt.Println("我来了5")
 	if req.LatestTime == nil {
 		resp.StatusCode = error2.ParamErr.ErrCode
 		resp.StatusMsg = &error2.ParamErr.ErrMsg
 		return resp, err
 	}
-
+	fmt.Println("我来了6")
 	resp.VideoList, resp.NextTime, err = service.NewFeedVideoService(ctx).FeedVideo(req)
 	resp.StatusCode = error2.Success.ErrCode
 	resp.StatusMsg = &error2.Success.ErrMsg

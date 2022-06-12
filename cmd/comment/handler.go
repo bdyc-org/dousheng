@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+
 	"github.com/bdyc-org/dousheng/cmd/comment/pack"
 	"github.com/bdyc-org/dousheng/cmd/comment/service"
 	"github.com/bdyc-org/dousheng/kitex_gen/comment"
@@ -15,23 +16,28 @@ type CommentServiceImpl struct{}
 func (s *CommentServiceImpl) Comment(ctx context.Context, req *comment.CommentRequest) (resp *comment.CommentResponse, err error) {
 	// TODO: Your code here...
 	resp = new(comment.CommentResponse)
+	resp.Comment = nil
 
 	//检查参数是否合法
-	if req.UserId == 0 || req.VideoId == 0 || req.CommentText == "" || (req.ActionType != 1 && req.ActionType != 2) {
+	if req.UserId == 0 || req.VideoId == 0 || (req.ActionType != 1 && req.ActionType != 2) {
+		resp.BaseResp = pack.BuildBaseResponse(errno.ParamErrCode, errno.Errparameter.Error())
+		return resp, nil
+	}
+	if (req.ActionType == 1 && req.CommentText == nil) || (req.ActionType == 2 && req.CommentId == nil) {
 		resp.BaseResp = pack.BuildBaseResponse(errno.ParamErrCode, errno.Errparameter.Error())
 		return resp, nil
 	}
 
-	comment, err := service.NewCommentService(ctx).Comment(req)
+	comment, statusCode, err := service.NewCommentService(ctx).Comment(req)
 	if err != nil {
-		resp.BaseResp = pack.BuildBaseResponse(errno.ServiceErrCode, err.Error())
+		resp.BaseResp = pack.BuildBaseResponse(statusCode, err.Error())
 		return resp, nil
 	}
-	resp.Comment = comment
 
 	switch req.ActionType {
 	case 1:
 		resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "评论成功")
+		resp.Comment = comment
 	case 2:
 		resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "删除评论成功")
 	default:
@@ -41,21 +47,21 @@ func (s *CommentServiceImpl) Comment(ctx context.Context, req *comment.CommentRe
 	return resp, nil
 }
 
-// QueryComment implements the CommentServiceImpl interface.
-func (s *CommentServiceImpl) QueryComment(ctx context.Context, req *comment.QueryCommentRequest) (resp *comment.QueryCommentResponse, err error) {
+// CommentList implements the CommentServiceImpl interface.
+func (s *CommentServiceImpl) CommentList(ctx context.Context, req *comment.CommentListRequest) (resp *comment.CommentListResponse, err error) {
 	// TODO: Your code here...
-	resp = new(comment.QueryCommentResponse)
+	resp = new(comment.CommentListResponse)
+	resp.CommentList = nil
 
 	if req.VideoId == 0 {
 		resp.BaseResp = pack.BuildBaseResponse(errno.ParamErrCode, errno.Errparameter.Error())
-		resp.CommentList = nil
 		return resp, nil
 	}
 
-	commentList, err := service.NewQueryCommentService(ctx).QueryComment(req)
+	commentList, statusCode, err := service.NewCommentListService(ctx).CommentList(req)
 	if err != nil {
-		resp.BaseResp = pack.BuildBaseResponse(errno.ServiceErrCode, err.Error())
-		return resp, err
+		resp.BaseResp = pack.BuildBaseResponse(statusCode, err.Error())
+		return resp, nil
 	}
 
 	resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "获取评论列表成功")

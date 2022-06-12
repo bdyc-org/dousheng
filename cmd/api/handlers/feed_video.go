@@ -2,11 +2,12 @@ package handlers
 
 import (
 	"context"
+	"strconv"
+
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/video"
 	error2 "github.com/bdyc-org/dousheng/pkg/error"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 func FeedVideo(c *gin.Context) {
@@ -27,12 +28,10 @@ func FeedVideo(c *gin.Context) {
 	//	return
 	//}
 	var userId int64 = 1
-
 	_, _, err = rpc.FeedVideo(context.Background(), &video.DouyinFeedRequest{
 		LatestTime: &latest_time,
 		UserId:     &userId,
 	})
-
 	if err != nil {
 		SendResponse(c, error2.ConvertErr(err), nil)
 	}

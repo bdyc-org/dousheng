@@ -9,11 +9,8 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.4.1
 	github.com/kitex-contrib/registry-etcd v0.0.0-20220110034026-b1c94979cea3
 	github.com/kitex-contrib/tracer-opentracing v0.0.3
-	github.com/opentracing/opentracing-go v1.2.0
-	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	gorm.io/driver/mysql v1.3.4
 	gorm.io/gorm v1.23.5
-	gorm.io/plugin/opentracing v0.0.0-20211220013347-7d2b2af23560
 )
 
 require (
@@ -38,12 +35,11 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/tidwall/gjson v1.12.1 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
-	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.1 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.1 // indirect

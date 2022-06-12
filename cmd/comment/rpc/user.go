@@ -2,10 +2,10 @@ package rpc
 
 import (
 	"context"
+	"errors"
 	"time"
 
-	"github.com/bdyc-org/dousheng/cmd/comment/pack"
-	"github.com/bdyc-org/dousheng/kitex_gen/comment"
+	"github.com/bdyc-org/dousheng/kitex_gen/user"
 	"github.com/bdyc-org/dousheng/kitex_gen/user/userservice"
 	"github.com/bdyc-org/dousheng/pkg/constants"
 	"github.com/bdyc-org/dousheng/pkg/errno"
@@ -33,7 +33,7 @@ func initUserRpc() {
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
 		// client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
-		client.WithResolver(r),                            // resolver
+		client.WithResolver(r), // resolver
 	)
 	if err != nil {
 		panic(err)
@@ -42,15 +42,13 @@ func initUserRpc() {
 }
 
 // 发现user的MGetUser
-func MGetUser(ctx context.Context, UserId int64, UserIds []int64) ([]*comment.User, error) {
-	resp, err := userClient.MGetUser(ctx, pack.MGetUserReq(UserId, UserIds))
+func MGetUser(ctx context.Context, req *user.MGetUserRequest) (user []*user.User, statusCode int64, err error) {
+	resp, err := userClient.MGetUser(ctx, req)
 	if err != nil {
-		return nil, err
+		return nil, errno.ServiceErrCode, err
 	}
-	if resp.BaseResp.StatusCode != errno.SuccessCode {
-		return nil, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
+	if resp.BaseResp.StatusCode != 0 {
+		return nil, resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
 	}
-
-	userList := pack.UserList(resp.UserList)
-	return userList, nil
+	return resp.UserList, errno.SuccessCode, nil
 }

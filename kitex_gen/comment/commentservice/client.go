@@ -12,7 +12,7 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	Comment(ctx context.Context, req *comment.CommentRequest, callOptions ...callopt.Option) (r *comment.CommentResponse, err error)
-	QueryComment(ctx context.Context, req *comment.QueryCommentRequest, callOptions ...callopt.Option) (r *comment.QueryCommentResponse, err error)
+	CommentList(ctx context.Context, req *comment.CommentListRequest, callOptions ...callopt.Option) (r *comment.CommentListResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -49,7 +49,7 @@ func (p *kCommentServiceClient) Comment(ctx context.Context, req *comment.Commen
 	return p.kClient.Comment(ctx, req)
 }
 
-func (p *kCommentServiceClient) QueryComment(ctx context.Context, req *comment.QueryCommentRequest, callOptions ...callopt.Option) (r *comment.QueryCommentResponse, err error) {
+func (p *kCommentServiceClient) CommentList(ctx context.Context, req *comment.CommentListRequest, callOptions ...callopt.Option) (r *comment.CommentListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.QueryComment(ctx, req)
+	return p.kClient.CommentList(ctx, req)
 }

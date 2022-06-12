@@ -19,8 +19,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "CommentService"
 	handlerType := (*comment.CommentService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"Comment":      kitex.NewMethodInfo(commentHandler, newCommentServiceCommentArgs, newCommentServiceCommentResult, false),
-		"QueryComment": kitex.NewMethodInfo(queryCommentHandler, newCommentServiceQueryCommentArgs, newCommentServiceQueryCommentResult, false),
+		"Comment":     kitex.NewMethodInfo(commentHandler, newCommentServiceCommentArgs, newCommentServiceCommentResult, false),
+		"CommentList": kitex.NewMethodInfo(commentListHandler, newCommentServiceCommentListArgs, newCommentServiceCommentListResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "comment",
@@ -54,22 +54,22 @@ func newCommentServiceCommentResult() interface{} {
 	return comment.NewCommentServiceCommentResult()
 }
 
-func queryCommentHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*comment.CommentServiceQueryCommentArgs)
-	realResult := result.(*comment.CommentServiceQueryCommentResult)
-	success, err := handler.(comment.CommentService).QueryComment(ctx, realArg.Req)
+func commentListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*comment.CommentServiceCommentListArgs)
+	realResult := result.(*comment.CommentServiceCommentListResult)
+	success, err := handler.(comment.CommentService).CommentList(ctx, realArg.Req)
 	if err != nil {
 		return err
 	}
 	realResult.Success = success
 	return nil
 }
-func newCommentServiceQueryCommentArgs() interface{} {
-	return comment.NewCommentServiceQueryCommentArgs()
+func newCommentServiceCommentListArgs() interface{} {
+	return comment.NewCommentServiceCommentListArgs()
 }
 
-func newCommentServiceQueryCommentResult() interface{} {
-	return comment.NewCommentServiceQueryCommentResult()
+func newCommentServiceCommentListResult() interface{} {
+	return comment.NewCommentServiceCommentListResult()
 }
 
 type kClient struct {
@@ -92,11 +92,11 @@ func (p *kClient) Comment(ctx context.Context, req *comment.CommentRequest) (r *
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) QueryComment(ctx context.Context, req *comment.QueryCommentRequest) (r *comment.QueryCommentResponse, err error) {
-	var _args comment.CommentServiceQueryCommentArgs
+func (p *kClient) CommentList(ctx context.Context, req *comment.CommentListRequest) (r *comment.CommentListResponse, err error) {
+	var _args comment.CommentServiceCommentListArgs
 	_args.Req = req
-	var _result comment.CommentServiceQueryCommentResult
-	if err = p.c.Call(ctx, "QueryComment", &_args, &_result); err != nil {
+	var _result comment.CommentServiceCommentListResult
+	if err = p.c.Call(ctx, "CommentList", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

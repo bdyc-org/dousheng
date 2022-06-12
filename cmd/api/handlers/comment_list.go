@@ -2,6 +2,9 @@ package handlers
 
 import (
 	"context"
+	"errors"
+	"net/http"
+
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/comment"
 	"github.com/bdyc-org/dousheng/kitex_gen/user"
@@ -10,8 +13,8 @@ import (
 )
 
 type CommentListParam struct {
-	VideoID int64  `json:"video_id"`
-	Token   string `json:"token"`
+	Token   string `json:"token" form:"token"`
+	VideoID int64  `json:"video_id" form:"video_id"`
 }
 
 func CommentList(c *gin.Context) {
@@ -44,18 +47,24 @@ func CommentList(c *gin.Context) {
 		return
 	}
 
-	resp, err := rpc.CommentList(context.Background(), &comment.QueryCommentRequest{
+	commentList, statusCode, err := rpc.CommentList(context.Background(), &comment.CommentListRequest{
+		UserId:  user_id,
 		VideoId: commentListVar.VideoID,
 	})
 	if err != nil {
-		SendCommListResponse(c, err, resp.CommentList)
+		SendErrResponse(c, statusCode, err)
 		return
 	}
 
-	if len(resp.CommentList) == 0 {
-		SendCommListResponse(c, errno.Success.WithMessage("该视频暂未无评论"), resp.CommentList)
-		return
+	if len(commentList) == 0 {
+		err = errors.New("该视频暂无评论")
+	} else {
+		err = errors.New("获取评论列表成功")
 	}
 
-	SendCommListResponse(c, errno.Success.WithMessage("获取评论列表成功"), resp.CommentList)
+	c.JSON(http.StatusOK, gin.H{
+		"status_code":  statusCode,
+		"status_msg":   err.Error(),
+		"comment_list": commentList,
+	})
 }
