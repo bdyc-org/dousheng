@@ -6,18 +6,15 @@ import (
 	video "github.com/bdyc-org/dousheng/kitex_gen/video/videoservice"
 	"github.com/bdyc-org/dousheng/pkg/constants"
 	"github.com/bdyc-org/dousheng/pkg/middleware"
-	"github.com/bdyc-org/dousheng/pkg/tracer"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/limit"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	trace "github.com/kitex-contrib/tracer-opentracing"
 	"net"
 )
 
 func Init() {
-	tracer.InitJaeger(constants.VideoServiceName)
 	rpc.InitRPC()
 	dal.Init()
 }
@@ -39,7 +36,6 @@ func main() {
 		server.WithServiceAddr(address),                                    // address
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
 		server.WithMuxTransport(),                                          // Multiplex
-		server.WithSuite(trace.NewDefaultServerSuite()),                    // tracer
 		server.WithRegistry(r),
 	)
 
