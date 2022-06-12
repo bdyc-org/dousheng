@@ -7,10 +7,15 @@ import (
 	error2 "github.com/bdyc-org/dousheng/pkg/error"
 	"github.com/gin-gonic/gin"
 	"strconv"
+	"time"
 )
 
 func FeedVideo(c *gin.Context) {
 	latest_time, err := strconv.ParseInt(c.Query("latest_time"), 10, 64)
+
+	if latest_time == 0 {
+		latest_time = time.Now().Unix()
+	}
 
 	if err != nil {
 		SendResponse(c, error2.ConvertErr(err), nil)

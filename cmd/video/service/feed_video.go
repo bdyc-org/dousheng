@@ -20,7 +20,6 @@ func NewFeedVideoService(ctx context.Context) *FeedVideoService {
 
 func (v *FeedVideoService) FeedVideo(req *video.DouyinFeedRequest) ([]*video.Video, *int64, error) {
 	videos, nextTime, err := db.VideoFeed(v.ctx, req.LatestTime)
-
 	//获取author信息
 	var authorsId []int64
 

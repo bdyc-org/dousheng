@@ -41,7 +41,7 @@ func initVideoRpc() {
 }
 
 func PublicVideo(ctx context.Context, req *video.DouyinPublishActionRequest) error {
-	resp, err := videoClient.PublishAction(ctx, req)
+	resp, err := videoClient.PublishAction(ctx, req) //错误
 	if err != nil {
 		return err
 	}
@@ -52,6 +52,7 @@ func PublicVideo(ctx context.Context, req *video.DouyinPublishActionRequest) err
 	return nil
 }
 func FeedVideo(ctx context.Context, req *video.DouyinFeedRequest) ([]*video.Video, *int64, error) {
+
 	resp, err := videoClient.FeedVideo(ctx, req)
 	if err != nil {
 		return nil, nil, err
