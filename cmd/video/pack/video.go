@@ -21,15 +21,13 @@ func Video(m *db.Video) *video.Video {
 	}
 }
 
-func Videos(videodb []*db.Video) []*video.Video {
-	videos := make([]*video.Video, 0)
-	for _, videoz := range videodb {
+func Videos(dbvideos []*db.Video) []*video.Video {
+
+	videos := make([]*video.Video, 30)
+	for _, videoz := range dbvideos {
 		video := Video(videoz)
+		video.Author.UserId = int64(videoz.User_id)
 		videos = append(videos, video)
 	}
 	return videos
-}
-
-func IdUser() { //需要用到user服务,通过id获取User对象
-
 }

@@ -14,6 +14,8 @@ type Client interface {
 	FeedVideo(ctx context.Context, req *video.DouyinFeedRequest, callOptions ...callopt.Option) (r *video.DouyinFeedResponse, err error)
 	PublishAction(ctx context.Context, req *video.DouyinPublishActionRequest, callOptions ...callopt.Option) (r *video.DouyinPublishActionResponse, err error)
 	PublishList(ctx context.Context, req *video.DouyinPublishListRequest, callOptions ...callopt.Option) (r *video.DouyinPublishListResponse, err error)
+	VideoFavorite(ctx context.Context, req *video.DouyinVideoFavoriteRequest, callOptions ...callopt.Option) (r *video.DouyinVideoFavoriteResponse, err error)
+	VideoComment(ctx context.Context, req *video.DouyinVideoCommentRequest, callOptions ...callopt.Option) (r *video.DouyinVideoCommentResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -58,4 +60,14 @@ func (p *kVideoServiceClient) PublishAction(ctx context.Context, req *video.Douy
 func (p *kVideoServiceClient) PublishList(ctx context.Context, req *video.DouyinPublishListRequest, callOptions ...callopt.Option) (r *video.DouyinPublishListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.PublishList(ctx, req)
+}
+
+func (p *kVideoServiceClient) VideoFavorite(ctx context.Context, req *video.DouyinVideoFavoriteRequest, callOptions ...callopt.Option) (r *video.DouyinVideoFavoriteResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.VideoFavorite(ctx, req)
+}
+
+func (p *kVideoServiceClient) VideoComment(ctx context.Context, req *video.DouyinVideoCommentRequest, callOptions ...callopt.Option) (r *video.DouyinVideoCommentResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.VideoComment(ctx, req)
 }

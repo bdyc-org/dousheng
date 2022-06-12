@@ -16,13 +16,12 @@ func NewPublishVideoService(ctx context.Context) *PublishVideoService {
 }
 
 func (v *PublishVideoService) PublishVideo(req *video.DouyinPublishActionRequest) error {
-	//TODO to obtain user_id
 
 	video := &db.Video{
 		Title:          req.Title,
 		Play_url:       req.FileName,
 		Cover_url:      req.FileName + "1",
-		User_id:        0,
+		User_id:        uint(req.UserId),
 		Favorite_count: 0,
 		Comment_count:  0,
 	}

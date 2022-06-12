@@ -22,6 +22,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"FeedVideo":     kitex.NewMethodInfo(feedVideoHandler, newVideoServiceFeedVideoArgs, newVideoServiceFeedVideoResult, false),
 		"PublishAction": kitex.NewMethodInfo(publishActionHandler, newVideoServicePublishActionArgs, newVideoServicePublishActionResult, false),
 		"PublishList":   kitex.NewMethodInfo(publishListHandler, newVideoServicePublishListArgs, newVideoServicePublishListResult, false),
+		"VideoFavorite": kitex.NewMethodInfo(videoFavoriteHandler, newVideoServiceVideoFavoriteArgs, newVideoServiceVideoFavoriteResult, false),
+		"VideoComment":  kitex.NewMethodInfo(videoCommentHandler, newVideoServiceVideoCommentArgs, newVideoServiceVideoCommentResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -91,6 +93,42 @@ func newVideoServicePublishListResult() interface{} {
 	return video.NewVideoServicePublishListResult()
 }
 
+func videoFavoriteHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceVideoFavoriteArgs)
+	realResult := result.(*video.VideoServiceVideoFavoriteResult)
+	success, err := handler.(video.VideoService).VideoFavorite(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newVideoServiceVideoFavoriteArgs() interface{} {
+	return video.NewVideoServiceVideoFavoriteArgs()
+}
+
+func newVideoServiceVideoFavoriteResult() interface{} {
+	return video.NewVideoServiceVideoFavoriteResult()
+}
+
+func videoCommentHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceVideoCommentArgs)
+	realResult := result.(*video.VideoServiceVideoCommentResult)
+	success, err := handler.(video.VideoService).VideoComment(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newVideoServiceVideoCommentArgs() interface{} {
+	return video.NewVideoServiceVideoCommentArgs()
+}
+
+func newVideoServiceVideoCommentResult() interface{} {
+	return video.NewVideoServiceVideoCommentResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -126,6 +164,26 @@ func (p *kClient) PublishList(ctx context.Context, req *video.DouyinPublishListR
 	_args.Req = req
 	var _result video.VideoServicePublishListResult
 	if err = p.c.Call(ctx, "PublishList", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) VideoFavorite(ctx context.Context, req *video.DouyinVideoFavoriteRequest) (r *video.DouyinVideoFavoriteResponse, err error) {
+	var _args video.VideoServiceVideoFavoriteArgs
+	_args.Req = req
+	var _result video.VideoServiceVideoFavoriteResult
+	if err = p.c.Call(ctx, "VideoFavorite", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) VideoComment(ctx context.Context, req *video.DouyinVideoCommentRequest) (r *video.DouyinVideoCommentResponse, err error) {
+	var _args video.VideoServiceVideoCommentArgs
+	_args.Req = req
+	var _result video.VideoServiceVideoCommentResult
+	if err = p.c.Call(ctx, "VideoComment", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

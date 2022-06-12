@@ -27,7 +27,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	address, err := net.ResolveTCPAddr("tcp", ":8080")
+	address, err := net.ResolveTCPAddr("tcp", constants.VideoResolveTCPAddr)
 	if err != nil {
 		panic(err)
 	}

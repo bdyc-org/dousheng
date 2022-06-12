@@ -71,3 +71,37 @@ func QueryVideos(ctx context.Context, user_id uint) ([]*Video, error) {
 	}
 	return res, nil
 }
+
+// action==1 favorite+1  action==2 favorite-1
+func VideoFavorite(ctx context.Context, videoID uint, action int) error {
+	if action == 1 {
+		err := DB.WithContext(ctx).Where("id = ?", videoID).UpdateColumn("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error
+		if err != nil {
+			return err
+		}
+		return nil
+	} else {
+		err := DB.WithContext(ctx).Where("id = ?", videoID).UpdateColumn("favorite_count", gorm.Expr("favorite_count - ?", 1)).Error
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+}
+
+// action==1 comment+1  action==2 comment-1
+func VideoComment(ctx context.Context, videoID uint, action int) error {
+	if action == 1 {
+		err := DB.WithContext(ctx).Where("id = ?", videoID).UpdateColumn("comment_count", gorm.Expr("comment_count + ?", 1)).Error
+		if err != nil {
+			return err
+		}
+		return nil
+	} else {
+		err := DB.WithContext(ctx).Where("id = ?", videoID).UpdateColumn("comment_count", gorm.Expr("comment_count - ?", 1)).Error
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+}
