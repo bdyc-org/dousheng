@@ -40,7 +40,7 @@ func PublishVideo(c *gin.Context) {
 	}
 
 	req := &video.DouyinPublishActionRequest{
-		FileName: filename,
+		FileName: finalName,
 		UserId:   user_id,
 		Title:    title,
 	}

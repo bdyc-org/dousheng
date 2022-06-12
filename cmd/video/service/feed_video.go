@@ -49,6 +49,7 @@ func (v *FeedVideoService) FeedVideo(req *video.DouyinFeedRequest) ([]*video.Vid
 	favoritesvideoid, err := rpc.FavoriteJudge(v.ctx, &resp2)
 
 	videosfinal := pack.Videos(videos)
+
 	for _, video := range videosfinal {
 		video.Author.UserId = authorMap[video.Author.UserId].Id
 		video.Author.FollowerCount = authorMap[video.Author.UserId].FollowerCount
@@ -63,6 +64,12 @@ func (v *FeedVideoService) FeedVideo(req *video.DouyinFeedRequest) ([]*video.Vid
 				video.IsFavorite = true
 			}
 		}
+
+		ipvf, _ := pack.GetLocalIPv4Address()
+
+		video.PlayUrl = "http://" + ipvf + ":8080/static" + video.PlayUrl
+
+		video.CoverUrl = "http://" + ipvf + ":8080/static" + video.CoverUrl
 	}
 
 	if err != nil {
