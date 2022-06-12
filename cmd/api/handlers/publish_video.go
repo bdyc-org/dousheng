@@ -25,7 +25,7 @@ func PublishVideo(c *gin.Context) {
 	}
 
 	title := c.PostForm("title")
-	//TODO
+
 	data, err := c.FormFile("data")
 	if err != nil {
 		SendResponse(c, error2.ConvertErr(err), nil)
