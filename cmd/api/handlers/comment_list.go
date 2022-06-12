@@ -5,9 +5,10 @@ import (
 	"errors"
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/comment"
+	"github.com/bdyc-org/dousheng/kitex_gen/user"
+	"github.com/bdyc-org/dousheng/pkg/errno"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 )
 
 type CommentListParam struct {
@@ -19,13 +20,31 @@ func CommentList(c *gin.Context) {
 	var commentListVar CommentListParam
 
 	//获取参数
-	temp_string := c.Query("user_id")
-	temp_int64, err := strconv.ParseInt(temp_string, 10, 64)
-	if err != nil {
-		commentListVar.VideoID = 0
+	if err := c.ShouldBindQuery(&commentListVar); err != nil {
+		SendErrResponse(c, errno.ParamErrCode, errno.Errparameter)
+		return
 	}
-	commentListVar.VideoID = temp_int64
-	commentListVar.Token = c.Query("token")
+
+	//检查参数是否合法
+	if commentListVar.VideoID == 0 || len(commentListVar.Token) == 0 {
+		SendErrResponse(c, errno.ParamErrCode, errno.Errparameter)
+		return
+	}
+
+	//Token鉴权
+	claims, err := ParserToken(commentListVar.Token)
+	if err != nil {
+		SendErrResponse(c, errno.TokenInvalidErrCode, errno.ErrTokenInvalid)
+		return
+	}
+	username := claims.Username
+	user_id, statusCode, err := rpc.Authentication(context.Background(), &user.AuthenticationRequest{
+		Username: username,
+	})
+	if err != nil || user_id == 0 {
+		SendErrResponse(c, statusCode, err)
+		return
+	}
 
 	commentList, statusCode, err := rpc.CommentList(context.Background(), &comment.QueryCommentRequest{
 		VideoId: commentListVar.VideoID,

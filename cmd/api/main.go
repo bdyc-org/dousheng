@@ -45,6 +45,11 @@ func main() {
 	video.POST("/action/", handlers.PublishVideo)
 	video.GET("/list/", handlers.PublishList)
 
+	//comment
+	comment1 := apiRouter.Group("/comment")
+	comment1.POST("/action/", handlers.Comment)
+	comment1.GET("/list/", handlers.CommentList)
+
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		klog.Fatal(err)
 	}
