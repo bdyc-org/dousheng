@@ -2,13 +2,11 @@ package handlers
 
 import (
 	"context"
-	"errors"
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/comment"
 	"github.com/bdyc-org/dousheng/kitex_gen/user"
 	"github.com/bdyc-org/dousheng/pkg/errno"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 type CommentListParam struct {
@@ -46,21 +44,18 @@ func CommentList(c *gin.Context) {
 		return
 	}
 
-	commentList, statusCode, err := rpc.CommentList(context.Background(), &comment.QueryCommentRequest{
+	resp, err := rpc.CommentList(context.Background(), &comment.QueryCommentRequest{
 		VideoId: commentListVar.VideoID,
 	})
 	if err != nil {
-		SendErrResponse(c, statusCode, err)
+		SendCommListResponse(c, err, resp.CommentList)
 		return
 	}
 
-	if len(commentList) == 0 {
-		err = errors.New("该视频暂未无评论")
+	if len(resp.CommentList) == 0 {
+		SendCommListResponse(c, errno.Success.WithMessage("该视频暂未无评论"), resp.CommentList)
+		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status_code":  statusCode,
-		"status_msg":   err.Error(),
-		"comment_list": commentList,
-	})
+	SendCommListResponse(c, errno.Success.WithMessage("获取评论列表成功"), resp.CommentList)
 }

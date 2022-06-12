@@ -2,13 +2,11 @@ package handlers
 
 import (
 	"context"
-	"errors"
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/comment"
 	"github.com/bdyc-org/dousheng/kitex_gen/user"
 	"github.com/bdyc-org/dousheng/pkg/errno"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func Comment(c *gin.Context) {
@@ -28,7 +26,7 @@ func Comment(c *gin.Context) {
 	//Token鉴权
 	claims, err := ParserToken(commentVar.Token)
 	if err != nil {
-		SendRelaResponse(c, errno.NewErrNo(errno.TokenInvalidErrCode, errno.ErrTokenInvalid.Error()), nil)
+		SendCommResponse(c, errno.NewErrNo(errno.TokenInvalidErrCode, errno.ErrTokenInvalid.Error()), nil)
 		return
 	}
 	username := claims.Username
@@ -36,32 +34,30 @@ func Comment(c *gin.Context) {
 		Username: username,
 	})
 	if err != nil || user_id == 0 {
-		SendRelaResponse(c, errno.NewErrNo(statusCode, err.Error()), nil)
+		SendCommResponse(c, errno.NewErrNo(statusCode, err.Error()), nil)
 		return
 	}
 
-	statusCode, err = rpc.CommentOperation(context.Background(), &comment.CommentRequest{
+	resp, err := rpc.CommentOperation(c, &comment.CommentRequest{
 		UserId:      commentVar.UserID,
 		VideoId:     commentVar.VideoID,
 		ActionType:  commentVar.ActionType,
 		CommentText: commentVar.CommentText,
+		CommentId:   commentVar.commentId,
 	})
 	if err != nil {
-		SendErrResponse(c, statusCode, err)
+		SendCommResponse(c, err, resp)
 		return
 	}
 
 	switch commentVar.ActionType {
 	case 1:
-		err = errors.New("评论成功")
+		resp.BaseResp.StatusMsg = "评论成功"
 	case 2:
-		err = errors.New("删除评论成功")
+		resp.BaseResp.StatusMsg = "删除评论成功"
 	default:
-		err = errors.New("未定义的操作")
+		resp.BaseResp.StatusMsg = "未定义的操作"
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"status_code": statusCode,
-		"status_msg":  err.Error(),
-	})
+	SendCommResponse(c, errno.Success, resp)
 }
