@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/bdyc-org/dousheng/pkg/errno"
-	error2 "github.com/bdyc-org/dousheng/pkg/error"
+	error2 "github.com/bdyc-org/dousheng/pkg/errno"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/gin-gonic/gin"
 )
@@ -27,6 +27,7 @@ type RelaResponse struct {
 	Message  string      `json:"status_msg"`
 	UserList interface{} `json:"user_list"`
 }
+
 func SendRelaResponse(c *gin.Context, err error, data interface{}) {
 	Err := errno.ConvertErr(err)
 	klog.Infof(Err.ErrMsg)
@@ -44,34 +45,35 @@ type CommentParam struct {
 	VideoID     int64  `json:"video_id" form:"video_id"`
 	ActionType  int32  `json:"action_type" form:"action_type"`
 	CommentText string `json:"comment_text" form:"comment_text"`
-	CommentId  	int64  `json:"comment_id" form:"comment_id"`
+	CommentId   int64  `json:"comment_id" form:"comment_id"`
 }
 type CommResponse struct {
-	Code     int64       `json:"status_code"`
-	Message  string      `json:"status_msg"`
+	Code    int64       `json:"status_code"`
+	Message string      `json:"status_msg"`
 	Comment interface{} `json:"user_list"`
 }
 type CommListResponse struct {
-	Code     int64       `json:"status_code"`
-	Message  string      `json:"status_msg"`
+	Code        int64       `json:"status_code"`
+	Message     string      `json:"status_msg"`
 	CommentList interface{} `json:"comment_list"`
 }
+
 func SendCommResponse(c *gin.Context, err error, data interface{}) {
 	Err := errno.ConvertErr(err)
 	klog.Infof(Err.ErrMsg)
 	c.JSON(http.StatusOK, CommResponse{
-		Code:     Err.ErrCode,
-		Message:  Err.ErrMsg,
-		Comment:  data,
+		Code:    Err.ErrCode,
+		Message: Err.ErrMsg,
+		Comment: data,
 	})
 }
 func SendCommListResponse(c *gin.Context, err error, data interface{}) {
 	Err := errno.ConvertErr(err)
 	klog.Infof(Err.ErrMsg)
 	c.JSON(http.StatusOK, CommListResponse{
-		Code:     		Err.ErrCode,
-		Message:  		Err.ErrMsg,
-		CommentList: 	data,
+		Code:        Err.ErrCode,
+		Message:     Err.ErrMsg,
+		CommentList: data,
 	})
 }
 
@@ -96,7 +98,7 @@ type VideoParam struct {
 func SendResponse(c *gin.Context, err error, data interface{}) {
 	Err := error2.ConvertErr(err)
 	c.JSON(http.StatusOK, Response{
-		Code: Err.ErrCode,
+		Code: int32(Err.ErrCode),
 		Msg:  Err.ErrMsg,
 		Data: data,
 	})
