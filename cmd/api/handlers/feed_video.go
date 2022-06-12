@@ -23,14 +23,20 @@ func FeedVideo(c *gin.Context) {
 	}
 
 	token := c.Query("token")
-	claims, err := ParserToken(token)
-	username := claims.Username
-	user_id, statusCode, err := rpc.Authentication(context.Background(), &user.AuthenticationRequest{
-		Username: username,
-	})
-	if err != nil || user_id == 0 {
-		SendErrResponse(c, statusCode, err)
-		return
+
+	var statusCode (int64) = 0
+	var user_id (int64) = 0
+
+	if len(token) != 0 {
+		claims, err := ParserToken(token)
+		username := claims.Username
+		user_id, statusCode, err = rpc.Authentication(context.Background(), &user.AuthenticationRequest{
+			Username: username,
+		})
+		if err != nil || user_id == 0 {
+			SendErrResponse(c, statusCode, err)
+			return
+		}
 	}
 
 	_, _, err = rpc.FeedVideo(context.Background(), &video.DouyinFeedRequest{
