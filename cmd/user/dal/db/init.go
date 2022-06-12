@@ -11,7 +11,7 @@ var MyDB *gorm.DB
 func Init() {
 	//连接mysql数据库
 	var err error
-	MyDB, err = gorm.Open(mysql.Open(constants.MySQLTestDSN),
+	MyDB, err = gorm.Open(mysql.Open(constants.MySQLDefaultDSN),
 		&gorm.Config{
 			PrepareStmt:            true,
 			SkipDefaultTransaction: true,

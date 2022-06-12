@@ -39,12 +39,11 @@ func PublishVideo(c *gin.Context) {
 		return
 	}
 
-	req := &video.DouyinPublishActionRequest{
+	err = rpc.PublicVideo(context.Background(), &video.DouyinPublishActionRequest{
 		FileName: finalName,
 		UserId:   user_id,
 		Title:    title,
-	}
-	err = rpc.PublicVideo(context.Background(), req)
+	})
 	if err != nil {
 		SendResponse(c, error2.ConvertErr(err), nil)
 	}
