@@ -39,8 +39,8 @@ func (s *CommentService) Comment(req *comment.CommentRequest) (*comment.Comment,
 		return nil, err
 	}
 
-	UserIds := make([]int64, 0)
-	UserIds = append(UserIds, req.UserId)
+	UserIds := make([]int64, 1)
+	UserIds[0] = req.UserId
 	Users, err := rpc.MGetUser(s.ctx, req.UserId, UserIds)
 	resp := pack.Comment(&c, Users[0])
 	

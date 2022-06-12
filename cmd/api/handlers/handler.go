@@ -39,12 +39,12 @@ func SendRelaResponse(c *gin.Context, err error, data interface{}) {
 
 // comment
 type CommentParam struct {
-	UserID      int64  `json:"user_id"`
-	Token       string `json:"token"`
-	VideoID     int64  `json:"video_id"`
-	ActionType  int32  `json:"action_type"`
-	CommentText string `json:"comment_text"`
-	commentId  	int64  `json:"comment_id"`
+	UserID      int64  `json:"user_id" form:"user_id"`
+	Token       string `json:"token" form:"token"`
+	VideoID     int64  `json:"video_id" form:"video_id"`
+	ActionType  int32  `json:"action_type" form:"action_type"`
+	CommentText string `json:"comment_text" form:"comment_text"`
+	CommentId  	int64  `json:"comment_id" form:"comment_id"`
 }
 type CommResponse struct {
 	Code     int64       `json:"status_code"`

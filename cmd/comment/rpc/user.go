@@ -43,10 +43,7 @@ func initUserRpc() {
 
 // 发现user的MGetUser
 func MGetUser(ctx context.Context, UserId int64, UserIds []int64) ([]*comment.User, error) {
-	// 打包为user.MGetUserRequest
-	r := pack.MGetUserReq(UserId, UserIds)
-	
-	resp, err := userClient.MGetUser(ctx, r)
+	resp, err := userClient.MGetUser(ctx, pack.MGetUserReq(UserId, UserIds))
 	if err != nil {
 		return nil, err
 	}

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/comment"
 	"github.com/bdyc-org/dousheng/kitex_gen/user"
@@ -39,11 +40,11 @@ func Comment(c *gin.Context) {
 	}
 
 	resp, err := rpc.CommentOperation(c, &comment.CommentRequest{
-		UserId:      commentVar.UserID,
+		UserId:      user_id,
 		VideoId:     commentVar.VideoID,
 		ActionType:  commentVar.ActionType,
 		CommentText: commentVar.CommentText,
-		CommentId:   commentVar.commentId,
+		CommentId:   commentVar.CommentId,
 	})
 	if err != nil {
 		SendCommResponse(c, err, resp)
