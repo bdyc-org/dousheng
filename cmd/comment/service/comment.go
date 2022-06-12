@@ -27,7 +27,7 @@ func (s *CommentService) Comment(req *comment.CommentRequest) (statusCode int64,
 		err = db.CreatComment(s.ctx, &c)
 	} else if req.ActionType == 2 {
 		//删除评论
-		err = db.DeleteComment(s.ctx, req.UserId, req.VideoId, req.CommentText)
+		err = db.DeleteComment(s.ctx, &c)
 	} else {
 		err = errno.ParamErr
 	}

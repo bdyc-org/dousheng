@@ -25,8 +25,8 @@ func CreatComment(ctx context.Context, c *Comment) error {
 }
 
 //删除评论
-func DeleteComment(ctx context.Context, userID int64, videoID int64, content string) error {
-	return MyDB.WithContext(ctx).Where("user_id = ? and video_id = ? and content = ?", userID, videoID, content).Delete(&Comment{}).Error
+func DeleteComment(ctx context.Context, c *Comment) error {
+	return MyDB.WithContext(ctx).Where("user_id = ? and video_id = ? and content = ?", c.User_id, c.Video_id, c.Content).Delete(&Comment{}).Error
 }
 
 //查看该视频的所有评论
