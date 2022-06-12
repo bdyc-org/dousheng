@@ -20,7 +20,7 @@ func (v *Video) TableName() string {
 	return constants.VideoTableName
 }
 
-// PublishVideo create video info
+// PublishVideo create videos info
 func PublishVideo(ctx context.Context, videos []*Video) error {
 	if err := DB.WithContext(ctx).Create(videos).Error; err != nil {
 		return err
@@ -28,7 +28,7 @@ func PublishVideo(ctx context.Context, videos []*Video) error {
 	return nil
 }
 
-// QueryVideo query video by id, Limit 1
+// QueryVideo query videos by id, Limit 1
 func QueryVideo(ctx context.Context, videoID uint) (*Video, error) {
 	var res *Video
 	conn := DB.WithContext(ctx).Model(&Video{}).Where("id = ?", videoID)
@@ -56,12 +56,12 @@ func VideoFeed(ctx context.Context, LatestTime *int64) ([]*Video, *int64, error)
 	return videoList, &nextTime, nil
 }
 
-// DeleteVideo delete video by id
+// DeleteVideo delete videos by id
 func DeleteVideo(ctx context.Context, videoID uint) error {
 	return DB.WithContext(ctx).Where("id = ?", videoID).Delete(&Video{}).Error
 }
 
-// QueryVideo query video by user_id
+// QueryVideo query videos by user_id
 func QueryVideos(ctx context.Context, user_id uint) ([]*Video, error) {
 	var res []*Video
 	conn := DB.WithContext(ctx).Model(&Video{}).Where("user_id = ?", user_id)
