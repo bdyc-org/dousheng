@@ -2,9 +2,11 @@ package service
 
 import (
 	"context"
+
 	"github.com/bdyc-org/dousheng/cmd/comment/dal/db"
+	"github.com/bdyc-org/dousheng/cmd/comment/pack"
+	"github.com/bdyc-org/dousheng/cmd/comment/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/comment"
-	"github.com/bdyc-org/dousheng/pkg/errno"
 )
 
 type QueryCommentService struct {
@@ -15,17 +17,21 @@ func NewQueryCommentService(ctx context.Context) *QueryCommentService {
 	return &QueryCommentService{ctx: ctx}
 }
 
-func (s *QueryCommentService) QueryComment(req *comment.QueryCommentRequest) (commentList []*comment.Comment, statusCode int64, err error) {
-	commentIds := make([]int64, 0)
+func (s *QueryCommentService) QueryComment(req *comment.QueryCommentRequest) (commentList []*comment.Comment, err error) {
+	userIds := make([]int64, 0)
 	comments, err := db.QueryComment(s.ctx, req.VideoId)
 	if err != nil {
-		return nil, errno.ServiceErrCode, err
-	}
-	if len(comments) == 0 {
-		return nil, errno.SuccessCode, err
+		return nil, err
 	}
 	for _, c := range comments {
-		commentIds = append(commentIds, int64(c.Model.ID))
+		userIds = append(userIds, c.User_id)
 	}
-	return nil, errno.SuccessCode, err
+
+	Users, err := rpc.MGetUser(s.ctx, req.UserId, userIds)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := pack.Comments(comments, Users)
+	return resp, nil
 }

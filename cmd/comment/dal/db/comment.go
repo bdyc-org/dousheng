@@ -33,7 +33,7 @@ func DeleteComment(ctx context.Context, c *Comment) error {
 func QueryComment(ctx context.Context, videoId int64) ([]*Comment, error) {
 	var res []*Comment
 	if err := MyDB.WithContext(ctx).Where("video_id = ?", videoId).Find(&res).Error; err != nil {
-		return res, err
+		return nil, err
 	}
 	return res, nil
 }

@@ -22,11 +22,12 @@ func (s *CommentServiceImpl) Comment(ctx context.Context, req *comment.CommentRe
 		return resp, nil
 	}
 
-	statusCode, err := service.NewCommentService(ctx).Comment(req)
+	comment, err := service.NewCommentService(ctx).Comment(req)
 	if err != nil {
-		resp.BaseResp = pack.BuildBaseResponse(statusCode, err.Error())
+		resp.BaseResp = pack.BuildBaseResponse(errno.ServiceErrCode, err.Error())
 		return resp, nil
 	}
+	resp.Comment = comment
 
 	switch req.ActionType {
 	case 1:
@@ -51,11 +52,10 @@ func (s *CommentServiceImpl) QueryComment(ctx context.Context, req *comment.Quer
 		return resp, nil
 	}
 
-	commentList, statusCode, err := service.NewQueryCommentService(ctx).QueryComment(req)
+	commentList, err := service.NewQueryCommentService(ctx).QueryComment(req)
 	if err != nil {
-		resp.BaseResp = pack.BuildBaseResponse(statusCode, err.Error())
-		resp.CommentList = nil
-		return resp, nil
+		resp.BaseResp = pack.BuildBaseResponse(errno.ServiceErrCode, err.Error())
+		return resp, err
 	}
 
 	resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "获取评论列表成功")

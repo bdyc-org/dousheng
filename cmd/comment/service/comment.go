@@ -2,9 +2,12 @@ package service
 
 import (
 	"context"
+	"time"
+
 	"github.com/bdyc-org/dousheng/cmd/comment/dal/db"
+	"github.com/bdyc-org/dousheng/cmd/comment/pack"
+	"github.com/bdyc-org/dousheng/cmd/comment/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/comment"
-	"github.com/bdyc-org/dousheng/pkg/errno"
 )
 
 type CommentService struct {
@@ -15,11 +18,14 @@ func NewCommentService(ctx context.Context) *CommentService {
 	return &CommentService{ctx: ctx}
 }
 
-func (s *CommentService) Comment(req *comment.CommentRequest) (statusCode int64, err error) {
+func (s *CommentService) Comment(req *comment.CommentRequest) (*comment.Comment, error) {
+	var err error
+	
 	c := db.Comment{
 		User_id:  req.UserId,
 		Video_id: req.VideoId,
 		Content:  req.CommentText,
+		Create_date: time.Now().Format("01-02"),
 	}
 
 	//发表评论
@@ -28,9 +34,19 @@ func (s *CommentService) Comment(req *comment.CommentRequest) (statusCode int64,
 	} else if req.ActionType == 2 {
 		//删除评论
 		err = db.DeleteComment(s.ctx, &c)
-	} else {
-		err = errno.ParamErr
+	}
+	if err != nil {
+		return nil, err
 	}
 
-	return errno.SuccessCode, nil
-}
+	UserIds := make([]int64, 0)
+	UserIds = append(UserIds, req.UserId)
+	Users, err := rpc.MGetUser(s.ctx, req.UserId, UserIds)
+	resp := pack.Comment(&c, Users[0])
+	
+	if err != nil {
+		return nil, err
+	} else {
+		return resp, nil
+	}
+}	

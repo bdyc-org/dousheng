@@ -23,11 +23,10 @@ struct Comment {
 
 struct CommentRequest {
     1:i64 user_id
-    2:string token
-    3:i64 video_id
-    4:i32 action_type
-    5:string comment_text
-    6:i64 comment_id
+    2:i64 video_id
+    3:i32 action_type
+    4:string comment_text
+    5:i64 comment_id
 }
 
 struct CommentResponse {
@@ -36,7 +35,7 @@ struct CommentResponse {
 }
 
 struct QueryCommentRequest {
-    1:string token
+    1:i64 user_id
     2:i64 video_id
 }
 
