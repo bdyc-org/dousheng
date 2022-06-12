@@ -32,5 +32,10 @@ func (s *CommentService) Comment(req *comment.CommentRequest) (statusCode int64,
 		err = errno.ParamErr
 	}
 
-	return errno.SuccessCode, nil
+	if err == nil {
+		return errno.SuccessCode, nil
+	} else {
+		return errno.ServiceErrCode, err
+	}
+
 }
