@@ -17,6 +17,7 @@ const (
 	UserResolveTCPAddr             = "127.0.0.1:6660"
 	RelationResolveTCPAddr         = "127.0.0.1:6661"
 	FavoriteResolveTCPAddr         = "127.0.0.1:6602"
+	CommentResolveTCPAddr          = "127.0.0.1:6603"
 	Title                          = "title"
 	Videos                         = "videos"
 	VideoID                        = "video_id"
