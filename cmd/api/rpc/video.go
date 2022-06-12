@@ -5,12 +5,11 @@ import (
 	"github.com/bdyc-org/dousheng/kitex_gen/video"
 	"github.com/bdyc-org/dousheng/kitex_gen/video/videoservice"
 	"github.com/bdyc-org/dousheng/pkg/constants"
-	error2 "github.com/bdyc-org/dousheng/pkg/error"
+	error2 "github.com/bdyc-org/dousheng/pkg/errno"
 	"github.com/bdyc-org/dousheng/pkg/middleware"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	trace "github.com/kitex-contrib/tracer-opentracing"
 	"time"
 )
 
@@ -30,7 +29,7 @@ func initVideoRpc() {
 		client.WithRPCTimeout(3*time.Second), //rpc timeout
 		//client.WithConnectTimeout()
 		client.WithFailureRetry(retry.NewFailurePolicy()),
-		client.WithSuite(trace.NewDefaultClientSuite()),
+
 		client.WithResolver(r),
 	)
 
@@ -47,7 +46,7 @@ func PublicVideo(ctx context.Context, req *video.DouyinPublishActionRequest) err
 	}
 	// TODO StatusCode need  change
 	if resp.StatusCode != 0 {
-		return error2.NewErrNo(resp.StatusCode, *(resp.StatusMsg))
+		return error2.NewErrNo(int64(resp.StatusCode), *(resp.StatusMsg))
 	}
 	return nil
 }
@@ -58,7 +57,7 @@ func FeedVideo(ctx context.Context, req *video.DouyinFeedRequest) ([]*video.Vide
 		return nil, nil, err
 	}
 	if resp.StatusCode != 0 {
-		return nil, nil, error2.NewErrNo(resp.StatusCode, *(resp.StatusMsg))
+		return nil, nil, error2.NewErrNo(int64(resp.StatusCode), *(resp.StatusMsg))
 	}
 
 	return resp.VideoList, resp.NextTime, err
@@ -70,7 +69,7 @@ func PublishList(ctx context.Context, req *video.DouyinPublishListRequest) ([]*v
 		return nil, err
 	}
 	if resp.StatusCode != 0 {
-		return nil, error2.NewErrNo(resp.StatusCode, *(resp.StatusMsg))
+		return nil, error2.NewErrNo(int64(resp.StatusCode), *(resp.StatusMsg))
 	}
 
 	return resp.VideoList, nil

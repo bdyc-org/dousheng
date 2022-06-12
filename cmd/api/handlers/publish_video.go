@@ -7,7 +7,7 @@ import (
 	"github.com/bdyc-org/dousheng/kitex_gen/user"
 	"github.com/bdyc-org/dousheng/kitex_gen/video"
 	"github.com/bdyc-org/dousheng/pkg/constants"
-	error2 "github.com/bdyc-org/dousheng/pkg/error"
+	error2 "github.com/bdyc-org/dousheng/pkg/errno"
 	"github.com/gin-gonic/gin"
 	"path/filepath"
 )
