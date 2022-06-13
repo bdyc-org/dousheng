@@ -66,13 +66,5 @@ func Comments(comms []*db.Comment, users []*comment.User) []*comment.Comment {
 			}
 		}
 	}
-
-
-	// for i, m := range ms {
-	// 	klog.Info(m)
-	// 	if n := Comment(m, users[i]); n != nil {
-	// 		comments = append(comments, n)
-	// 	}
-	// }
 	return comments
 }
