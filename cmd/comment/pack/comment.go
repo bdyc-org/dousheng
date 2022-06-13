@@ -7,7 +7,7 @@ import (
 
 func Comment(item *db.Comment, user *comment.User) *comment.Comment {
 	return &comment.Comment{
-		Id:         item.UserId,
+		Id:         int64(item.ID),
 		User:       user,
 		Content:    item.Content,
 		CreateDate: item.CreatedAt.Format("01-02"),

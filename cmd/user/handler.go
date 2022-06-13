@@ -67,9 +67,9 @@ func (s *UserServiceImpl) MGetUser(ctx context.Context, req *user.MGetUserReques
 	// TODO: Your code here...
 	resp = new(user.MGetUserResponse)
 
-	//检查参数是否合法
+	//检查参数
 	if len(req.UserIds) == 0 {
-		resp.BaseResp = pack.BuildBaseResponse(errno.ParamErrCode, errno.Errparameter.Error())
+		resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "获取用户信息成功")
 		resp.UserList = nil
 		return resp, nil
 	}
