@@ -71,8 +71,9 @@ func (s *FavoriteServiceImpl) FavoriteJudge(ctx context.Context, req *favorite.F
 	// TODO: Your code here...
 	resp = new(favorite.FavoriteJudgeResponse)
 
+	// 检查参数
 	if req.UserId == 0 || len(req.VideoIds) == 0 {
-		resp.BaseResp = pack.BuildBaseResponse(errno.ParamErrCode, errno.Errparameter.Error())
+		resp.BaseResp = pack.BuildBaseResponse(errno.SuccessCode, "判断是否点赞完成")
 		resp.VideoIds = nil
 		return resp, nil
 	}
