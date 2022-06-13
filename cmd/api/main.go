@@ -47,7 +47,7 @@ func main() {
 
 	//comment
 	comment1 := apiRouter.Group("/comment")
-	comment1.POST("/action", handlers.Comment)
+	comment1.POST("/action/", handlers.Comment)
 	comment1.GET("/list/", handlers.CommentList)
 
 	if err := http.ListenAndServe(":8080", r); err != nil {

@@ -21,15 +21,14 @@ func Feed(c *gin.Context) {
 	var feedVar FeedParam
 	var user_id int64
 	//获取参数
-	if err := c.ShouldBindQuery(&feedVar); err != nil {
-		SendErrResponse(c, errno.ParamErrCode, errno.Errparameter)
-		return
-	}
+	c.ShouldBindQuery(&feedVar)
 
 	//检查参数
-	if feedVar.LatestTime == 0 {
-		feedVar.LatestTime = time.Now().Unix()
-	}
+	// if feedVar.LatestTime == 0 {
+	// 	feedVar.LatestTime = time.Now().Unix()
+	// }
+
+	feedVar.LatestTime = time.Now().Unix()
 
 	if len(feedVar.Token) == 0 {
 		user_id = 0
