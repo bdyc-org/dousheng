@@ -33,6 +33,9 @@ func (s *PublishListService) PublishList(req *video.PublishListRequest) (videos 
 		UserId:  req.UserId,
 		UserIds: []int64{req.AuthorId},
 	})
+	if err != nil {
+		return nil, statusCode, err
+	}
 	userList := pack.UserList(users)
 	videos = pack.Videos(modelVideos, userList)
 	//is_favorite调用favorite服务

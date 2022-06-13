@@ -12,11 +12,15 @@ import (
 
 func QueryFollow(c *gin.Context) {
 	var followParam FollowParam
+	var user_id int64
+	var statusCode int64
+	var err error
+
 	if err := c.ShouldBindQuery(&followParam); err != nil {
 		SendRelaResponse(c, errno.ParamErr.WithMessage("参数获取失败"), nil)
 		return
 	}
-	if followParam.UserId == 0 || len(followParam.Token) == 0 {
+	if followParam.UserId == 0 {
 		SendRelaResponse(c, errno.ParamErr.WithMessage("参数不正确"), nil)
 		return
 	}
@@ -24,16 +28,16 @@ func QueryFollow(c *gin.Context) {
 	//Token鉴权
 	claims, err := ParserToken(followParam.Token)
 	if err != nil {
-		SendRelaResponse(c, errno.NewErrNo(errno.TokenInvalidErrCode, errno.ErrTokenInvalid.Error()), nil)
-		return
-	}
-	username := claims.Username
-	user_id, statusCode, err := rpc.Authentication(context.Background(), &user.AuthenticationRequest{
-		Username: username,
-	})
-	if err != nil || user_id == 0 {
-		SendRelaResponse(c, errno.NewErrNo(statusCode, err.Error()), nil)
-		return
+		user_id = 0
+	} else {
+		username := claims.Username
+		user_id, statusCode, err = rpc.Authentication(context.Background(), &user.AuthenticationRequest{
+			Username: username,
+		})
+		if err != nil || user_id == 0 {
+			SendRelaResponse(c, errno.NewErrNo(statusCode, err.Error()), nil)
+			return
+		}
 	}
 
 	var userList []*relation.User
@@ -58,11 +62,14 @@ func QueryFollow(c *gin.Context) {
 
 func QueryFollower(c *gin.Context) {
 	var followParam FollowParam
+	var user_id int64
+	var statusCode int64
+	var err error
 	if err := c.ShouldBindQuery(&followParam); err != nil {
 		SendRelaResponse(c, errno.ParamErr.WithMessage("参数获取失败"), nil)
 		return
 	}
-	if followParam.UserId == 0 || len(followParam.Token) == 0 {
+	if followParam.UserId == 0 {
 		SendRelaResponse(c, errno.ParamErr.WithMessage("参数不正确"), nil)
 		return
 	}
@@ -70,16 +77,16 @@ func QueryFollower(c *gin.Context) {
 	//Token鉴权
 	claims, err := ParserToken(followParam.Token)
 	if err != nil {
-		SendRelaResponse(c, errno.NewErrNo(errno.TokenInvalidErrCode, errno.ErrTokenInvalid.Error()), nil)
-		return
-	}
-	username := claims.Username
-	user_id, statusCode, err := rpc.Authentication(context.Background(), &user.AuthenticationRequest{
-		Username: username,
-	})
-	if err != nil || user_id == 0 {
-		SendRelaResponse(c, errno.NewErrNo(statusCode, err.Error()), nil)
-		return
+		user_id = 0
+	} else {
+		username := claims.Username
+		user_id, statusCode, err = rpc.Authentication(context.Background(), &user.AuthenticationRequest{
+			Username: username,
+		})
+		if err != nil || user_id == 0 {
+			SendRelaResponse(c, errno.NewErrNo(statusCode, err.Error()), nil)
+			return
+		}
 	}
 
 	var userList []*relation.User

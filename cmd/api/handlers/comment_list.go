@@ -19,6 +19,9 @@ type CommentListParam struct {
 
 func CommentList(c *gin.Context) {
 	var commentListVar CommentListParam
+	var user_id int64
+	var statusCode int64
+	var err error
 
 	//获取参数
 	if err := c.ShouldBindQuery(&commentListVar); err != nil {
@@ -27,7 +30,7 @@ func CommentList(c *gin.Context) {
 	}
 
 	//检查参数是否合法
-	if commentListVar.VideoID == 0 || len(commentListVar.Token) == 0 {
+	if commentListVar.VideoID == 0 {
 		SendErrResponse(c, errno.ParamErrCode, errno.Errparameter)
 		return
 	}
@@ -35,16 +38,16 @@ func CommentList(c *gin.Context) {
 	//Token鉴权
 	claims, err := ParserToken(commentListVar.Token)
 	if err != nil {
-		SendErrResponse(c, errno.TokenInvalidErrCode, errno.ErrTokenInvalid)
-		return
-	}
-	username := claims.Username
-	user_id, statusCode, err := rpc.Authentication(context.Background(), &user.AuthenticationRequest{
-		Username: username,
-	})
-	if err != nil || user_id == 0 {
-		SendErrResponse(c, statusCode, err)
-		return
+		user_id = 0
+	} else {
+		username := claims.Username
+		user_id, statusCode, err = rpc.Authentication(context.Background(), &user.AuthenticationRequest{
+			Username: username,
+		})
+		if err != nil || user_id == 0 {
+			SendErrResponse(c, statusCode, err)
+			return
+		}
 	}
 
 	commentList, statusCode, err := rpc.CommentList(context.Background(), &comment.CommentListRequest{

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/relation"
@@ -34,6 +35,11 @@ func Follow(c *gin.Context) {
 	})
 	if err != nil || user_id == 0 {
 		SendRelaResponse(c, errno.NewErrNo(statusCode, err.Error()), nil)
+		return
+	}
+
+	if user_id == relaParam.ToUserId {
+		SendErrResponse(c, errno.ParamErrCode, errors.New("您不能关注自己"))
 		return
 	}
 

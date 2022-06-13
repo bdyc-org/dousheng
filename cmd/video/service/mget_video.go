@@ -36,6 +36,9 @@ func (s *MGetVideoService) MGetVideo(req *video.MGetVideoRequest) (videos []*vid
 		UserId:  req.UserId,
 		UserIds: userIds,
 	})
+	if err != nil {
+		return nil, statusCode, err
+	}
 	userList := pack.UserList(users)
 	videos = pack.Videos(modelVideos, userList)
 	//is_favorite调用favorite服务

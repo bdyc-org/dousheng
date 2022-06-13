@@ -36,6 +36,9 @@ func (s *FeedService) Feed(req *video.FeedRequest) (videos []*video.Video, nextT
 		UserId:  req.UserId,
 		UserIds: userIds,
 	})
+	if err != nil {
+		return nil, 0, statusCode, err
+	}
 	userList := pack.UserList(users)
 	videos = pack.Videos(modelVideos, userList)
 	//is_favorite调用favorite服务

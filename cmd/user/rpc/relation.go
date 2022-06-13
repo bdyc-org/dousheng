@@ -2,7 +2,6 @@ package rpc
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/bdyc-org/dousheng/kitex_gen/relation"
@@ -45,9 +44,7 @@ func QueryFollow(ctx context.Context, req *relation.QueryFollowRequest) (followI
 	if err != nil {
 		return nil, errno.ServiceErrCode, err
 	}
-	if resp.BaseResp.StatusCode != 0 {
-		return nil, resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
-	}
+
 	res := make(map[int64]bool)
 	for _, followId := range resp.FollowIds {
 		res[followId] = true

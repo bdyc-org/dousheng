@@ -47,19 +47,3 @@ type Response struct {
 	Msg  string      `json:"status_msg"`
 	Data interface{} `json:"data"`
 }
-
-type VideoParam struct {
-	Filename string `json:"filename"`
-	Token    string `json:"token"`
-	Title    string `json:"title"`
-}
-
-//videos
-// func SendResponse(c *gin.Context, err error, data interface{}) {
-// 	Err := error2.ConvertErr(err)
-// 	c.JSON(http.StatusOK, Response{
-// 		Code: int32(Err.ErrCode),
-// 		Msg:  Err.ErrMsg,
-// 		Data: data,
-// 	})
-// }
