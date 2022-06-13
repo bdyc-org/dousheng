@@ -9,11 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type CommentListParam struct {
-	VideoID int64  `json:"video_id"`
-	Token   string `json:"token"`
-}
-
 func CommentList(c *gin.Context) {
 	var commentListVar CommentListParam
 
@@ -45,6 +40,7 @@ func CommentList(c *gin.Context) {
 	}
 
 	resp, err := rpc.CommentList(context.Background(), &comment.QueryCommentRequest{
+		UserId: user_id,
 		VideoId: commentListVar.VideoID,
 	})
 	if err != nil {

@@ -45,19 +45,34 @@ func UserList(us []*user.User) []*comment.User {
 
 func Comment(m *db.Comment, user *comment.User) *comment.Comment {
 	return &comment.Comment{
-		Id: m.Video_id,
+		Id: int64(m.ID),
 		User: user,
 		Content: m.Content,
 		CreateDate: m.Create_date,
 	}
 }
 
-func Comments(ms []*db.Comment, users []*comment.User) []*comment.Comment {
+func Comments(comms []*db.Comment, users []*comment.User) []*comment.Comment {
 	comments := make([]*comment.Comment, 0)
-	for i, m := range ms {
-		if n := Comment(m, users[i]); n != nil {
-			comments = append(comments, n)
+	// 对应userId放入对应User信息
+	for _, v := range users {
+		userId := v.Id
+		for _, comm := range comms {
+			if comm.User_id == userId {
+				// 打包
+				if n := Comment(comm, v); n != nil {
+					comments = append(comments, n)
+				}
+			}
 		}
 	}
+
+
+	// for i, m := range ms {
+	// 	klog.Info(m)
+	// 	if n := Comment(m, users[i]); n != nil {
+	// 		comments = append(comments, n)
+	// 	}
+	// }
 	return comments
 }

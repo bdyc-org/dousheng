@@ -47,6 +47,10 @@ type CommentParam struct {
 	CommentText string `json:"comment_text" form:"comment_text"`
 	CommentId   int64  `json:"comment_id" form:"comment_id"`
 }
+type CommentListParam struct {
+	VideoID int64  `json:"video_id" form:"video_id"`
+	Token   string `json:"token" form:"token"`
+}
 type CommResponse struct {
 	Code    int64       `json:"status_code"`
 	Message string      `json:"status_msg"`
