@@ -21,6 +21,14 @@ func Init() {
 		panic(err)
 	}
 
+	//设置连接池
+	sqlDB, err := DB.DB()
+	if err != nil {
+		panic(err)
+	}
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+
 	m := DB.Migrator()
 	if m.HasTable(&Video{}) {
 		return

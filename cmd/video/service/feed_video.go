@@ -2,11 +2,13 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/bdyc-org/dousheng/cmd/video/dal/db"
 	"github.com/bdyc-org/dousheng/cmd/video/pack"
 	"github.com/bdyc-org/dousheng/cmd/video/rpc"
 	favorite2 "github.com/bdyc-org/dousheng/kitex_gen/favorite"
 	"github.com/bdyc-org/dousheng/kitex_gen/user"
+
 	"github.com/bdyc-org/dousheng/kitex_gen/video"
 )
 
@@ -20,6 +22,7 @@ func NewFeedVideoService(ctx context.Context) *FeedVideoService {
 
 func (v *FeedVideoService) FeedVideo(req *video.DouyinFeedRequest) ([]*video.Video, *int64, error) {
 	videos, nextTime, err := db.VideoFeed(v.ctx, req.LatestTime)
+
 	//获取author信息
 	var authorsId []int64
 
@@ -47,6 +50,8 @@ func (v *FeedVideoService) FeedVideo(req *video.DouyinFeedRequest) ([]*video.Vid
 
 	favoritesvideoid, err := rpc.FavoriteJudge(v.ctx, &resp2)
 
+	fmt.Println(videos)
+	fmt.Println("???????????????????????????????")
 	videosfinal := pack.Videos(videos)
 
 	for _, video := range videosfinal {
@@ -70,6 +75,9 @@ func (v *FeedVideoService) FeedVideo(req *video.DouyinFeedRequest) ([]*video.Vid
 
 		video.CoverUrl = "http://" + ipvf + ":8080/static/cover/" + video.CoverUrl
 	}
+
+	fmt.Println(videosfinal)
+	fmt.Println("???????????????????????????????")
 
 	if err != nil {
 		return nil, nil, err
