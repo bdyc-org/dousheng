@@ -51,7 +51,7 @@ func FavoriteOperation(ctx context.Context, req *favorite.FavoriteOperationReque
 	return errno.SuccessCode, nil
 }
 
-func FacoriteList(ctx context.Context, req *favorite.FavoriteListRequest) (videoList []*favorite.Video, statusCode int64, err error) {
+func FavoriteList(ctx context.Context, req *favorite.FavoriteListRequest) (videoList []*favorite.Video, statusCode int64, err error) {
 	resp, err := favoriteClient.FavoriteList(ctx, req)
 	if err != nil {
 		return nil, errno.ServiceErrCode, err

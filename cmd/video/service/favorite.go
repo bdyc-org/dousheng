@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/bdyc-org/dousheng/cmd/user/dal/db"
-	"github.com/bdyc-org/dousheng/kitex_gen/user"
+	"github.com/bdyc-org/dousheng/cmd/video/dal/db"
+	"github.com/bdyc-org/dousheng/kitex_gen/video"
 	"github.com/bdyc-org/dousheng/pkg/errno"
 )
 
@@ -16,8 +16,8 @@ func NewFavoriteService(ctx context.Context) *FavoriteService {
 	return &FavoriteService{ctx: ctx}
 }
 
-func (s *FavoriteService) Favorite(req *user.FavoriteOperationRequest) (statusCode int64, err error) {
-	err = db.Favorite(s.ctx, req.UserId, req.VideoAuthor, req.ActionType)
+func (s *FavoriteService) Favorite(req *video.FavoriteOperationRequest) (statusCode int64, err error) {
+	err = db.Favorite(s.ctx, req.VideoId, req.ActionType)
 	if err != nil {
 		return errno.ServiceErrCode, err
 	}

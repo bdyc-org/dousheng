@@ -12,26 +12,29 @@ import (
 	"github.com/bdyc-org/dousheng/pkg/errno"
 )
 
-type PublishListService struct {
+type MGetVideoService struct {
 	ctx context.Context
 }
 
-func NewPublishListService(ctx context.Context) *PublishListService {
-	return &PublishListService{ctx: ctx}
+func NewMGetVideoService(ctx context.Context) *MGetVideoService {
+	return &MGetVideoService{ctx: ctx}
 }
 
-func (s *PublishListService) PublishList(req *video.PublishListRequest) (videos []*video.Video, statusCode int64, err error) {
-	modelVideos, err := db.PublishList(s.ctx, req.AuthorId)
+// 获取视频（列表）信息
+func (s *MGetVideoService) MGetVideo(req *video.MGetVideoRequest) (videos []*video.Video, statusCode int64, err error) {
+	modelVideos, err := db.MGetVideos(s.ctx, req.VideoIds)
 	if err != nil {
 		return nil, errno.ServiceErrCode, err
 	}
+	userIds := make([]int64, 0)
 	videoIds := make([]int64, 0)
 	for _, item := range modelVideos {
+		userIds = append(userIds, item.AuthorId)
 		videoIds = append(videoIds, int64(item.ID))
 	}
 	users, statusCode, err := rpc.MGetUser(context.Background(), &user.MGetUserRequest{
 		UserId:  req.UserId,
-		UserIds: []int64{req.AuthorId},
+		UserIds: userIds,
 	})
 	userList := pack.UserList(users)
 	videos = pack.Videos(modelVideos, userList)

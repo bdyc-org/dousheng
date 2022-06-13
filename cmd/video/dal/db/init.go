@@ -6,29 +6,35 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+var MyDB *gorm.DB
 
-// Init init DB
 func Init() {
+	//连接mysql数据库
 	var err error
-	DB, err = gorm.Open(mysql.Open(constants.MySQLDefaultDSN),
+	MyDB, err = gorm.Open(mysql.Open(constants.MySQLTestDSN),
 		&gorm.Config{
-			SkipDefaultTransaction: true,
 			PrepareStmt:            true,
-		})
-
+			SkipDefaultTransaction: true,
+		},
+	)
 	if err != nil {
 		panic(err)
 	}
 
-	// if err = DB.Use(gormopentracing.New()); err != nil {
-	// 	panic(err)
-	// }
+	//设置连接池
+	sqlDB, err := MyDB.DB()
+	if err != nil {
+		panic(err)
+	}
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
 
-	m := DB.Migrator()
+	//检查表是否存在，若不存在，先建表
+	m := MyDB.Migrator()
 	if m.HasTable(&Video{}) {
 		return
 	}
+
 	if err = m.CreateTable(&Video{}); err != nil {
 		panic(err)
 	}

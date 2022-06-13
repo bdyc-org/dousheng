@@ -8,6 +8,7 @@ import (
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/comment"
 	"github.com/bdyc-org/dousheng/kitex_gen/user"
+	"github.com/bdyc-org/dousheng/kitex_gen/video"
 	"github.com/bdyc-org/dousheng/pkg/errno"
 	"github.com/gin-gonic/gin"
 )
@@ -53,12 +54,21 @@ func Comment(c *gin.Context) {
 		return
 	}
 
-	comment, statusCode, err := rpc.CommentOperation(c, &comment.CommentRequest{
+	comment, statusCode, err := rpc.CommentOperation(context.Background(), &comment.CommentRequest{
 		UserId:      user_id,
 		VideoId:     commentVar.VideoID,
 		ActionType:  commentVar.ActionType,
 		CommentText: commentVar.CommentText,
 		CommentId:   commentVar.CommentId,
+	})
+	if err != nil {
+		SendErrResponse(c, statusCode, err)
+		return
+	}
+
+	statusCode, err = rpc.VideoComment(context.Background(), &video.CommentOperationRequest{
+		VideoId:    commentVar.VideoID,
+		ActionType: commentVar.ActionType,
 	})
 	if err != nil {
 		SendErrResponse(c, statusCode, err)

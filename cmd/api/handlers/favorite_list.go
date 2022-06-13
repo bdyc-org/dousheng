@@ -17,7 +17,7 @@ type FavoriteListParam struct {
 	Token  string `json:"token" form:"token"`
 }
 
-func FacoriteList(c *gin.Context) {
+func FavoriteList(c *gin.Context) {
 	var favoriteListVar FavoriteListParam
 
 	//获取参数
@@ -47,7 +47,7 @@ func FacoriteList(c *gin.Context) {
 		return
 	}
 
-	videoList, statusCode, err := rpc.FacoriteList(context.Background(), &favorite.FavoriteListRequest{
+	videoList, statusCode, err := rpc.FavoriteList(context.Background(), &favorite.FavoriteListRequest{
 		UserId: user_id,
 	})
 	if err != nil {

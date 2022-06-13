@@ -4,6 +4,7 @@ import (
 	"net"
 
 	"github.com/bdyc-org/dousheng/cmd/video/dal"
+	"github.com/bdyc-org/dousheng/cmd/video/pack"
 	"github.com/bdyc-org/dousheng/cmd/video/rpc"
 	video "github.com/bdyc-org/dousheng/kitex_gen/video/videoservice"
 	"github.com/bdyc-org/dousheng/pkg/constants"
@@ -16,9 +17,9 @@ import (
 )
 
 func Init() {
-	//tracer.InitJaeger(constants.VideoServiceName)
 	rpc.InitRPC()
 	dal.Init()
+	pack.GetLocalIPv4Address()
 }
 
 func main() {
@@ -38,7 +39,6 @@ func main() {
 		server.WithServiceAddr(address),                                    // address
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
 		server.WithMuxTransport(),                                          // Multiplex
-		//server.WithSuite(trace.NewDefaultServerSuite()),                    // tracer
 		server.WithRegistry(r),
 	)
 

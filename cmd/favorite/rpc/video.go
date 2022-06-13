@@ -40,39 +40,6 @@ func initVideoRpc() {
 	videoClient = c
 }
 
-func CreateVideo(ctx context.Context, req *video.CreateVideoRequest) (statusCode int64, err error) {
-	resp, err := videoClient.CreateVideo(ctx, req)
-	if err != nil {
-		return errno.ServiceErrCode, err
-	}
-	if resp.BaseResp.StatusCode != 0 {
-		return resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
-	}
-	return errno.SuccessCode, nil
-}
-
-func Feed(ctx context.Context, req *video.FeedRequest) (nextTime int64, videoList []*video.Video, statusCode int64, err error) {
-	resp, err := videoClient.Feed(ctx, req)
-	if err != nil {
-		return 0, nil, errno.ServiceErrCode, err
-	}
-	if resp.BaseResp.StatusCode != 0 {
-		return 0, nil, resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
-	}
-	return resp.NextTime, resp.VideoList, errno.SuccessCode, nil
-}
-
-func PublishList(ctx context.Context, req *video.PublishListRequest) (videoList []*video.Video, statusCode int64, err error) {
-	resp, err := videoClient.PublishList(ctx, req)
-	if err != nil {
-		return nil, errno.ServiceErrCode, err
-	}
-	if resp.BaseResp.StatusCode != 0 {
-		return nil, resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
-	}
-	return resp.VideoList, errno.SuccessCode, nil
-}
-
 func MGetVideo(ctx context.Context, req *video.MGetVideoRequest) (videoList []*video.Video, statusCode int64, err error) {
 	resp, err := videoClient.MGetVideo(ctx, req)
 	if err != nil {
@@ -86,17 +53,6 @@ func MGetVideo(ctx context.Context, req *video.MGetVideoRequest) (videoList []*v
 
 func VideoFavorite(ctx context.Context, req *video.FavoriteOperationRequest) (statusCode int64, err error) {
 	resp, err := videoClient.Favorite(ctx, req)
-	if err != nil {
-		return errno.ServiceErrCode, err
-	}
-	if resp.BaseResp.StatusCode != 0 {
-		return resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
-	}
-	return errno.SuccessCode, nil
-}
-
-func VideoComment(ctx context.Context, req *video.CommentOperationRequest) (statusCode int64, err error) {
-	resp, err := videoClient.Comment(ctx, req)
 	if err != nil {
 		return errno.ServiceErrCode, err
 	}

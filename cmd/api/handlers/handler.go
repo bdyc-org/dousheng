@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/bdyc-org/dousheng/pkg/errno"
-	error2 "github.com/bdyc-org/dousheng/pkg/error"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/gin-gonic/gin"
 )
@@ -56,11 +55,11 @@ type VideoParam struct {
 }
 
 //videos
-func SendResponse(c *gin.Context, err error, data interface{}) {
-	Err := error2.ConvertErr(err)
-	c.JSON(http.StatusOK, Response{
-		Code: Err.ErrCode,
-		Msg:  Err.ErrMsg,
-		Data: data,
-	})
-}
+// func SendResponse(c *gin.Context, err error, data interface{}) {
+// 	Err := error2.ConvertErr(err)
+// 	c.JSON(http.StatusOK, Response{
+// 		Code: int32(Err.ErrCode),
+// 		Msg:  Err.ErrMsg,
+// 		Data: data,
+// 	})
+// }

@@ -39,9 +39,11 @@
 ├─public(静态文件存放位置)
 │  ├─avatar（用户头像存放位置）
 │  ├─background（背景图片存放位置）
+│  ├─videos（上传视频存放位置）
+│  ├─cover（封面存放位置）
 ├─pkg
 │  ├─constants（常量）
-│  ├─errno（c错误码和错误信息）
+│  ├─errno（错误码和错误信息）
 │  ├─middleware（中间件）
 ├─README.md（项目说明文件）
 ```
@@ -53,6 +55,7 @@
 - go version: 1.18
 - mysql version: 8.0
 - etcd version: 3.5.4
+- ffmpeg version:4.4.2
 
 ### 下载
 ```shell
@@ -61,7 +64,7 @@ git clone https://github.com/bdyc-org/dousheng.git
 
 ### 使用
 
-#### 1. 准备好运行环境，
+#### 1. 准备好运行环境
 修改 `pkg/constants/constant.go` 中的 `MySQLDefaultDSN` ，并启动 `etcd`
 
 #### 2. 运行user服务

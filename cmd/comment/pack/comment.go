@@ -16,10 +16,13 @@ func Comment(item *db.Comment, user *comment.User) *comment.Comment {
 
 func Comments(items []*db.Comment, users []*comment.User) []*comment.Comment {
 	comments := make([]*comment.Comment, 0)
-	for i, item := range items {
-		if n := Comment(item, users[i]); n != nil {
-			comments = append(comments, n)
-		}
+	userMap := make(map[int64]*comment.User)
+	for _, u := range users {
+		userMap[u.Id] = u
+	}
+	for _, item := range items {
+		comment := Comment(item, userMap[item.UserId])
+		comments = append(comments, comment)
 	}
 	return comments
 }

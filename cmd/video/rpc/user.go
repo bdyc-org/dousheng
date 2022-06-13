@@ -2,6 +2,9 @@ package rpc
 
 import (
 	"context"
+	"errors"
+	"time"
+
 	"github.com/bdyc-org/dousheng/kitex_gen/user"
 	"github.com/bdyc-org/dousheng/kitex_gen/user/userservice"
 	"github.com/bdyc-org/dousheng/pkg/constants"
@@ -10,8 +13,6 @@ import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	trace "github.com/kitex-contrib/tracer-opentracing"
-	"time"
 )
 
 var userClient userservice.Client
@@ -31,8 +32,8 @@ func initUserRpc() {
 		client.WithRPCTimeout(3*time.Second),              // rpc timeout
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
-		client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
-		client.WithResolver(r),                            // resolver
+
+		client.WithResolver(r), // resolver
 	)
 	if err != nil {
 		panic(err)
@@ -40,14 +41,13 @@ func initUserRpc() {
 	userClient = c
 }
 
-func MGetUser(ctx context.Context, req *user.MGetUserRequest) ([]*user.User, error) {
+func MGetUser(ctx context.Context, req *user.MGetUserRequest) (user []*user.User, statusCode int64, err error) {
 	resp, err := userClient.MGetUser(ctx, req)
 	if err != nil {
-		return nil, err
+		return nil, errno.ServiceErrCode, err
 	}
 	if resp.BaseResp.StatusCode != 0 {
-		return nil, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
+		return nil, resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
 	}
-
-	return resp.UserList, nil
+	return resp.UserList, errno.SuccessCode, nil
 }

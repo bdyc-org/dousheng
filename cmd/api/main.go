@@ -36,18 +36,18 @@ func main() {
 	//favorite
 	favorite1 := apiRouter.Group("/favorite")
 	favorite1.POST("/action/", handlers.Favorite)
-	favorite1.GET("/list/", handlers.FacoriteList)
+	favorite1.GET("/list/", handlers.FavoriteList)
 
 	//video
-	apiRouter.GET("/feed", handlers.FeedVideo)
+	apiRouter.GET("/feed", handlers.Feed)
 
-	video := apiRouter.Group("/publish")
-	video.POST("/action/", handlers.PublishVideo)
-	video.GET("/list/", handlers.PublishList)
+	video1 := apiRouter.Group("/publish")
+	video1.POST("/action/", handlers.PublishVideo)
+	video1.GET("/list/", handlers.PublishList)
 
 	//comment
 	comment1 := apiRouter.Group("/comment")
-	comment1.POST("/action/", handlers.Comment)
+	comment1.POST("/action", handlers.Comment)
 	comment1.GET("/list/", handlers.CommentList)
 
 	if err := http.ListenAndServe(":8080", r); err != nil {

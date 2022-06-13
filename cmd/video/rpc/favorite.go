@@ -2,7 +2,10 @@ package rpc
 
 import (
 	"context"
-	favorite2 "github.com/bdyc-org/dousheng/kitex_gen/favorite"
+	"errors"
+	"time"
+
+	"github.com/bdyc-org/dousheng/kitex_gen/favorite"
 	"github.com/bdyc-org/dousheng/kitex_gen/favorite/favoriteservice"
 	"github.com/bdyc-org/dousheng/pkg/constants"
 	"github.com/bdyc-org/dousheng/pkg/errno"
@@ -10,8 +13,6 @@ import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/retry"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	trace "github.com/kitex-contrib/tracer-opentracing"
-	"time"
 )
 
 var favoriteClient favoriteservice.Client
@@ -23,14 +24,13 @@ func initFavoriteRpc() {
 	}
 
 	c, err := favoriteservice.NewClient(
-		constants.UserServiceName,
+		constants.FavoriteServiceName,
 		client.WithMiddleware(middleware.CommonMiddleware),
 		client.WithInstanceMW(middleware.ClientMiddleware),
 		client.WithMuxConnection(1),                       // mux
 		client.WithRPCTimeout(3*time.Second),              // rpc timeout
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
-		client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
 		client.WithResolver(r),                            // resolver
 	)
 	if err != nil {
@@ -39,17 +39,17 @@ func initFavoriteRpc() {
 	favoriteClient = c
 }
 
-func FavoriteJudge(ctx context.Context, req *favorite2.FavoriteJudgeRequest) (videoIds []int64, err error) {
-
-	videoIds = make([]int64, 0)
+func FavoriteJudge(ctx context.Context, req *favorite.FavoriteJudgeRequest) (videoIds map[int64]bool, statusCode int64, err error) {
 	resp, err := favoriteClient.FavoriteJudge(ctx, req)
 	if err != nil {
-		panic(err)
+		return nil, errno.ServiceErrCode, err
 	}
-
 	if resp.BaseResp.StatusCode != 0 {
-		return nil, errno.NewErrNo(resp.BaseResp.StatusCode, resp.BaseResp.StatusMsg)
+		return nil, resp.BaseResp.StatusCode, errors.New(resp.BaseResp.StatusMsg)
 	}
-	videoIds = resp.VideoIds
-	return videoIds, nil
+	res := make(map[int64]bool)
+	for _, videoID := range resp.VideoIds {
+		res[videoID] = true
+	}
+	return res, errno.SuccessCode, nil
 }

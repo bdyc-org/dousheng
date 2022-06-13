@@ -53,7 +53,7 @@ func (s *FavoriteServiceImpl) FavoriteList(ctx context.Context, req *favorite.Fa
 		return resp, nil
 	}
 
-	videoList, statusCode, err := service.NewFavoriteListService(ctx).FacoriteList(req)
+	videoList, statusCode, err := service.NewFavoriteListService(ctx).FavoriteList(req)
 	if err != nil {
 		resp.BaseResp = pack.BuildBaseResponse(statusCode, err.Error())
 		resp.VideoList = nil

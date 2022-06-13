@@ -11,11 +11,12 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	FeedVideo(ctx context.Context, req *video.DouyinFeedRequest, callOptions ...callopt.Option) (r *video.DouyinFeedResponse, err error)
-	PublishAction(ctx context.Context, req *video.DouyinPublishActionRequest, callOptions ...callopt.Option) (r *video.DouyinPublishActionResponse, err error)
-	PublishList(ctx context.Context, req *video.DouyinPublishListRequest, callOptions ...callopt.Option) (r *video.DouyinPublishListResponse, err error)
-	VideoFavorite(ctx context.Context, req *video.DouyinVideoFavoriteRequest, callOptions ...callopt.Option) (r *video.DouyinVideoFavoriteResponse, err error)
-	VideoComment(ctx context.Context, req *video.DouyinVideoCommentRequest, callOptions ...callopt.Option) (r *video.DouyinVideoCommentResponse, err error)
+	Feed(ctx context.Context, req *video.FeedRequest, callOptions ...callopt.Option) (r *video.FeedResponse, err error)
+	CreateVideo(ctx context.Context, req *video.CreateVideoRequest, callOptions ...callopt.Option) (r *video.CreateVideoResponse, err error)
+	PublishList(ctx context.Context, req *video.PublishListRequest, callOptions ...callopt.Option) (r *video.PublishListResponse, err error)
+	MGetVideo(ctx context.Context, req *video.MGetVideoRequest, callOptions ...callopt.Option) (r *video.MGetVideoResponse, err error)
+	Favorite(ctx context.Context, req *video.FavoriteOperationRequest, callOptions ...callopt.Option) (r *video.FavoriteOperationResponse, err error)
+	Comment(ctx context.Context, req *video.CommentOperationRequest, callOptions ...callopt.Option) (r *video.CommentOperationResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -47,27 +48,32 @@ type kVideoServiceClient struct {
 	*kClient
 }
 
-func (p *kVideoServiceClient) FeedVideo(ctx context.Context, req *video.DouyinFeedRequest, callOptions ...callopt.Option) (r *video.DouyinFeedResponse, err error) {
+func (p *kVideoServiceClient) Feed(ctx context.Context, req *video.FeedRequest, callOptions ...callopt.Option) (r *video.FeedResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.FeedVideo(ctx, req)
+	return p.kClient.Feed(ctx, req)
 }
 
-func (p *kVideoServiceClient) PublishAction(ctx context.Context, req *video.DouyinPublishActionRequest, callOptions ...callopt.Option) (r *video.DouyinPublishActionResponse, err error) {
+func (p *kVideoServiceClient) CreateVideo(ctx context.Context, req *video.CreateVideoRequest, callOptions ...callopt.Option) (r *video.CreateVideoResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.PublishAction(ctx, req)
+	return p.kClient.CreateVideo(ctx, req)
 }
 
-func (p *kVideoServiceClient) PublishList(ctx context.Context, req *video.DouyinPublishListRequest, callOptions ...callopt.Option) (r *video.DouyinPublishListResponse, err error) {
+func (p *kVideoServiceClient) PublishList(ctx context.Context, req *video.PublishListRequest, callOptions ...callopt.Option) (r *video.PublishListResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.PublishList(ctx, req)
 }
 
-func (p *kVideoServiceClient) VideoFavorite(ctx context.Context, req *video.DouyinVideoFavoriteRequest, callOptions ...callopt.Option) (r *video.DouyinVideoFavoriteResponse, err error) {
+func (p *kVideoServiceClient) MGetVideo(ctx context.Context, req *video.MGetVideoRequest, callOptions ...callopt.Option) (r *video.MGetVideoResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.VideoFavorite(ctx, req)
+	return p.kClient.MGetVideo(ctx, req)
 }
 
-func (p *kVideoServiceClient) VideoComment(ctx context.Context, req *video.DouyinVideoCommentRequest, callOptions ...callopt.Option) (r *video.DouyinVideoCommentResponse, err error) {
+func (p *kVideoServiceClient) Favorite(ctx context.Context, req *video.FavoriteOperationRequest, callOptions ...callopt.Option) (r *video.FavoriteOperationResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.VideoComment(ctx, req)
+	return p.kClient.Favorite(ctx, req)
+}
+
+func (p *kVideoServiceClient) Comment(ctx context.Context, req *video.CommentOperationRequest, callOptions ...callopt.Option) (r *video.CommentOperationResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Comment(ctx, req)
 }

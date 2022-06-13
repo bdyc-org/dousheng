@@ -5,15 +5,17 @@ go 1.18
 require (
 	github.com/apache/thrift v0.16.0
 	github.com/cloudwego/kitex v0.3.2
+	github.com/disintegration/imaging v1.6.2
 	github.com/gin-gonic/gin v1.8.1
 	github.com/golang-jwt/jwt/v4 v4.4.1
 	github.com/kitex-contrib/registry-etcd v0.0.0-20220110034026-b1c94979cea3
-	github.com/kitex-contrib/tracer-opentracing v0.0.3
+	github.com/u2takey/ffmpeg-go v0.4.1
 	gorm.io/driver/mysql v1.3.4
 	gorm.io/gorm v1.23.5
 )
 
 require (
+	github.com/aws/aws-sdk-go v1.38.20 // indirect
 	github.com/bytedance/gopkg v0.0.0-20220509134931-d1878f638986 // indirect
 	github.com/choleraehyq/pid v0.0.13 // indirect
 	github.com/cloudwego/netpoll v0.2.4 // indirect
@@ -30,16 +32,17 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.4 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/tidwall/gjson v1.12.1 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
+	github.com/u2takey/go-utils v0.3.1 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.1 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.1 // indirect
@@ -48,6 +51,7 @@ require (
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.17.0 // indirect
 	golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97 // indirect
+	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8 // indirect
 	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20220110181412-a018aaa089fe // indirect

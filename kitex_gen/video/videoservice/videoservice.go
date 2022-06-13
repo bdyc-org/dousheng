@@ -19,11 +19,12 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "VideoService"
 	handlerType := (*video.VideoService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"FeedVideo":     kitex.NewMethodInfo(feedVideoHandler, newVideoServiceFeedVideoArgs, newVideoServiceFeedVideoResult, false),
-		"PublishAction": kitex.NewMethodInfo(publishActionHandler, newVideoServicePublishActionArgs, newVideoServicePublishActionResult, false),
-		"PublishList":   kitex.NewMethodInfo(publishListHandler, newVideoServicePublishListArgs, newVideoServicePublishListResult, false),
-		"VideoFavorite": kitex.NewMethodInfo(videoFavoriteHandler, newVideoServiceVideoFavoriteArgs, newVideoServiceVideoFavoriteResult, false),
-		"VideoComment":  kitex.NewMethodInfo(videoCommentHandler, newVideoServiceVideoCommentArgs, newVideoServiceVideoCommentResult, false),
+		"Feed":        kitex.NewMethodInfo(feedHandler, newVideoServiceFeedArgs, newVideoServiceFeedResult, false),
+		"CreateVideo": kitex.NewMethodInfo(createVideoHandler, newVideoServiceCreateVideoArgs, newVideoServiceCreateVideoResult, false),
+		"PublishList": kitex.NewMethodInfo(publishListHandler, newVideoServicePublishListArgs, newVideoServicePublishListResult, false),
+		"MGetVideo":   kitex.NewMethodInfo(mGetVideoHandler, newVideoServiceMGetVideoArgs, newVideoServiceMGetVideoResult, false),
+		"Favorite":    kitex.NewMethodInfo(favoriteHandler, newVideoServiceFavoriteArgs, newVideoServiceFavoriteResult, false),
+		"comment":     kitex.NewMethodInfo(commentHandler, newVideoServiceCommentArgs, newVideoServiceCommentResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -39,40 +40,40 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	return svcInfo
 }
 
-func feedVideoHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*video.VideoServiceFeedVideoArgs)
-	realResult := result.(*video.VideoServiceFeedVideoResult)
-	success, err := handler.(video.VideoService).FeedVideo(ctx, realArg.Req)
+func feedHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceFeedArgs)
+	realResult := result.(*video.VideoServiceFeedResult)
+	success, err := handler.(video.VideoService).Feed(ctx, realArg.Req)
 	if err != nil {
 		return err
 	}
 	realResult.Success = success
 	return nil
 }
-func newVideoServiceFeedVideoArgs() interface{} {
-	return video.NewVideoServiceFeedVideoArgs()
+func newVideoServiceFeedArgs() interface{} {
+	return video.NewVideoServiceFeedArgs()
 }
 
-func newVideoServiceFeedVideoResult() interface{} {
-	return video.NewVideoServiceFeedVideoResult()
+func newVideoServiceFeedResult() interface{} {
+	return video.NewVideoServiceFeedResult()
 }
 
-func publishActionHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*video.VideoServicePublishActionArgs)
-	realResult := result.(*video.VideoServicePublishActionResult)
-	success, err := handler.(video.VideoService).PublishAction(ctx, realArg.Req)
+func createVideoHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceCreateVideoArgs)
+	realResult := result.(*video.VideoServiceCreateVideoResult)
+	success, err := handler.(video.VideoService).CreateVideo(ctx, realArg.Req)
 	if err != nil {
 		return err
 	}
 	realResult.Success = success
 	return nil
 }
-func newVideoServicePublishActionArgs() interface{} {
-	return video.NewVideoServicePublishActionArgs()
+func newVideoServiceCreateVideoArgs() interface{} {
+	return video.NewVideoServiceCreateVideoArgs()
 }
 
-func newVideoServicePublishActionResult() interface{} {
-	return video.NewVideoServicePublishActionResult()
+func newVideoServiceCreateVideoResult() interface{} {
+	return video.NewVideoServiceCreateVideoResult()
 }
 
 func publishListHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -93,40 +94,58 @@ func newVideoServicePublishListResult() interface{} {
 	return video.NewVideoServicePublishListResult()
 }
 
-func videoFavoriteHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*video.VideoServiceVideoFavoriteArgs)
-	realResult := result.(*video.VideoServiceVideoFavoriteResult)
-	success, err := handler.(video.VideoService).VideoFavorite(ctx, realArg.Req)
+func mGetVideoHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceMGetVideoArgs)
+	realResult := result.(*video.VideoServiceMGetVideoResult)
+	success, err := handler.(video.VideoService).MGetVideo(ctx, realArg.Req)
 	if err != nil {
 		return err
 	}
 	realResult.Success = success
 	return nil
 }
-func newVideoServiceVideoFavoriteArgs() interface{} {
-	return video.NewVideoServiceVideoFavoriteArgs()
+func newVideoServiceMGetVideoArgs() interface{} {
+	return video.NewVideoServiceMGetVideoArgs()
 }
 
-func newVideoServiceVideoFavoriteResult() interface{} {
-	return video.NewVideoServiceVideoFavoriteResult()
+func newVideoServiceMGetVideoResult() interface{} {
+	return video.NewVideoServiceMGetVideoResult()
 }
 
-func videoCommentHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*video.VideoServiceVideoCommentArgs)
-	realResult := result.(*video.VideoServiceVideoCommentResult)
-	success, err := handler.(video.VideoService).VideoComment(ctx, realArg.Req)
+func favoriteHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceFavoriteArgs)
+	realResult := result.(*video.VideoServiceFavoriteResult)
+	success, err := handler.(video.VideoService).Favorite(ctx, realArg.Req)
 	if err != nil {
 		return err
 	}
 	realResult.Success = success
 	return nil
 }
-func newVideoServiceVideoCommentArgs() interface{} {
-	return video.NewVideoServiceVideoCommentArgs()
+func newVideoServiceFavoriteArgs() interface{} {
+	return video.NewVideoServiceFavoriteArgs()
 }
 
-func newVideoServiceVideoCommentResult() interface{} {
-	return video.NewVideoServiceVideoCommentResult()
+func newVideoServiceFavoriteResult() interface{} {
+	return video.NewVideoServiceFavoriteResult()
+}
+
+func commentHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceCommentArgs)
+	realResult := result.(*video.VideoServiceCommentResult)
+	success, err := handler.(video.VideoService).Comment(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newVideoServiceCommentArgs() interface{} {
+	return video.NewVideoServiceCommentArgs()
+}
+
+func newVideoServiceCommentResult() interface{} {
+	return video.NewVideoServiceCommentResult()
 }
 
 type kClient struct {
@@ -139,27 +158,27 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) FeedVideo(ctx context.Context, req *video.DouyinFeedRequest) (r *video.DouyinFeedResponse, err error) {
-	var _args video.VideoServiceFeedVideoArgs
+func (p *kClient) Feed(ctx context.Context, req *video.FeedRequest) (r *video.FeedResponse, err error) {
+	var _args video.VideoServiceFeedArgs
 	_args.Req = req
-	var _result video.VideoServiceFeedVideoResult
-	if err = p.c.Call(ctx, "FeedVideo", &_args, &_result); err != nil {
+	var _result video.VideoServiceFeedResult
+	if err = p.c.Call(ctx, "Feed", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) PublishAction(ctx context.Context, req *video.DouyinPublishActionRequest) (r *video.DouyinPublishActionResponse, err error) {
-	var _args video.VideoServicePublishActionArgs
+func (p *kClient) CreateVideo(ctx context.Context, req *video.CreateVideoRequest) (r *video.CreateVideoResponse, err error) {
+	var _args video.VideoServiceCreateVideoArgs
 	_args.Req = req
-	var _result video.VideoServicePublishActionResult
-	if err = p.c.Call(ctx, "PublishAction", &_args, &_result); err != nil {
+	var _result video.VideoServiceCreateVideoResult
+	if err = p.c.Call(ctx, "CreateVideo", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) PublishList(ctx context.Context, req *video.DouyinPublishListRequest) (r *video.DouyinPublishListResponse, err error) {
+func (p *kClient) PublishList(ctx context.Context, req *video.PublishListRequest) (r *video.PublishListResponse, err error) {
 	var _args video.VideoServicePublishListArgs
 	_args.Req = req
 	var _result video.VideoServicePublishListResult
@@ -169,21 +188,31 @@ func (p *kClient) PublishList(ctx context.Context, req *video.DouyinPublishListR
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) VideoFavorite(ctx context.Context, req *video.DouyinVideoFavoriteRequest) (r *video.DouyinVideoFavoriteResponse, err error) {
-	var _args video.VideoServiceVideoFavoriteArgs
+func (p *kClient) MGetVideo(ctx context.Context, req *video.MGetVideoRequest) (r *video.MGetVideoResponse, err error) {
+	var _args video.VideoServiceMGetVideoArgs
 	_args.Req = req
-	var _result video.VideoServiceVideoFavoriteResult
-	if err = p.c.Call(ctx, "VideoFavorite", &_args, &_result); err != nil {
+	var _result video.VideoServiceMGetVideoResult
+	if err = p.c.Call(ctx, "MGetVideo", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) VideoComment(ctx context.Context, req *video.DouyinVideoCommentRequest) (r *video.DouyinVideoCommentResponse, err error) {
-	var _args video.VideoServiceVideoCommentArgs
+func (p *kClient) Favorite(ctx context.Context, req *video.FavoriteOperationRequest) (r *video.FavoriteOperationResponse, err error) {
+	var _args video.VideoServiceFavoriteArgs
 	_args.Req = req
-	var _result video.VideoServiceVideoCommentResult
-	if err = p.c.Call(ctx, "VideoComment", &_args, &_result); err != nil {
+	var _result video.VideoServiceFavoriteResult
+	if err = p.c.Call(ctx, "Favorite", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) Comment(ctx context.Context, req *video.CommentOperationRequest) (r *video.CommentOperationResponse, err error) {
+	var _args video.VideoServiceCommentArgs
+	_args.Req = req
+	var _result video.VideoServiceCommentResult
+	if err = p.c.Call(ctx, "comment", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
