@@ -44,7 +44,7 @@ func QueryVideo(ctx context.Context, videoID uint) (*Video, error) {
 //QueryVideoList By latest_time
 func VideoFeed(ctx context.Context, LatestTime *int64) ([]*Video, *int64, error) {
 
-	res := make([]*Video, 0) //transfrom
+	res := make([]*Video, 0) //transfrom  这边对时间进行比较sql语句行得通,但是gorm行不通
 	err := DB.WithContext(ctx).Find(&res).Limit(20).Error
 
 	if err != nil || len(res) == 0 {

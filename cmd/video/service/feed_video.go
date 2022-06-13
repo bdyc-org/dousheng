@@ -2,11 +2,9 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/bdyc-org/dousheng/cmd/video/dal/db"
 	"github.com/bdyc-org/dousheng/cmd/video/pack"
 	"github.com/bdyc-org/dousheng/cmd/video/rpc"
-	favorite2 "github.com/bdyc-org/dousheng/kitex_gen/favorite"
 	"github.com/bdyc-org/dousheng/kitex_gen/user"
 
 	"github.com/bdyc-org/dousheng/kitex_gen/video"
@@ -26,15 +24,14 @@ func (v *FeedVideoService) FeedVideo(req *video.DouyinFeedRequest) ([]*video.Vid
 	//获取author信息
 	var authorsId []int64
 
-	for i, video := range videos {
-		authorsId[i] = int64(video.User_id)
+	for _, video := range videos {
+		authorsId = append(authorsId, int64(video.User_id))
 	}
 	resq := user.MGetUserRequest{UserId: *req.UserId, UserIds: authorsId}
 
 	authors, err := rpc.MGetUser(v.ctx, &resq)
 
-	var authorMap map[int64]user.User
-
+	authorMap := make(map[int64]user.User)
 	//将author对应的id装进map中
 	for _, author := range authors {
 		authorMap[author.Id] = *author
@@ -42,16 +39,14 @@ func (v *FeedVideoService) FeedVideo(req *video.DouyinFeedRequest) ([]*video.Vid
 
 	//获取点赞信息
 	var videoIds []int64
-	for i, video := range videos {
-		videoIds[i] = int64(video.ID)
+	for _, video := range videos {
+		videoIds = append(videoIds, int64(video.ID))
 	}
+	//这边是有异常的
+	//resp2 := favorite2.FavoriteJudgeRequest{UserId: *req.UserId, VideoIds: videoIds}
+	//
+	//favoritesvideoid, err := rpc.FavoriteJudge(v.ctx, &resp2)
 
-	resp2 := favorite2.FavoriteJudgeRequest{UserId: *req.UserId, VideoIds: videoIds}
-
-	favoritesvideoid, err := rpc.FavoriteJudge(v.ctx, &resp2)
-
-	fmt.Println(videos)
-	fmt.Println("???????????????????????????????")
 	videosfinal := pack.Videos(videos)
 
 	for _, video := range videosfinal {
@@ -63,11 +58,11 @@ func (v *FeedVideoService) FeedVideo(req *video.DouyinFeedRequest) ([]*video.Vid
 
 		video.IsFavorite = false
 
-		for _, favoritesvideo := range favoritesvideoid {
-			if video.Id == favoritesvideo {
-				video.IsFavorite = true
-			}
-		}
+		//for _, favoritesvideo := range favoritesvideoid {
+		//	if video.Id == favoritesvideo {
+		//		video.IsFavorite = true
+		//	}
+		//}
 
 		ipvf, _ := pack.GetLocalIPv4Address()
 
@@ -75,9 +70,6 @@ func (v *FeedVideoService) FeedVideo(req *video.DouyinFeedRequest) ([]*video.Vid
 
 		video.CoverUrl = "http://" + ipvf + ":8080/static/cover/" + video.CoverUrl
 	}
-
-	fmt.Println(videosfinal)
-	fmt.Println("???????????????????????????????")
 
 	if err != nil {
 		return nil, nil, err

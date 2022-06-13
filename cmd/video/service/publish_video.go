@@ -20,16 +20,16 @@ func NewPublishVideoService(ctx context.Context) *PublishVideoService {
 }
 
 func (v *PublishVideoService) PublishVideo(req *video.DouyinPublishActionRequest) error {
-	covername, err := GetFrame(req.FileName)
+	//covername, err := GetFrame(req.FileName)
 
-	if err != nil {
-		panic(err)
-	}
+	//if err != nil {
+	//	panic(err)
+	//}
 	fmt.Println(req.FileName)
 	video := &db.Video{
 		Title:          req.Title,
 		Play_url:       req.FileName,
-		Cover_url:      covername,
+		Cover_url:      "",
 		User_id:        uint(req.UserId),
 		Favorite_count: 0,
 		Comment_count:  0,
