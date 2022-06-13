@@ -35,13 +35,11 @@ func main() {
 
 	svr := relation.NewServer(new(RelationServiceImpl),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: constants.RelationServiceName}), // server name
-		server.WithMiddleware(middleware.CommonMiddleware),                                             // middleWare
+		server.WithMiddleware(middleware.CommonMiddleware),                                                 // middleWare
 		server.WithMiddleware(middleware.ServerMiddleware),
 		server.WithServiceAddr(addr),                                       // address
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
 		server.WithMuxTransport(),                                          // Multiplex
-		// server.WithSuite(trace.NewDefaultServerSuite()),                    // tracer
-		// server.WithBoundHandler(bound.NewCpuLimitHandler()),                // BoundHandler
 		server.WithRegistry(r),                                             // registry
 	)
 

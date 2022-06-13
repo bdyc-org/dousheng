@@ -1,7 +1,11 @@
 package main
 
 import (
+	"log"
+	"net"
+
 	"github.com/bdyc-org/dousheng/cmd/comment/dal"
+	"github.com/bdyc-org/dousheng/cmd/comment/rpc"
 	comment "github.com/bdyc-org/dousheng/kitex_gen/comment/commentservice"
 	"github.com/bdyc-org/dousheng/pkg/constants"
 	"github.com/bdyc-org/dousheng/pkg/middleware"
@@ -9,12 +13,11 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
-	"log"
-	"net"
 )
 
 func Init() {
 	dal.Init()
+	rpc.InitRPC()
 }
 
 func main() {
@@ -37,7 +40,6 @@ func main() {
 		server.WithServiceAddr(addr),                                       // address
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
 		server.WithMuxTransport(),                                          // Multiplex
-		//server.WithSuite(trace.NewDefaultServerSuite()),                    // tracer
 		server.WithRegistry(r),
 	)
 

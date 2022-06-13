@@ -19,10 +19,4 @@ const (
 	FavoriteResolveTCPAddr = "127.0.0.1:6602"
 	CommentResolveTCPAddr  = "127.0.0.1:6603"
 	VideoResolveTCPAddr    = "127.0.0.1:6604"
-	// Title                          = "title"
-	// Videos                         = "videos"
-	// VideoID                        = "video_id"
-	// CPURateLimit           float64 = 80.0
-	// DefaultLimit                   = 10
-	// NextTime
 )

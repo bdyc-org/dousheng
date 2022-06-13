@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"errors"
 	"net/http"
 
 	"github.com/bdyc-org/dousheng/cmd/api/rpc"
@@ -77,17 +76,21 @@ func Comment(c *gin.Context) {
 
 	switch commentVar.ActionType {
 	case 1:
-		err = errors.New("评论成功")
+		c.JSON(http.StatusOK, gin.H{
+			"status_code": statusCode,
+			"status_msg":  "评论成功",
+			"comment":     comment,
+		})
 	case 2:
-		err = errors.New("删除评论成功")
+		c.JSON(http.StatusOK, gin.H{
+			"status_code": statusCode,
+			"status_msg":  "删除评论成功",
+		})
 	default:
-		err = errors.New("未定义操作")
+		c.JSON(http.StatusOK, gin.H{
+			"status_code": statusCode,
+			"status_msg":  "未定义操作",
+		})
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"status_code": statusCode,
-		"status_msg":  err.Error(),
-		"comment":     comment,
-	})
 
 }

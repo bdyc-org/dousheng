@@ -9,7 +9,7 @@ import (
 
 type Favorite struct {
 	gorm.Model
-	UserId  uint
+	UserId  uint `gorm:"index"`
 	VideoId uint
 }
 

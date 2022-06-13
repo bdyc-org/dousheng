@@ -11,7 +11,7 @@ import (
 //数据库对应得结构体
 type User struct {
 	gorm.Model
-	Name            string
+	Name            string `gorm:"index"`
 	Password        string
 	FollowCount     int64
 	FollowerCount   int64

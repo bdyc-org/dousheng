@@ -11,7 +11,7 @@ struct User {
     2:string name
     3:i64 follow_count
     4:i64 follower_count
-    5:bool if_follow
+    5:bool is_follow
 }
 
 struct Comment {
@@ -24,9 +24,9 @@ struct Comment {
 struct CommentRequest {
     1:i64 user_id
     2:i64 video_id
-    3:i32 action_type
-    4:string comment_text
-    5:i64 comment_id
+    3:i64 action_type
+    4:optional string comment_text
+    5:optional i64 comment_id
 }
 
 struct CommentResponse {
@@ -34,17 +34,17 @@ struct CommentResponse {
     2:Comment comment
 }
 
-struct QueryCommentRequest {
+struct CommentListRequest {
     1:i64 user_id
     2:i64 video_id
 }
 
-struct QueryCommentResponse {
+struct CommentListResponse {
     1:BaseResponse base_resp
     2:list<Comment> comment_list
 }
 
 service CommentService {
     CommentResponse Comment(1:CommentRequest req)
-    QueryCommentResponse QueryComment(1:QueryCommentRequest req)
+    CommentListResponse CommentList(1:CommentListRequest req)
 }

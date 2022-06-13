@@ -26,7 +26,7 @@ func (s *MGetUserService) MGetUser(req *user.MGetUserRequest) (users []*user.Use
 		return nil, errno.ServiceErrCode, err
 	}
 	users = pack.Users(modelUsers)
-	//is_follow需要relation服务，暂未写
+	//is_follow调用relation服务
 	followIds, statusCode, err := rpc.QueryFollow(context.Background(), &relation.QueryFollowRequest{
 		UserId: req.UserId,
 	})

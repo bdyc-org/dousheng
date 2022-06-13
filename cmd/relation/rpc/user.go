@@ -32,7 +32,6 @@ func initUserRpc() {
 		client.WithRPCTimeout(3*time.Second),              // rpc timeout
 		client.WithConnectTimeout(50*time.Millisecond),    // conn timeout
 		client.WithFailureRetry(retry.NewFailurePolicy()), // retry
-		// client.WithSuite(trace.NewDefaultClientSuite()),   // tracer
 		client.WithResolver(r),                            // resolver
 	)
 	if err != nil {
@@ -45,7 +44,7 @@ func initUserRpc() {
 func MGetUser(ctx context.Context, req *relation.QueryUserListRequest) ([]*relation.User, error) {
 	// 打包为user.MGetUserRequest
 	r := pack.MGetUserReq(req.UserId, req.UserIds)
-	
+
 	resp, err := userClient.MGetUser(ctx, r)
 	if err != nil {
 		return nil, err

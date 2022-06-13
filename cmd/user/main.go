@@ -41,7 +41,6 @@ func main() {
 		server.WithServiceAddr(addr),                                       // address
 		server.WithLimit(&limit.Option{MaxConnections: 1000, MaxQPS: 100}), // limit
 		server.WithMuxTransport(),                                          // Multiplex
-		//server.WithSuite(trace.NewDefaultServerSuite()),                    // tracer
 		server.WithRegistry(r),
 	)
 

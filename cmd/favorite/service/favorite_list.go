@@ -2,11 +2,10 @@ package service
 
 import (
 	"context"
-	"fmt"
 
-	"github.com/bdyc-org/dousheng/cmd/api/rpc"
 	"github.com/bdyc-org/dousheng/cmd/favorite/dal/db"
 	"github.com/bdyc-org/dousheng/cmd/favorite/pack"
+	"github.com/bdyc-org/dousheng/cmd/favorite/rpc"
 	"github.com/bdyc-org/dousheng/kitex_gen/favorite"
 	"github.com/bdyc-org/dousheng/kitex_gen/video"
 	"github.com/bdyc-org/dousheng/pkg/errno"
@@ -32,7 +31,7 @@ func (s *FavoriteListService) FavoriteList(req *favorite.FavoriteListRequest) (v
 	for _, f := range favorites {
 		videoIds = append(videoIds, int64(f.VideoId))
 	}
-	fmt.Println(videoIds)
+
 	//调用video服务
 	videos, statusCode, err := rpc.MGetVideo(context.Background(), &video.MGetVideoRequest{
 		UserId:   req.UserId,

@@ -11,7 +11,7 @@ import (
 
 type Video struct {
 	gorm.Model
-	AuthorId      int64
+	AuthorId      int64 `gorm:"index"`
 	PlayUrl       string
 	CoverUrl      string
 	FavoriteCount int64

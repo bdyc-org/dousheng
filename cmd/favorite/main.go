@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"github.com/bdyc-org/dousheng/cmd/favorite/dal"
+	"github.com/bdyc-org/dousheng/cmd/favorite/rpc"
 	favorite "github.com/bdyc-org/dousheng/kitex_gen/favorite/favoriteservice"
 	"github.com/bdyc-org/dousheng/pkg/constants"
 	"github.com/bdyc-org/dousheng/pkg/middleware"
@@ -16,6 +17,7 @@ import (
 
 func Init() {
 	dal.Init()
+	rpc.InitRPC()
 }
 
 func main() {

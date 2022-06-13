@@ -57,10 +57,12 @@ func FavoriteList(c *gin.Context) {
 
 	if len(videoList) == 0 {
 		err = errors.New("您还没有喜欢的视频")
+	} else {
+		err = errors.New("获取点赞列表成功")
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status_code": statusCode,
+		"status_code": errno.SuccessCode,
 		"status_msg":  err.Error(),
 		"video_list":  videoList,
 	})

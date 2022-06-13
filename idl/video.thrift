@@ -1,7 +1,13 @@
 namespace go video
 
+struct BaseResponse {
+    1:i64 status_code
+    2:string status_msg
+    3:i64 service_time
+}
+
 struct User {
-    1:i64 user_id
+    1:i64 id
     2:string name
     3:i64 follow_count
     4:i64 follower_count
@@ -10,72 +16,80 @@ struct User {
 
 struct Video {
     1:i64 id
-    2:string title
+    2:User author
     3:string play_url
     4:string cover_url
-    5:User author
-    6:i64 favorite_count
-    7:i64 comment_count
-    8:bool is_favorite
+    5:i64 favorite_count
+    6:i64 comment_count
+    7:bool is_favorite
+    8:string title
 }
 
-struct douyin_feed_request {
-    1:optional i64 latest_time
-    2:optional i64 user_id
-}
-
-struct douyin_feed_response {
-    1:i32 status_code
-    2:optional string status_msg
-    3:list<Video> video_list
-    4:optional i64 next_time
-}
-
-struct douyin_publish_action_request {
-    1:string file_name
+struct FeedRequest {
+    1:i64 latest_time
     2:i64 user_id
-    3:string title
 }
 
-struct douyin_publish_action_response {
-    1:i32 status_code
-    2:optional string status_msg
-}
-
-struct douyin_publish_list_request {
-    1:i64 user_id
-}
-
-struct douyin_publish_list_response {
-    1:i32 status_code
-    2:optional string status_msg
+struct FeedResponse {
+    1:BaseResponse base_resp
+    2:i64 next_time
     3:list<Video> video_list
 }
 
-struct douyin_video_favorite_request{
+struct CreateVideoRequest {
+    1:i64 author_id
+    2:string play_url
+    3:string cover_url
+    4:string title
+}
+
+struct CreateVideoResponse {
+    1:BaseResponse base_resp
+}
+
+struct PublishListRequest {
+    1:i64 user_id
+    2:i64 author_id
+}
+
+struct PublishListResponse {
+    1:BaseResponse base_resp
+    2:list<Video> video_list
+}
+
+struct MGetVideoRequest {
+    1:i64 user_id
+    2:list<i64> video_ids
+}
+
+struct MGetVideoResponse {
+    1:BaseResponse base_resp
+    2:list<Video> video_list
+}
+
+struct FavoriteOperationRequest {
     1:i64 video_id
-    2:i32 action
+    2:i64 action_type
 }
 
-struct douyin_video_favorite_response {
-    1:i32 status_code
-    2:optional string status_msg
+struct FavoriteOperationResponse {
+    1:BaseResponse base_resp
 }
 
-struct douyin_video_comment_request{
+struct CommentOperationRequest {
     1:i64 video_id
-    2:i32 action
+    2:i64 action_type
 }
 
-struct douyin_video_comment_response {
-    1:i32 status_code
-    2:optional string status_msg
+struct CommentOperationResponse {
+    1:BaseResponse base_resp
 }
 
 service VideoService {
-    douyin_feed_response FeedVideo(1:douyin_feed_request req)
-    douyin_publish_action_response PublishAction(1:douyin_publish_action_request req)
-    douyin_publish_list_response PublishList(1:douyin_publish_list_request req)
-    douyin_video_favorite_response VideoFavorite(1:douyin_video_favorite_request req)
-    douyin_video_comment_response VideoComment(1:douyin_video_comment_request req)
+    FeedResponse Feed(1:FeedRequest req)
+    CreateVideoResponse CreateVideo(1:CreateVideoRequest req)
+    PublishListResponse PublishList(1:PublishListRequest req)
+    MGetVideoResponse MGetVideo(1:MGetVideoRequest req)
+    FavoriteOperationResponse Favorite(1:FavoriteOperationRequest req)
+    CommentOperationResponse comment(1:CommentOperationRequest req)
 }

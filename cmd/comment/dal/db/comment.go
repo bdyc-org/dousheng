@@ -10,7 +10,7 @@ import (
 type Comment struct {
 	gorm.Model
 	UserId  int64
-	VideoId int64
+	VideoId int64 `gorm:"index"`
 	Content string
 }
 
